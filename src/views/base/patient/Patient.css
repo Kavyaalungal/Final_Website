@@ -1,0 +1,16 @@
+.button{
+    background-color: #bb4d58 !important;
+  }
+  .button:hover{
+    background-color: #bd2937 !important;
+  }
+  .card{
+    height: 80px;
+  }
+    
+  @media (max-width: 600px) {
+    .card {
+      height: 120px;
+    }
+  
+  }
