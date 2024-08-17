@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { CDatePicker } from '@coreui/react-pro';
 import '@coreui/coreui/dist/css/coreui.min.css'
 import '@coreui/coreui-pro/dist/css/coreui.min.css'
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
+import './Patient.css';
 
 function Register() {
     // declaring state variables needed
@@ -446,7 +448,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
    <>
    <Grid container spacing={2}>
     <Grid item xs={12}>
-    <Card className='card'>
+    <Card sx={{height:75,marginLeft:-3.5,width:830}}>
     <CardContent>
     <Grid container spacing={1}>
                   <Grid item xs={12} sm={4} md={4} lg={4}>
@@ -460,6 +462,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                       fullWidth
                       InputLabelProps={{ style: { fontSize: '16px' } }}
                     >
+                        <MenuItem value="Patient ID"></MenuItem>
                       <MenuItem value="Patient ID">Patient ID</MenuItem>
                       <MenuItem value="Name">Name</MenuItem>
                       <MenuItem value="Email">Email</MenuItem>
@@ -504,7 +507,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
    </Card>
     </Grid>
     <Grid item xs={12}>
-    <Card>
+    <Card sx={{marginLeft:-3.5,width:830}}>
     <CardContent>
   
                 <Grid container spacing={2}>
@@ -558,7 +561,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                   </Grid>
 
                   {/* <Grid item container xs={12} sm={7} spacing={2}> */}
-                    <Grid item xs={4} sm={2} md={2}>
+                    <Grid item xs={12} sm={2} md={2}>
                       <TextField
                         id="yyyy"
                         label="Age YY"
@@ -575,7 +578,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                         helperText={errors.Patient_Age}
                       />
                     </Grid>
-                    <Grid item xs={4} sm={2} md={2}>
+                    <Grid item xs={12} sm={2} md={2}>
                       <TextField
                         id="mm"
                         label="Age MM"
@@ -592,7 +595,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                         helperText={errors.Patient_Age}
                       />
                     </Grid>
-                    <Grid item xs={4} sm={2} md={2}>
+                    <Grid item xs={12} sm={2} md={2}>
                       <TextField
                         id="dd"
                         label="Age DD"
@@ -609,6 +612,24 @@ const renderOption = (props, option) => { // two parameters props and option pro
                         helperText={errors.Patient_Age}
                       />
                     </Grid>
+                    <Grid item xs={12} sm={3} md={3}>
+                  <CDatePicker
+  value={parsedDate}
+  onChange={(date) => handleDateChange(date)}
+  locale="en-US"
+  placeholder={formattedDate || "Date of Birth"}
+  dateFormat="dd/MM/yyyy"
+/>
+
+                    {/* <CDatePicker 
+                     value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
+                     onChange={(e) => {
+                    const dob = e.target.value;
+                    setPatientDetails({ ...patientDetails, Patient_Dob: dob });
+                      calculateAge(dob); 
+                      }}
+                    locale="en-US" placeholder={'Date of Birth'} /> */}
+                  </Grid>
 
                     <Grid item xs={12} sm={3} md={3}>
                       <FormControl variant="outlined" size="small" fullWidth>
@@ -638,24 +659,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                     </Grid>
                   {/* </Grid> */}
 
-                  <Grid item xs={12} sm={3} md={3}>
-                  <CDatePicker
-  value={parsedDate}
-  onChange={(date) => handleDateChange(date)}
-  locale="en-US"
-  placeholder={formattedDate || "Date of Birth"}
-  dateFormat="dd/MM/yyyy"
-/>
-
-                    {/* <CDatePicker 
-                     value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
-                     onChange={(e) => {
-                    const dob = e.target.value;
-                    setPatientDetails({ ...patientDetails, Patient_Dob: dob });
-                      calculateAge(dob); 
-                      }}
-                    locale="en-US" placeholder={'Date of Birth'} /> */}
-                  </Grid>
+                 
 
                   <Grid item xs={12} sm={4}>
                     <TextField
@@ -712,18 +716,16 @@ const renderOption = (props, option) => { // two parameters props and option pro
                   </Grid>
 
                   <Grid item xs={12}>
-                    <TextField
-                      id="address"
-                      label="Address"
-                      variant="outlined"
-                      size="small"
-                      value={patientDetails ? patientDetails.Patient_Address : ''}    
-                      onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
-                      multiline
-                      rows={5}
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                    />
+                  <TextareaAutosize
+          minRows={4}
+          maxRows={6}
+          value={patientDetails ? patientDetails.Patient_Address : ''}    
+          onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
+          style={{ width: '100%', padding: '8px', borderRadius: '4px', borderColor: '#ccc', borderWidth: '1px', borderStyle: 'solid' }}
+          placeholder="Address"
+         
+        />
+                   
                   </Grid>
                 </Grid>
 
@@ -741,9 +743,17 @@ const renderOption = (props, option) => { // two parameters props and option pro
                       variant="contained"
                       onClick={resetForm}
                       className="button"
-                      sx={{ marginTop: 2, marginLeft: 2,}}
+                      sx={{ marginTop: 2, marginRight: 1,}}
                     >
                       New
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={resetForm}
+                      className="button"
+                      sx={{ marginTop: 2, marginRight: 1,}}
+                    >
+                      Proceed To Bill
                     </Button>
                   </Grid>
                 </Grid>

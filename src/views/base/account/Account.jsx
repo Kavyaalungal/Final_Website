@@ -277,7 +277,9 @@ import {
   MenuItem,
   IconButton,
 } from '@mui/material';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreHoriz from '@mui/icons-material/MoreHoriz';
+
+// import MoreHorizIcon from '@mui/icons-material/MoreHorizIcon';
 import { CButton, CCard, CCardBody } from '@coreui/react';
 
 const Account = () => {
@@ -296,7 +298,7 @@ const Account = () => {
                 InputLabelProps={{ style: { fontSize: '1rem' } }}
               />
               <IconButton color="primary">
-                <MoreHorizIcon />
+                <MoreHoriz />
               </IconButton>
             </Box>
           </Grid>
@@ -311,7 +313,7 @@ const Account = () => {
                 InputLabelProps={{ style: { fontSize: '1rem' } }}
               />
               <IconButton color="primary">
-                <MoreHorizIcon />
+                {/* <MoreHorizIcon /> */}
               </IconButton>
             </Box>
           </Grid>

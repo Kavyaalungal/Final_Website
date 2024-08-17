@@ -21,6 +21,9 @@ import Home from '../views/base/homecollection/Home'
 import ScanQueue from '../views/base/scanqueue/ScanQueue';
 import BasicForm from '../views/base/basicfrom/BasicForm';
 
+import Cancel from '../views/base/Cancelinvoice/MainModel/Mainmode';
+import Pendingpayment from '../views/base/PendingCollection/PendingPay/Pendingpayment';
+import Pending from '../views/base/PendingCollection/Main/Main';
 
 const NavigationWithModals = () => {
   const [modal, setModal] = useState(false);
@@ -50,31 +53,16 @@ const NavigationWithModals = () => {
         </CNavLink>
       </CNavItem>
       <CNavItem className="custom-nav-item">
-        <CNavLink className="custom-nav-link" onClick={() => toggleModal('Cancel Invoice', <Cancelinvoice />,)}>
+        <CNavLink className="custom-nav-link" onClick={() => toggleModal('Cancel Invoice', <Cancel />,'lg')}>
           <CIcon icon={cilBackspace} className="me-2" /> Cancel Invoice
         </CNavLink>
       </CNavItem>
       <CNavItem className='custom-nav-item'>
-        <CNavLink className='custom-nav-link' onClick={()=> toggleModal('Pending Collection',<PendingCollection/>,)}>
+        <CNavLink className='custom-nav-link' onClick={()=> toggleModal('Pending Collection',<Pending/>,)}>
         <CIcon icon={cilSpreadsheet} className='me-2'/>Pending Collection
         </CNavLink>
       </CNavItem>
-    
-     
-     
-     
-  
- 
-  
- 
- 
- 
- 
- 
- 
-  
-  
-      <CModal visible={modal} onClose={() => setModal(false)}
+    <CModal visible={modal} onClose={() => setModal(false)}
               size={modalSize}
               // visible={visibleLg}
               // onClose={() => setVisibleLg(false)}
