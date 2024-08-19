@@ -8,9 +8,46 @@
     height: 80px;
   }
     
-  @media (max-width: 600px) {
-    .card {
-      height: 120px;
+  @media (min-width: 993px) and (max-width:1200px) {
+    .patient {
+      width: 580px ;
+      
     }
   
   }
+  /* @media (max-width: 990px) {
+    .patient {
+      width: 350px ;
+      
+    }
+  
+  } */
+  @media (max-width:990px){
+    .patient{
+      width: 350px;
+    }
+  }
+  @media (max-width:900px){
+    .patient{
+      width: 230px;
+    }
+  }
+  @media (max-width:600px){
+    .patient{
+      width: 330px;
+    }
+    .heights{
+      height: 130px;
+    }
+  }
+  @media (max-width:1000px){
+    .height1{
+      height: 150px;
+    }
+  }
+  @media (max-width:1000px){
+    .height1{
+      height: 150px;
+    }
+  }
+  

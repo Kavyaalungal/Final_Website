@@ -42,7 +42,8 @@
     padding: .5rem 1rem;
     border-radius: 4px;
     transition: background-color 0.3s ease, color 0.3s ease;
-    height: 25px;
+    height: 45px;
+    font-size: 30px;
     display: flex;
     align-items: center; 
     box-sizing: border-box; 
@@ -67,9 +68,9 @@
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
   }
-    .bg-info {
-    --cui-bg-opacity: 1;
-    background-color: rgb(139, 87, 27) !important;
+  .bg-info {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
 }
   .custom-nav-link .icon {
     margin-right: 0.75rem;
@@ -104,6 +105,7 @@
 
     background-color:#fbefef; 
     color: #000; 
+    height: 600px;
   }
   
   .c-modal {
@@ -119,6 +121,18 @@
     scrollbar-width: none;  /* Firefox */
     overflow-y: scroll; /* Ensure the content is scrollable */
   }
+
+.custom-modal-close .btn-close {
+  background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white"%3e%3cpath d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"/%3e%3c/svg%3e');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em 1em;
+  width: 1.5em;
+  height: 1.5em;
+  border: none;
+  opacity: 1; 
+}
+
   
   
   @media (max-width: 260px) {

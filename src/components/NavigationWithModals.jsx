@@ -62,11 +62,11 @@ const NavigationWithModals = () => {
         <CIcon icon={cilSpreadsheet} className='me-2'/>Pending Collection
         </CNavLink>
       </CNavItem>
-    <CModal visible={modal} onClose={() => setModal(false)}
+    <CModal visible={modal} onClose={() => setModal(false)} 
               size={modalSize}
               // visible={visibleLg}
               // onClose={() => setVisibleLg(false)}
-              className='modal'
+              className='modal custom-modal-close'
               backdrop='static'
               scrollable
               aria-labelledby="OptionalSizesExample2">

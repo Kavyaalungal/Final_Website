@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Autocomplete, Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, TextField,InputAdornment } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { CDatePicker } from '@coreui/react-pro';
 import '@coreui/coreui/dist/css/coreui.min.css'
@@ -9,10 +9,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import './Patient.css';
+import Buttons from './Buttons';
+import SearchIcon from '@mui/icons-material/Search';
 
 function Register() {
     // declaring state variables needed
-    const [searchCriteria, setSearchCriteria] = useState('Patient ID'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
+    const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
     const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
     const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
     const [patientDetails, setPatientDetails] = useState(null); // state variable for storing the details of the patient
@@ -134,6 +136,9 @@ function Register() {
     // Update searchValue to show the selected search item value in the TextField only 
       let selectedValue;
       switch (searchCriteria) {
+          case 'Phone':
+          selectedValue = newValue.Patient_Phno;
+          break;
         case 'Patient ID':
           selectedValue = newValue.Patient_Code;
           break;
@@ -142,9 +147,6 @@ function Register() {
           break;
         case 'Email':
           selectedValue = newValue.Patient_Email;
-          break;
-        case 'Phone':
-          selectedValue = newValue.Patient_Phno;
           break;
         default:
           selectedValue = '';
@@ -448,9 +450,9 @@ const renderOption = (props, option) => { // two parameters props and option pro
    <>
    <Grid container spacing={2}>
     <Grid item xs={12}>
-    <Card sx={{height:75,marginLeft:-3.5,width:830}}>
+    <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient heights'>
     <CardContent>
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
                   <Grid item xs={12} sm={4} md={4} lg={4}>
                     <TextField
                       select
@@ -462,11 +464,11 @@ const renderOption = (props, option) => { // two parameters props and option pro
                       fullWidth
                       InputLabelProps={{ style: { fontSize: '16px' } }}
                     >
-                        <MenuItem value="Patient ID"></MenuItem>
+                        <MenuItem value="Phone">Phone</MenuItem>
                       <MenuItem value="Patient ID">Patient ID</MenuItem>
                       <MenuItem value="Name">Name</MenuItem>
                       <MenuItem value="Email">Email</MenuItem>
-                      <MenuItem value="Phone">Phone</MenuItem>
+                     
                     </TextField>
                   </Grid>
                   <Grid item xs={12} sm={8} md={8} lg={8}>
@@ -507,7 +509,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
    </Card>
     </Grid>
     <Grid item xs={12}>
-    <Card sx={{marginLeft:-3.5,width:830}}>
+    <Card sx={{marginLeft:-3.5,width:830,height:350}} className='patient'>
     <CardContent>
   
                 <Grid container spacing={2}>
@@ -523,6 +525,24 @@ const renderOption = (props, option) => { // two parameters props and option pro
                       InputLabelProps={{ style: { fontSize: '1rem' } }}
                     />
                   </Grid>
+                  <Grid item xs={12} sm={8} md={8}>
+  <TextField
+    id="abhaid"
+    label="ABHA ID"
+    variant="outlined"
+    size="small"
+    fullWidth
+    sx={{width:240}}
+    InputLabelProps={{ style: { fontSize: '1rem' } }}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <SearchIcon />
+        </InputAdornment>
+      ),
+    }}
+  />
+</Grid>
 
                   <Grid item xs={12} sm={3} md={2}>
                     <TextField
@@ -543,7 +563,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                     </TextField>
                   </Grid>
 
-                  <Grid item xs={12} sm={5} md={6}>
+                  <Grid item xs={12} sm={9} md={10}>
                     <TextField
                       id="name"
                       label="Name"
@@ -717,7 +737,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
 
                   <Grid item xs={12}>
                   <TextareaAutosize
-          minRows={4}
+          minRows={3}
           maxRows={6}
           value={patientDetails ? patientDetails.Patient_Address : ''}    
           onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
@@ -729,7 +749,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
                   </Grid>
                 </Grid>
 
-                <Grid container spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
+                {/* <Grid container spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
                   <Grid item>
                     <Button
                       variant="contained"
@@ -756,11 +776,53 @@ const renderOption = (props, option) => { // two parameters props and option pro
                       Proceed To Bill
                     </Button>
                   </Grid>
-                </Grid>
+                </Grid> */}
                 <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
     </CardContent>
    </Card>
     </Grid>
+    <Grid item xs={12} >
+      <Buttons/>
+     
+  
+    </Grid>
+   
+    {/* <Grid item xs={12}>
+    <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient height1'>
+    <CardContent>
+    <Grid container spacing={2} justifyContent="flex-end">
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      className="button"
+                      onClick={handleSaveOrUpdate}
+                      sx={{  marginRight: 1, }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={resetForm}
+                      className="button"
+                      sx={{ marginRight: 1,}}
+                    >
+                      New
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={resetForm}
+                      className="button"
+                      sx={{  marginRight: 1,}}
+                    >
+                      Proceed To Bill
+                    </Button>
+                  </Grid>
+                </Grid>
+
+              
+    </CardContent>
+   </Card>
+    </Grid> */}
     </Grid>
    </>
   )

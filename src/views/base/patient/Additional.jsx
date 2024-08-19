@@ -8,14 +8,26 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
+import './Patient.css'
+import Buttons from './Buttons';
 
 function Additional() {
+  const [selectedId, setSelectedId] = useState('');
+  const [idFile, setIdFile] = useState(null);
+
+  const handleIdChange = (event) => {
+    setSelectedId(event.target.value);
+  };
+
+  const handleFileChange = (event) => {
+    setIdFile(event.target.files[0]);
+  };
  return (
    <>
    <Grid container spacing={2}>
    
     <Grid item xs={12}>
-    <Card sx={{marginLeft:-3.5,width:830}}>
+    <Card sx={{marginLeft:-3.5,width:830,height:440}} className='patient'>
     <CardContent>
   
                 <Grid container spacing={2}>
@@ -32,7 +44,7 @@ function Additional() {
                      
                     />
                   </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
+                  {/* <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="nationalid"
                       label="National ID"
@@ -43,7 +55,7 @@ function Additional() {
                       InputLabelProps={{ style: { fontSize: '1rem' } }}
                      
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="pin"
@@ -57,7 +69,7 @@ function Additional() {
                     />
                   </Grid>
                  
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="passport"
                       label="Passport"
@@ -69,7 +81,7 @@ function Additional() {
                      
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="country"
                       label="Country"
@@ -81,7 +93,7 @@ function Additional() {
                      
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="state"
                       label="State"
@@ -94,7 +106,7 @@ function Additional() {
                     />
                   </Grid>
            
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="district"
                       label="District"
@@ -106,7 +118,7 @@ function Additional() {
                      
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="city"
                       label="City"
@@ -118,7 +130,7 @@ function Additional() {
                      
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="village"
                       label="Village"
@@ -131,7 +143,7 @@ function Additional() {
                     />
                   </Grid>
                  
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="localbody"
                       label="Local Body"
@@ -143,7 +155,7 @@ function Additional() {
                      
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6}>
+                  <Grid item xs={12} sm={4} md={4}>
                   <TextField
                       id="localbodytype"
                       label="Local Body Type"
@@ -155,19 +167,63 @@ function Additional() {
                      
                     />
                   </Grid>
+                   <Grid item xs={12} sm={4} md={4}>
+                   <TextField
+                      select
+                      id="nationalIdType"
+         
+                   value={selectedId}
+                    onChange={handleIdChange}
+                      label="National ID"
+                     
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      InputLabelProps={{ style: { fontSize: '16px' } }}
+                    >
+                         
+                      <MenuItem value="Patient ID">Select ID Type</MenuItem>
+                      <MenuItem value="Name">Passport</MenuItem>
+                      <MenuItem value="Email">Driver's License</MenuItem>
+                      <MenuItem value="Phone">National ID Card</MenuItem>
+                      <MenuItem value="Phone">Voter ID</MenuItem>
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} sm={4} md={4}>
+                   {/* <TextField
+                    
+                      label="National ID"
+                     
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      InputLabelProps={{ style: { fontSize: '16px' } }}
+                     
+                    /> */}
+                     <input
+                      type="file"
+                      id="nationalIdUpload"
+                      className="form-control"
+                      onChange={handleFileChange}
+                      disabled={!selectedId}
+                    />
+                         
+               
+                   
+                  </Grid>
                  
                  
                   <Grid item xs={12}>
                   <TextareaAutosize
-          minRows={4}
-          maxRows={6}
+          minRows={7}
+          maxRows={8}
 
           style={{ width: '100%', padding: '8px', borderRadius: '4px', borderColor: '#eaeaea ', borderWidth: '1px', borderStyle: 'solid' }}
           placeholder="Note"
          
         />
                   </Grid>
-
+               
                   {/* </Grid> */}
 
                   
@@ -179,6 +235,47 @@ function Additional() {
     </CardContent>
    </Card>
     </Grid>
+    <Grid item xs={12} >
+      <Buttons/>
+     
+  
+    </Grid>
+    {/* <Grid item xs={12}>
+    <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient height1'>
+    <CardContent>
+    <Grid container spacing={2} justifyContent="flex-end">
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      className="button"
+                      // onClick={handleSaveOrUpdate}
+                      sx={{  marginRight: 1, }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="contained"
+                      // onClick={resetForm}
+                      className="button"
+                      sx={{ marginRight: 1,}}
+                    >
+                      New
+                    </Button>
+                    <Button
+                      variant="contained"
+                      // onClick={resetForm}
+                      className="button"
+                      sx={{  marginRight: 1,}}
+                    >
+                      Proceed To Bill
+                    </Button>
+                  </Grid>
+                </Grid>
+
+              
+    </CardContent>
+   </Card>
+    </Grid> */}
     </Grid>
    </>
   )

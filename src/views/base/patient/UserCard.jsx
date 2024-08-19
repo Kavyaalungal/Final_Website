@@ -33,7 +33,7 @@ function UserCard() {
    <>
    <Grid container spacing={2} >
     <Grid item xs={12}>
-    <Card sx={{height:575}}>
+    <Card sx={{height:515}}>
     <CardContent>
     <div className="container">
   <div className="row mb-12">
@@ -60,38 +60,7 @@ function UserCard() {
       />
     </div>
     
-    {/* <div className="col-12 mb-3">
-      <h6 className="m-0">User ID: (12132434)</h6>
-    </div>
-    
-    <div className="col-12 d-flex flex-column">
-      <div className="mb-3 w-100">
-        <label htmlFor="nationalIdType" className="form-label">Select National ID Type</label>
-        <select
-          id="nationalIdType"
-          className="form-select"
-          value={selectedId}
-          onChange={handleIdChange}
-        >
-          <option value="">Select ID Type</option>
-          <option value="passport">Passport</option>
-          <option value="driverLicense">Driver's License</option>
-          <option value="nationalIdCard">National ID Card</option>
-          <option value="voterId">Voter ID</option>
-        </select>
-      </div>
-      
-      <div className="w-100">
-        <label htmlFor="nationalIdUpload" className="form-label">Upload National ID</label>
-        <input
-          type="file"
-          id="nationalIdUpload"
-          className="form-control"
-          onChange={handleFileChange}
-          disabled={!selectedId}
-        />
-      </div>
-    </div> */}
+
   </div>
 </div>
 
