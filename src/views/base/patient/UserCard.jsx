@@ -1,4 +1,5 @@
 import { Box, Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+
 import React, { useState } from 'react'
 import { CDatePicker } from '@coreui/react-pro';
 import '@coreui/coreui/dist/css/coreui.min.css'
@@ -6,8 +7,18 @@ import '@coreui/coreui-pro/dist/css/coreui.min.css'
 import Register from './Register';
  import './Patient.css'
  import BasicTabs from './Tab';
+ import { usePatient } from './PatientContext';
+// import LoadingSpinner from './LoadingSpinner';
 
 function UserCard() {
+  const { patientDetails } = usePatient();
+
+  if (!patientDetails) {
+    return null;
+    // return <LoadingSpinner />;
+    // Placeholder while data is loading
+  }
+
     const [image,setImage] = useState(null)
     const [selectedId, setSelectedId] = useState('');
     const [idFile, setIdFile] = useState(null);
@@ -29,6 +40,7 @@ function UserCard() {
         reader.readAsDataURL(file);
       }
     };
+    const genderAvatar = patientDetails.Patient_Ismale === 'Male' ? '/images/male.jpg' : '/images/avatar2.png';
   return (
    <>
    <Grid container spacing={2} >
@@ -40,7 +52,7 @@ function UserCard() {
     <div className="col-12 d-flex justify-content-center align-items-center mb-3">
       <label htmlFor="avatarUpload" className="avatar-label">
         <img
-          src={image || '/images/avatar2.png'}
+        src={image || genderAvatar}
           alt="Avatar"
           className="avatar-img"
           style={{
@@ -59,10 +71,21 @@ function UserCard() {
         onChange={handleImageChange}
       />
     </div>
-    
+  </div>
 
+  <div className="row mb-12">
+    <div className="col-12 d-flex ">
+      <div className="patient-details">
+      <h2>{patientDetails.Patient_Title}. {patientDetails.Patient_Name}</h2>
+      <p><strong>Patient ID:</strong> {patientDetails.Patient_Code}</p>
+      <p><strong>Gender:</strong> {patientDetails.Patient_Ismale}</p>
+      <p><strong>Contact:</strong>  {patientDetails.Patient_Phno}</p>
+       
+      </div>
+    </div>
   </div>
 </div>
+
 
   
     </CardContent>
@@ -77,3 +100,8 @@ function UserCard() {
 }
 
 export default UserCard;
+
+
+
+ 
+  

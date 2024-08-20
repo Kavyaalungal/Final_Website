@@ -11,13 +11,18 @@ import { format, parseISO } from 'date-fns';
 import './Patient.css';
 import Buttons from './Buttons';
 import SearchIcon from '@mui/icons-material/Search';
+import { usePatient } from './PatientContext';
 
 function Register() {
+  // const { setPatientDetails } = usePatient();
+  const { patientDetails, setPatientDetails } = usePatient();
+console.log({ patientDetails, setPatientDetails }); // Check the output
+
     // declaring state variables needed
     const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
     const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
     const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
-    const [patientDetails, setPatientDetails] = useState(null); // state variable for storing the details of the patient
+    // const [patientDetails, setPatientDetails] = useState(null); // state variable for storing the details of the patient
     const [isEditMode, setIsEditMode] = useState(false); // Track edit mode initially it is set to false
     const [errors, setErrors] = useState({}); // state variable for storing the errors 
 
@@ -311,7 +316,9 @@ try {
   });
 
   if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
-    toast.success('Patient details saved successfully');
+    console.log('patient details successfully');
+    
+    // toast.success('Patient details saved successfully');
     if (!isEditMode) {
       resetForm();
     } else {
@@ -448,6 +455,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
     // console.log('CDatePicker value:', parsedDate); // For debugging
   return (
    <>
+   
    <Grid container spacing={2}>
     <Grid item xs={12}>
     <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient heights'>
@@ -509,7 +517,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
    </Card>
     </Grid>
     <Grid item xs={12}>
-    <Card sx={{marginLeft:-3.5,width:830,height:350}} className='patient'>
+    <Card sx={{marginLeft:-3.5,width:830,height:350}} className='patient cardheight'>
     <CardContent>
   
                 <Grid container spacing={2}>
@@ -777,52 +785,17 @@ const renderOption = (props, option) => { // two parameters props and option pro
                     </Button>
                   </Grid>
                 </Grid> */}
-                <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+                {/* <ToastContainer position="top-center" autoClose={3000} hideProgressBar /> */}
     </CardContent>
    </Card>
     </Grid>
     <Grid item xs={12} >
-      <Buttons/>
+      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm}/>
      
   
     </Grid>
    
-    {/* <Grid item xs={12}>
-    <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient height1'>
-    <CardContent>
-    <Grid container spacing={2} justifyContent="flex-end">
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      className="button"
-                      onClick={handleSaveOrUpdate}
-                      sx={{  marginRight: 1, }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={resetForm}
-                      className="button"
-                      sx={{ marginRight: 1,}}
-                    >
-                      New
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={resetForm}
-                      className="button"
-                      sx={{  marginRight: 1,}}
-                    >
-                      Proceed To Bill
-                    </Button>
-                  </Grid>
-                </Grid>
-
-              
-    </CardContent>
-   </Card>
-    </Grid> */}
+    {/* <ToastContainer position="top-center" autoClose={3000} hideProgressBar /> */}
     </Grid>
    </>
   )

@@ -36,7 +36,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs() {
+export default function BasicTabs({ setPatientDetails }) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -53,7 +53,7 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <Register/>
+        <Register setPatientDetails={setPatientDetails}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <Additional/>

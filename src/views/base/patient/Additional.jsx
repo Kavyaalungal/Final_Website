@@ -27,7 +27,7 @@ function Additional() {
    <Grid container spacing={2}>
    
     <Grid item xs={12}>
-    <Card sx={{marginLeft:-3.5,width:830,height:440}} className='patient'>
+    <Card sx={{marginLeft:-3.5,width:830,height:440}} className='patient height1'>
     <CardContent>
   
                 <Grid container spacing={2}>

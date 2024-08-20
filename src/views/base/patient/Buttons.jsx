@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Buttons.css'
 
-function Buttons() {
+function Buttons({handleSaveOrUpdate,resetForm}) {
   
  return (
    <>
@@ -63,6 +63,10 @@ function Buttons() {
       textTransform: 'none',
       marginRight: 1,
     }}
+    onClick={() => {
+      resetForm();
+    }}
+  
   >
     New
   </Button>
@@ -73,6 +77,11 @@ function Buttons() {
       textTransform: 'none',
       marginRight: 1,
     }}
+    onClick={() => {
+      handleSaveOrUpdate();
+      toast.success('Data saved successfully!');
+    }}
+  
   >
     Save
   </Button>

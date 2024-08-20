@@ -15,14 +15,94 @@
     }
   
   }
-  /* @media (max-width: 990px) {
-    .patient {
-      width: 350px ;
-      
-    }
-  
-  } */
-  @media (max-width:990px){
+@media (max-width:375px){
+  .patient{
+    width: 330px;
+  }
+  .heights{
+    height: 140px;
+  }
+  .cardheight{
+    height: 880px;
+  }
+
+}
+@media (max-width:414px){
+  .patient{
+    width: 365px;
+  }
+  .heights{
+    height: 140px;
+  }
+  .cardheight{
+    height: 880px;
+  }
+  .height1{
+    height: 980px;
+  }
+
+}
+@media (max-width:390px){
+  .patient{
+    width: 345px;
+  }
+  .heights{
+    height: 140px;
+  }
+  .cardheight{
+    height: 880px;
+  }
+  .height1{
+    height: 980px;
+  }
+
+}
+@media (max-width:430px){
+  .patient{
+    width: 380px;
+  }
+  .heights{
+    height: 140px;
+  }
+  .cardheight{
+    height: 880px;
+  }
+  .height1{
+    height: 980px;
+  }
+
+}
+@media (max-width:412px){
+  .patient{
+    width: 370px;
+  }
+  .heights{
+    height: 140px;
+  }
+  .cardheight{
+    height: 880px;
+  }
+  .height1{
+    height: 980px;
+  }
+
+}
+@media (max-width:360px){
+  .patient{
+    width: 320px;
+  }
+  .heights{
+    height: 140px;
+  }
+  .cardheight{
+    height: 880px;
+  }
+  .height1{
+    height: 980px;
+  }
+
+}
+  /* @media (max-width:990px){
     .patient{
       width: 350px;
     }
@@ -34,7 +114,7 @@
   }
   @media (max-width:600px){
     .patient{
-      width: 330px;
+      width: 470px;
     }
     .heights{
       height: 130px;
@@ -50,4 +130,62 @@
       height: 150px;
     }
   }
+  @media (max-width:960px){
+    .cardheight{
+     height: 380px;
+    }
   
+  }
+  @media (max-width:600px){
+    .cardheight{
+     height: 872px;
+     width: 470px;
+    }
+    .patient{
+      width: 470px;
+    }
+  
+  }
+  @media (max-width:575px){
+  
+    .patient{
+      width: 530px;
+    
+    }
+  .heights{
+    height: 140px;
+  }
+  }
+
+  @media (max-width:568px){
+  
+    .patient{
+      width: 500px;
+    
+    }
+
+  }
+  @media (max-width:540px){
+  
+    .patient{
+      width: 470px;
+    
+    }
+
+  }
+  @media (max-width:414px){
+  
+    .patient{
+      width: 370px;
+    
+    }
+
+  }
+  @media (max-width:375px){
+  
+    .patient{
+      width: 330px;
+    
+    }
+
+  } */

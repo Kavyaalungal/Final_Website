@@ -36,7 +36,15 @@ export default defineConfig(() => {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
     },
     server: {
-      port: 3000,
+      port: 5173,
+      proxy: {
+        '/api': {
+          target: 'http://172.16.16.10:8060',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
     },
   };
 });
