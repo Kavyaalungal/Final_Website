@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "http://172.16.16.10:8060",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -29,6 +30,7 @@
     "axios-jsonp": "^1.0.4",
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
+    "http-proxy-middleware": "^3.0.0",
     "litepicker": "^2.0.12",
     "lucide-react": "^0.424.0",
     "react": "^18.3.1",

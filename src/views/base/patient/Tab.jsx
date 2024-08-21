@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Register from './Register';
-
+import './Patient.css';
 import Additional from './Additional';
 
 function CustomTabPanel(props) {
@@ -46,7 +46,7 @@ export default function BasicTabs({ setPatientDetails }) {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" className='option'>
           <Tab label="Basic Details" {...a11yProps(0)} sx={{ textTransform: 'none' }}/>
           <Tab label="Additional Details" {...a11yProps(1)} sx={{ textTransform: 'none' }} />
       

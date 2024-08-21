@@ -12,6 +12,9 @@ import './Patient.css';
 import Buttons from './Buttons';
 import SearchIcon from '@mui/icons-material/Search';
 import { usePatient } from './PatientContext';
+import { differenceInYears, differenceInMonths, differenceInDays } from 'date-fns';
+import { parse } from 'date-fns';
+
 
 function Register() {
   // const { setPatientDetails } = usePatient();
@@ -170,39 +173,39 @@ console.log({ patientDetails, setPatientDetails }); // Check the output
     
  
     // function to calculate age in days, months, and years with the dob value 
-// const calculateAge = (dob) => { // dob is passed as parameter
-//  if (!dob) return; // if there is no dob stop the execution here
+const calculateAge = (dob) => { // dob is passed as parameter
+ if (!dob) return; // if there is no dob stop the execution here
 
-//   const today = new Date();  // takes the current date that is todays date '04-07-2024'
-//   const birthDate = new Date(dob);  // dob is taken '17-12-2000'
+  const today = new Date();  // takes the current date that is todays date '04-07-2024'
+  const birthDate = new Date(dob);  // dob is taken '17-12-2000'
 
-//   // Calculate age
-//   let ageYear = today.getFullYear() - birthDate.getFullYear();  // 2024-2000 = 24
-//   let ageMonth = today.getMonth() - birthDate.getMonth();  // 7-12 = -5
-//   let ageDay = today.getDate() - birthDate.getDate();   // 4-17 = -13
+  // Calculate age
+  let ageYear = today.getFullYear() - birthDate.getFullYear();  // 2024-2000 = 24
+  let ageMonth = today.getMonth() - birthDate.getMonth();  // 7-12 = -5
+  let ageDay = today.getDate() - birthDate.getDate();   // 4-17 = -13
 
-//   // Adjust negative ageMonth
-//   if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {   // here month is -5 so it is negative then
-//     ageYear--;                                          // 1 is decremented from year here it becomes 24-1 = 23
-//     ageMonth += 12;                                      // 12 is added to month ie, -5 +12 = 7
-//   }
+  // Adjust negative ageMonth
+  if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {   // here month is -5 so it is negative then
+    ageYear--;                                          // 1 is decremented from year here it becomes 24-1 = 23
+    ageMonth += 12;                                      // 12 is added to month ie, -5 +12 = 7
+  }
 
-//   // Adjust negative ageDay
-//   if (ageDay < 0) {
-//     const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);  // for getting the last day of previous month of the current date here we get '30-06-2024'
-//     ageDay = tempDate.getDate() + ageDay;   // 30 + -13 = 17
-//     ageMonth--;                      // one is decremented from month 7 -1 = 6
-//   }
+  // Adjust negative ageDay
+  if (ageDay < 0) {
+    const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);  // for getting the last day of previous month of the current date here we get '30-06-2024'
+    ageDay = tempDate.getDate() + ageDay;   // 30 + -13 = 17
+    ageMonth--;                      // one is decremented from month 7 -1 = 6
+  }
 
-//   // Update state
+  // Update state
 
-//   setPatientDetails((prevDetails) => ({
-//     ...prevDetails,
-//     Patient_Ageyy: ageYear !== 0 ? ageYear.toString() : prevDetails.Patient_Ageyy,
-//     Patient_Agemm: ageMonth !== 0 ? ageMonth.toString() : prevDetails.Patient_Agemm,
-//     Patient_Agedd: ageDay !== 0 ? ageDay.toString() : prevDetails.Patient_Agedd,
-//   }));
-// };
+  setPatientDetails((prevDetails) => ({
+    ...prevDetails,
+    Patient_Ageyy: ageYear !== 0 ? ageYear.toString() : prevDetails.Patient_Ageyy,
+    Patient_Agemm: ageMonth !== 0 ? ageMonth.toString() : prevDetails.Patient_Agemm,
+    Patient_Agedd: ageDay !== 0 ? ageDay.toString() : prevDetails.Patient_Agedd,
+  }));
+};
 
 
 // const handleDateChange = (date) => {
@@ -372,65 +375,67 @@ const renderOption = (props, option) => { // two parameters props and option pro
         </li>
     );
     };
-    const parsedDate = patientDetails && patientDetails.Patient_Dob 
-    ? parseISO(patientDetails.Patient_Dob) 
-    : null;
+  //   const parsedDate = patientDetails && patientDetails.Patient_Dob 
+  //   ? parseISO(patientDetails.Patient_Dob) 
+  //   : null;
 
-  // Format the parsed Date object to 'MM/dd/yyyy'
-  const formattedDate = parsedDate ? format(parsedDate, 'dd/MM/yyyy') : '';
+  // // Format the parsed Date object to 'MM/dd/yyyy'
+  // const formattedDate = parsedDate ? format(parsedDate, 'dd/MM/yyyy') : '';
 
-  console.log('Parsed date value:', formattedDate); // Debugging output
-  console.log('CDatePicker value:', formattedDate); // Debugging output
+  // console.log('Parsed date value:', formattedDate); // Debugging output
+  // console.log('CDatePicker value:', formattedDate); // Debugging output
 
 
-  const calculateAge = (dob) => {
-    if (!dob) return;
+
+
+  // const calculateAge = (dob) => {
+  //   if (!dob) return;
   
-    // Ensure dob is a Date object
-    const birthDate = new Date(dob);
-    if (isNaN(birthDate.getTime())) return; // Check for invalid date
+  //   // Ensure dob is a Date object
+  //   const birthDate = new Date(dob);
+  //   // if (isNaN(birthDate.getTime())) return; // Check for invalid date
   
-    const today = new Date();
+  //   const today = new Date();
   
-    let ageYear = today.getFullYear() - birthDate.getFullYear();
-    let ageMonth = today.getMonth() - birthDate.getMonth();
-    let ageDay = today.getDate() - birthDate.getDate();
+  //   let ageYear = today.getFullYear() - birthDate.getFullYear();
+  //   let ageMonth = today.getMonth() - birthDate.getMonth();
+  //   let ageDay = today.getDate() - birthDate.getDate();
   
-    // Adjust for negative months
-    if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {
-      ageYear--;
-      ageMonth += 12;
-    }
+  //   // Adjust for negative months
+  //   if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {
+  //     ageYear--;
+  //     ageMonth += 12;
+  //   }
   
-    // Adjust for negative days
-    if (ageDay < 0) {
-      const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);
-      ageDay = tempDate.getDate() + ageDay;
-      ageMonth--;
-    }
+  //   // Adjust for negative days
+  //   if (ageDay < 0) {
+  //     const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);
+  //     ageDay = tempDate.getDate() + ageDay;
+  //     ageMonth--;
+  //   }
   
-    // Update the state with calculated age
-    setPatientDetails((prevDetails) => ({
-      ...prevDetails,
-      Patient_Ageyy: ageYear.toString(),
-      Patient_Agemm: ageMonth.toString(),
-      Patient_Agedd: ageDay.toString(),
-    }));
-  };
+  //   // Update the state with calculated age
+  //   setPatientDetails((prevDetails) => ({
+  //     ...prevDetails,
+  //     Patient_Ageyy: ageYear.toString(),
+  //     Patient_Agemm: ageMonth.toString(),
+  //     Patient_Agedd: ageDay.toString(),
+  //   }));
+  // };
   
 
-  const handleDateChange = (date) => {
-    if (!date) return;
+  // const handleDateChange = (date) => {
+  //   if (!date) return;
 
-    const formattedDate = format(date, 'MM/dd/yyyy');
-    setPatientDetails((prevDetails) => ({
-      ...prevDetails,
-      Patient_Dob: formattedDate,
-    }));
+  //   const formattedDate = format(date, 'MM/dd/yyyy');
+  //   setPatientDetails((prevDetails) => ({
+  //     ...prevDetails,
+  //     Patient_Dob: formattedDate,
+  //   }));
 
-    // Calculate and set age based on the new DOB
-    calculateAge(date);
-  };
+  //   // Calculate and set age based on the new DOB
+  //   calculateAge(date);
+  // };
 
   // const handleDateChange = (date) => {
   //   console.log('Selected date:', date);
@@ -640,23 +645,43 @@ const renderOption = (props, option) => { // two parameters props and option pro
                         helperText={errors.Patient_Age}
                       />
                     </Grid>
+                    {/* <Grid item xs={12} sm={4} md={4}>
+    <CDatePicker
+      value={patientDetails && patientDetails.Patient_Dob ? parseDateOfBirth(patientDetails.Patient_Dob) : ''}
+      onChange={(date) => handleDobChange(date)}
+      locale="en-US"
+      placeholder="Date of Birth"
+      dateFormat="dd/MM/yyyy"
+      inputProps={{
+        style: { fontSize: '1rem' },
+      }}
+    />
+  </Grid> */}
+
                     <Grid item xs={12} sm={3} md={3}>
-                  <CDatePicker
+                    <TextField
+                     id="dob"
+                      label="Date of Birth"
+                      type="date"
+                       variant="outlined"
+                      size="small"
+                       fullWidth
+                       value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
+                      onChange={(e) => {
+                     const dob = e.target.value;
+                     setPatientDetails({ ...patientDetails, Patient_Dob: dob });
+                       calculateAge(dob); 
+                       }}
+                        InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
+                     />
+                  {/* <CDatePicker
   value={parsedDate}
   onChange={(date) => handleDateChange(date)}
   locale="en-US"
   placeholder={formattedDate || "Date of Birth"}
   dateFormat="dd/MM/yyyy"
-/>
+/> */}
 
-                    {/* <CDatePicker 
-                     value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
-                     onChange={(e) => {
-                    const dob = e.target.value;
-                    setPatientDetails({ ...patientDetails, Patient_Dob: dob });
-                      calculateAge(dob); 
-                      }}
-                    locale="en-US" placeholder={'Date of Birth'} /> */}
                   </Grid>
 
                     <Grid item xs={12} sm={3} md={3}>

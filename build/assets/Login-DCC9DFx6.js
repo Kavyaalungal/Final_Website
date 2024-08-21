@@ -1,4 +1,4 @@
-import{u as i,m as o,j as e}from"./index-dhVxcM5c.js";import{C as l,a as c}from"./CCard-DHTN36n4.js";import{a5 as s}from"./TextField-7HsHrnre.js";const d=()=>({type:"login"}),m=""+new URL("icon-logo-B4shHpSM.png",import.meta.url).href,h=()=>{const t=i(),a=o(),n=r=>{r.preventDefault(),t(d()),a("/")};return e.jsxs(e.Fragment,{children:[e.jsx("style",{children:`
+import{u as i,m as o,j as e}from"./index-DA7xGkQs.js";import{C as l,a as c}from"./CCard-Dx8rYhkk.js";import{a5 as s}from"./TextField-Btxq5om7.js";const d=()=>({type:"login"}),m=""+new URL("icon-logo-B4shHpSM.png",import.meta.url).href,h=()=>{const t=i(),a=o(),n=r=>{r.preventDefault(),t(d()),a("/")};return e.jsxs(e.Fragment,{children:[e.jsx("style",{children:`
         .content-wrapper {
           border: 2px solid #523885; 
           border-radius: 8px; /* Optional: for rounded corners */
