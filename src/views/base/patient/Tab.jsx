@@ -46,7 +46,7 @@ export default function BasicTabs({ setPatientDetails }) {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" className='option'>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" className='option '>
           <Tab label="Basic Details" {...a11yProps(0)} sx={{ textTransform: 'none' }}/>
           <Tab label="Additional Details" {...a11yProps(1)} sx={{ textTransform: 'none' }} />
       

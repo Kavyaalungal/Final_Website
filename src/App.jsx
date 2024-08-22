@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
+import Additional from './views/base/patient/Additional'
+import ProceedToBill from './views/base/PatientBill/MainBody/Main'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -43,6 +45,7 @@ const App = () => {
         <Routes>
           <Route exact path="/login" name="Login Page" element={<Login />} />
           <Route path="*" name="Home" element={isAuthenticated ? <DefaultLayout /> : <Navigate to="/login" />} />
+          <Route path="/proceedtobill" element={< ProceedToBill/>} />
         </Routes>
       </Suspense>
     </HashRouter>

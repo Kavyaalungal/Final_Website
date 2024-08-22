@@ -149,7 +149,7 @@ function UserCard() {
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Card sx={{ height: 515 }} className='user'>
+          <Card sx={{ height: 502 }} className='user'>
             <CardContent>
               <div className="container">
                 <div className="row mb-12">
@@ -181,12 +181,13 @@ function UserCard() {
                   <div className="col-12 d-flex ">
                     <div className="patient-details">
                       <h4>{details.Patient_Title} {details.Patient_Name}</h4>
-                      <p><strong>Patient ID:</strong> {details.Patient_Code}</p>
-                      <p><strong>Gender:</strong> {details.Patient_Ismale}</p>
-                      <p><strong>DOB:</strong> {details.Patient_Dob.split('T')[0]}</p>
-                      <p><strong>Contact No:</strong> {details.Patient_Phno}</p>
-                      <p><strong>Alternate No:</strong> {details.Patient_mobile}</p>
-                      <p><strong>Email:</strong> {details.Patient_Email}</p>
+                      <p><strong>Patient ID:</strong><br />{details.Patient_Code}</p>
+
+                      <p><strong>Gender:</strong><br /> {details.Patient_Ismale}</p>
+                      {/* <p><strong>DOB:</strong> <br />{details.Patient_Dob.split('T')[0]}</p> */}
+                      <p><strong>Contact No:</strong><br /> {details.Patient_Phno}</p>
+                      {/* <p><strong>Alternate No:</strong><br /> {details.Patient_mobile}</p> */}
+                      <p><strong>Email:</strong><br /> {details.Patient_Email}</p>
                     </div>
                   </div>
                 </div>

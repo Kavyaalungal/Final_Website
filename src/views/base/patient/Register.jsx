@@ -12,14 +12,13 @@ import './Patient.css';
 import Buttons from './Buttons';
 import SearchIcon from '@mui/icons-material/Search';
 import { usePatient } from './PatientContext';
-import { differenceInYears, differenceInMonths, differenceInDays } from 'date-fns';
-import { parse } from 'date-fns';
+
 
 
 function Register() {
   // const { setPatientDetails } = usePatient();
   const { patientDetails, setPatientDetails } = usePatient();
-console.log({ patientDetails, setPatientDetails }); // Check the output
+// console.log({ patientDetails, setPatientDetails }); 
 
     // declaring state variables needed
     const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
@@ -29,6 +28,8 @@ console.log({ patientDetails, setPatientDetails }); // Check the output
     const [isEditMode, setIsEditMode] = useState(false); // Track edit mode initially it is set to false
     const [errors, setErrors] = useState({}); // state variable for storing the errors 
 
+
+    
        useEffect(() => {
         console.log('Component mounted or updated.');
        }, []);
@@ -47,7 +48,7 @@ console.log({ patientDetails, setPatientDetails }); // Check the output
          setErrors({});
       };
 
-      // function for entering the searchcriteria 
+  //     // function for entering the searchcriteria 
     const handleSearchCriteriaChange = (event) => {   
       setSearchCriteria(event.target.value); // it sets the value selected
      setSearchValue('');  // acording to the search item resets the value and suggestions 
@@ -56,6 +57,14 @@ console.log({ patientDetails, setPatientDetails }); // Check the output
   // function to enter the value according to searchcriteria
    const handleSearchValueChange = (event, value) => {
    console.log('Search value changed:', value);
+    // Check if the search criteria is 'Phone'
+    // if (searchCriteria === 'Phone' || searchCriteria === 'Patient ID') {
+    //   // Check if the value contains only digits
+    //   if (!/^\d+$/.test(value)) {
+    //     toast.warn('Please enter  number (only digits allowed).'); // Display toast warning
+    //     return; // Exit the function early
+    //   }
+    // }
      setSearchValue(value);  // according to search item search value set to the value entered
      fetchSuggestions(value); // suggestions according to the value
     };
@@ -463,357 +472,326 @@ const renderOption = (props, option) => { // two parameters props and option pro
    
    <Grid container spacing={2}>
     <Grid item xs={12}>
-    <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient heights'>
-    <CardContent>
+    <Card
+  sx={{
+    height: {xs:140,sm:75},
+    marginLeft: { xs: -2, sm: -3.5 }, // Responsive margin for different screen sizes
+    width: { xs: 370, sm: 830, },  // Full width on small screens, fixed width on larger screens
+    marginTop: { xs: 0, sm: -1 },
+  }}
+  //  className="patient heights"
+>
+  <CardContent>
     <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} md={4} lg={4}>
-                    <TextField
-                      select
-                      label="Search By"
-                      value={searchCriteria}
-                      onChange={handleSearchCriteriaChange}
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '16px' } }}
-                    >
-                        <MenuItem value="Phone">Phone</MenuItem>
-                      <MenuItem value="Patient ID">Patient ID</MenuItem>
-                      <MenuItem value="Name">Name</MenuItem>
-                      <MenuItem value="Email">Email</MenuItem>
-                     
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={8} lg={8}>
-                  <Autocomplete
-                 freeSolo
-                  options={suggestions}
-                  getOptionLabel={(option) => `${option.Patient_Name || ''}, ${option.Patient_Email || ''}, ${option.Patient_Phno || ''}, ${option.Patient_Code || ''}`}
-                  onInputChange={handleSearchValueChange}
-                  onChange={handleSelectPatient}
-                  onClose={resetForm}
-                  renderOption={renderOption}
-                  renderInput={(params) => (
-                   <TextField
-                      {...params}
-                     label={searchCriteria}
-                     variant="outlined"
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem',} }} 
-                      InputProps={{
-                        ...params.InputProps,
-                         style: { marginBottom:'20px' }, 
-                      }}
-                      sx={{
-                        '& .MuiAutocomplete-inputRoot': {
-                          paddingRight: '0px', 
-                        },
-                      }}
-                   />
-                 )}
-                inputValue={searchValue}
-                />
-                  </Grid>
-                </Grid>
+      <Grid item xs={12} sm={4} md={4} lg={4}>
+        <TextField
+          select
+          label="Search By"
+          value={searchCriteria}
+          onChange={handleSearchCriteriaChange}
+          variant="outlined"
+          size="small"
+          fullWidth
+          InputLabelProps={{ style: { fontSize: '16px' } }}
+        >
+          <MenuItem value="Phone">Phone</MenuItem>
+          <MenuItem value="Patient ID">Patient ID</MenuItem>
+          <MenuItem value="Name">Name</MenuItem>
+          <MenuItem value="Email">Email</MenuItem>
+        </TextField>
+      </Grid>
 
-              
-    </CardContent>
-   </Card>
+      <Grid item xs={12} sm={8} md={8} lg={8}>
+        <Autocomplete
+          freeSolo
+          options={suggestions}
+          getOptionLabel={(option) =>
+            `${option.Patient_Name || ''}, ${option.Patient_Email || ''}, ${option.Patient_Phno || ''}, ${option.Patient_Code || ''}`
+          }
+          onInputChange={handleSearchValueChange}
+          onChange={handleSelectPatient}
+          onClose={resetForm}
+          renderOption={renderOption}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={searchCriteria}
+              variant="outlined"
+              size="small"
+              fullWidth
+              InputLabelProps={{ style: { fontSize: '1rem' } }}
+              InputProps={{
+                ...params.InputProps,
+                style: { marginBottom: '20px' },
+              }}
+              sx={{
+                '& .MuiAutocomplete-inputRoot': {
+                  paddingRight: '0px',
+                },
+              }}
+            />
+          )}
+          inputValue={searchValue}
+        />
+      </Grid>
+    </Grid>
+  </CardContent>
+</Card>
+
     </Grid>
     <Grid item xs={12}>
-    <Card sx={{marginLeft:-3.5,width:830,height:350}} className='patient cardheight'>
+  <Card 
+    sx={{
+      marginLeft: { xs: -2, sm: -3.5 }, // Adjust margin for smaller screens
+      width: { xs: 370, sm: 830 }, // Make the card take full width on smaller screens
+      height: {xs:'auto',sm:345},
+    }} 
+    // className='patient cardheight'
+  >
     <CardContent>
-  
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} md={4}>
-                    <TextField
-                      id="patientid"
-                      label="Patient ID"
-                      variant="outlined"
-                      value={patientDetails ? patientDetails.Patient_Code : ''}
-                      onChange={(e) => setPatientDetails({ ...patientDetails, Patient_Code: e.target.value })}
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={8} md={8}>
-  <TextField
-    id="abhaid"
-    label="ABHA ID"
-    variant="outlined"
-    size="small"
-    fullWidth
-    sx={{width:240}}
-    InputLabelProps={{ style: { fontSize: '1rem' } }}
-    InputProps={{
-      endAdornment: (
-        <InputAdornment position="end">
-          <SearchIcon />
-        </InputAdornment>
-      ),
-    }}
-  />
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="patientid"
+            label="Patient ID"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Code : ''}
+            onChange={(e) => setPatientDetails({ ...patientDetails, Patient_Code: e.target.value })}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={8} md={8}>
+          <TextField
+            id="abhaid"
+            label="ABHA ID"
+            variant="outlined"
+            size="small"
+            fullWidth
+            sx={{ width: { xs: '100%', sm: 240 } }} // Make width responsive
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={3} md={2}>
+          <TextField
+            select
+            label="Prefix"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Title : ''}
+            onChange={handleTitleChange}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '16px' } }}
+          >
+            <MenuItem value=""><em>None</em></MenuItem>
+            <MenuItem value="Mr">Mr</MenuItem>
+            <MenuItem value="Mrs">Mrs</MenuItem>
+            <MenuItem value="Ms">Ms</MenuItem>
+            <MenuItem value="Miss">Miss</MenuItem>
+          </TextField>
+        </Grid>
+
+        <Grid item xs={12} sm={9} md={10}>
+          <TextField
+            id="name"
+            label="Name"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Name : ''}                     
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_Name: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_Name: '' }));
+            }}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_Name}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={2} md={2}>
+          <TextField
+            id="yyyy"
+            label="Age YY"
+            variant="outlined"
+            size="small"
+            value={patientDetails ? patientDetails.Patient_Ageyy : ''}    
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_Ageyy: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
+            }}
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_Age}
+            helperText={errors.Patient_Age}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={2} md={2}>
+          <TextField
+            id="mm"
+            label="Age MM"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Agemm : ''}    
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_Agemm: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
+            }}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_Age}
+            helperText={errors.Patient_Age}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={2} md={2}>
+          <TextField
+            id="dd"
+            label="Age DD"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Agedd : ''}                            
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_Agedd: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
+            }}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_Age}
+            helperText={errors.Patient_Age}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={3} md={3}>
+          <TextField
+            id="dob"
+            label="Date of Birth"
+            type="date"
+            variant="outlined"
+            size="small"
+            fullWidth
+            value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
+            onChange={(e) => {
+              const dob = e.target.value;
+              setPatientDetails({ ...patientDetails, Patient_Dob: dob });
+              calculateAge(dob); 
+            }}
+            InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={3} md={3}>
+          <FormControl variant="outlined" size="small" fullWidth>
+            <InputLabel id="genderLabel">Gender</InputLabel>
+            <Select
+              labelId="genderLabel"
+              id="gender"
+              label="Gender"
+              value={patientDetails ? patientDetails.Patient_Ismale : ''}    
+              InputProps={{
+                readOnly: true,
+              }}
+              InputLabelProps={{ style: { fontSize: '1rem' } }}
+              error={!!errors.Patient_Ismale}
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+            {errors.Patient_Ismale && (
+              <Typography variant="caption" color="error">
+                {errors.Patient_Ismale}
+              </Typography>
+            )}
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
+          <TextField
+            id="phone1"
+            label="Phone1"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Phno : ''}    
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_Phno: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_Phno: '' }));
+            }}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_Phno}
+            helperText={errors.Patient_Phno}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
+          <TextField
+            id="phone2"
+            label="Phone2"
+            variant="outlined"
+            size="small"
+            value={patientDetails ? patientDetails.Patient_mobile : ''}    
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_mobile: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_mobile: '' }));
+            }}
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_mobile}
+            helperText={errors.Patient_mobile}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
+          <TextField
+            id="email"
+            label="Email"
+            variant="outlined"
+            size="small"
+            value={patientDetails ? patientDetails.Patient_Email : ''}    
+            onChange={(e) => {
+              setPatientDetails({ ...patientDetails, Patient_Email: e.target.value });
+              setErrors((prevErrors) => ({ ...prevErrors, Patient_Email: '' }));
+            }}
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+            error={!!errors.Patient_Email}
+            helperText={errors.Patient_Email}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextareaAutosize
+            minRows={3}
+            maxRows={6}
+            value={patientDetails ? patientDetails.Patient_Address : ''}    
+            onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
+            style={{
+              width: "100%",
+             
+               padding: 4,
+              fontSize: 15,
+              fontFamily: 'Roboto'
+            }}
+            placeholder="Enter your Address"
+          />
+        </Grid>
+      </Grid>
+    </CardContent>
+  </Card>
 </Grid>
 
-                  <Grid item xs={12} sm={3} md={2}>
-                    <TextField
-                      select
-                      label="Prefix"
-                      variant="outlined"
-                      value={patientDetails ? patientDetails.Patient_Title : ''}
-                      onChange={handleTitleChange}
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '16px' } }}
-                    >
-                      <MenuItem value=""><em>None</em></MenuItem>
-                      <MenuItem value="Mr">Mr</MenuItem>
-                      <MenuItem value="Mrs">Mrs</MenuItem>
-                      <MenuItem value="Ms">Ms</MenuItem>
-                      <MenuItem value="Miss">Miss</MenuItem>
-                    </TextField>
-                  </Grid>
-
-                  <Grid item xs={12} sm={9} md={10}>
-                    <TextField
-                      id="name"
-                      label="Name"
-                      variant="outlined"
-                      value={patientDetails ? patientDetails.Patient_Name : ''}                     
-                      onChange={(e) => {
-                       setPatientDetails({ ...patientDetails, Patient_Name: e.target.value });
-                       setErrors((prevErrors) => ({ ...prevErrors, Patient_Name: '' }));
-                     }}
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                      error={!!errors.Patient_Name}
-                    />
-                  </Grid>
-
-                  {/* <Grid item container xs={12} sm={7} spacing={2}> */}
-                    <Grid item xs={12} sm={2} md={2}>
-                      <TextField
-                        id="yyyy"
-                        label="Age YY"
-                        variant="outlined"
-                        size="small"
-                        value={patientDetails ? patientDetails.Patient_Ageyy : ''}    
-                        onChange={(e) => {
-                         setPatientDetails({ ...patientDetails, Patient_Ageyy: e.target.value });
-                         setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-                       }}
-                        fullWidth
-                        InputLabelProps={{ style: { fontSize: '1rem' } }}
-                        error={!!errors.Patient_Age}
-                        helperText={errors.Patient_Age}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={2} md={2}>
-                      <TextField
-                        id="mm"
-                        label="Age MM"
-                        variant="outlined"
-                        value={patientDetails ? patientDetails.Patient_Agemm : ''}    
-                        onChange={(e) => {
-                          setPatientDetails({ ...patientDetails, Patient_Agemm: e.target.value });
-                          setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-                        }}
-                        size="small"
-                        fullWidth
-                        InputLabelProps={{ style: { fontSize: '1rem' } }}
-                        error={!!errors.Patient_Age}
-                        helperText={errors.Patient_Age}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={2} md={2}>
-                      <TextField
-                        id="dd"
-                        label="Age DD"
-                        variant="outlined"
-                        value={patientDetails ? patientDetails.Patient_Agedd : ''}                            
-                        onChange={(e) => {
-                         setPatientDetails({ ...patientDetails, Patient_Agedd: e.target.value });
-                         setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-                       }}
-                        size="small"
-                        fullWidth
-                        InputLabelProps={{ style: { fontSize: '1rem' } }}
-                        error={!!errors.Patient_Age}
-                        helperText={errors.Patient_Age}
-                      />
-                    </Grid>
-                    {/* <Grid item xs={12} sm={4} md={4}>
-    <CDatePicker
-      value={patientDetails && patientDetails.Patient_Dob ? parseDateOfBirth(patientDetails.Patient_Dob) : ''}
-      onChange={(date) => handleDobChange(date)}
-      locale="en-US"
-      placeholder="Date of Birth"
-      dateFormat="dd/MM/yyyy"
-      inputProps={{
-        style: { fontSize: '1rem' },
-      }}
-    />
-  </Grid> */}
-
-                    <Grid item xs={12} sm={3} md={3}>
-                    <TextField
-                     id="dob"
-                      label="Date of Birth"
-                      type="date"
-                       variant="outlined"
-                      size="small"
-                       fullWidth
-                       value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
-                      onChange={(e) => {
-                     const dob = e.target.value;
-                     setPatientDetails({ ...patientDetails, Patient_Dob: dob });
-                       calculateAge(dob); 
-                       }}
-                        InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
-                     />
-                  {/* <CDatePicker
-  value={parsedDate}
-  onChange={(date) => handleDateChange(date)}
-  locale="en-US"
-  placeholder={formattedDate || "Date of Birth"}
-  dateFormat="dd/MM/yyyy"
-/> */}
-
-                  </Grid>
-
-                    <Grid item xs={12} sm={3} md={3}>
-                      <FormControl variant="outlined" size="small" fullWidth>
-                        <InputLabel id="genderLabel">Gender</InputLabel>
-                        <Select
-                          labelId="genderLabel"
-                          id="gender"
-                          label="Gender"
-                          value={patientDetails ? patientDetails.Patient_Ismale : ''}    
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                          InputLabelProps={{ style: { fontSize: '1rem' } }}
-                          error={!!errors.Patient_Ismale}
-                        >
-                          <MenuItem value=""><em>None</em></MenuItem>
-                          <MenuItem value="Male">Male</MenuItem>
-                          <MenuItem value="Female">Female</MenuItem>
-                          <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                        {errors.Patient_Ismale && (
-                     <Typography variant="caption" color="error">
-                       {errors.Patient_Ismale}
-                     </Typography>
-                   )}
-                      </FormControl>
-                    </Grid>
-                  {/* </Grid> */}
-
-                 
-
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      id="phone1"
-                      label="Phone1"
-                      variant="outlined"
-                      value={patientDetails ? patientDetails.Patient_Phno : ''}    
-                      onChange={(e) => {
-                       setPatientDetails({ ...patientDetails, Patient_Phno: e.target.value });
-                       setErrors((prevErrors) => ({ ...prevErrors, Patient_Phno: '' }));
-                     }}
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                      error={!!errors.Patient_Phno}
-                      helperText={errors.Patient_Phno}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      id="phone2"
-                      label="Phone2"
-                      variant="outlined"
-                      size="small"
-                      value={patientDetails ? patientDetails.Patient_mobile : ''}    
-                      onChange={(e) => {
-                        setPatientDetails({ ...patientDetails, Patient_mobile: e.target.value });
-                        setErrors((prevErrors) => ({ ...prevErrors, Patient_mobile: '' }));
-                      }}
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                      error={!!errors.Patient_mobile}
-                      helperText={errors.Patient_mobile}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      id="email"
-                      label="Email"
-                      variant="outlined"
-                      size="small"
-                      value={patientDetails ? patientDetails.Patient_Email : ''}    
-                      onChange={(e) => {
-                       setPatientDetails({ ...patientDetails, Patient_Email: e.target.value });
-                       setErrors((prevErrors) => ({ ...prevErrors, Patient_Email: '' }));
-                     }}
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                      error={!!errors.Patient_Email}
-                    helperText={errors.Patient_Email}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                  <TextareaAutosize
-          minRows={3}
-          maxRows={6}
-          value={patientDetails ? patientDetails.Patient_Address : ''}    
-          onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', borderColor: '#ccc', borderWidth: '1px', borderStyle: 'solid' }}
-          placeholder="Address"
-         
-        />
-                   
-                  </Grid>
-                </Grid>
-
-                {/* <Grid container spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      className="button"
-                      onClick={handleSaveOrUpdate}
-                      sx={{ marginTop: 2, marginRight: 1, }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={resetForm}
-                      className="button"
-                      sx={{ marginTop: 2, marginRight: 1,}}
-                    >
-                      New
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={resetForm}
-                      className="button"
-                      sx={{ marginTop: 2, marginRight: 1,}}
-                    >
-                      Proceed To Bill
-                    </Button>
-                  </Grid>
-                </Grid> */}
-                {/* <ToastContainer position="top-center" autoClose={3000} hideProgressBar /> */}
-    </CardContent>
-   </Card>
-    </Grid>
     <Grid item xs={12} >
       <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm}/>
      

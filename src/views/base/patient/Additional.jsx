@@ -26,215 +26,180 @@ function Additional() {
    <>
    <Grid container spacing={2}>
    
-    <Grid item xs={12}>
-    <Card sx={{marginLeft:-3.5,width:830,height:440}} className='patient height1'>
+   <Grid item xs={12}>
+  <Card
+    sx={{
+      marginLeft: { xs: -2, sm: -3.5 }, // Adjusting margin for smaller screens
+      width: { xs: 370, sm: 830 },  // Full width on small screens, fixed width on larger screens
+      height: { xs: 'auto', sm: 435 }, // Adjust height for smaller screens
+      marginTop: { xs: 0, sm: -1 },
+    }}
+    // className="patient height1"
+  >
     <CardContent>
-  
-                <Grid container spacing={2}>
-                   
-                <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="location"
-                      label="Location"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                  {/* <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="nationalid"
-                      label="National ID"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid> */}
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="pin"
-                      label="PIN"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                 
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="passport"
-                      label="Passport"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="country"
-                      label="Country"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="state"
-                      label="State"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-           
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="district"
-                      label="District"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="city"
-                      label="City"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="village"
-                      label="Village"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                 
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="localbody"
-                      label="Local Body"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
-                  <TextField
-                      id="localbodytype"
-                      label="Local Body Type"
-                      variant="outlined"
-                    
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '1rem' } }}
-                     
-                    />
-                  </Grid>
-                   <Grid item xs={12} sm={4} md={4}>
-                   <TextField
-                      select
-                      id="nationalIdType"
-         
-                   value={selectedId}
-                    onChange={handleIdChange}
-                      label="National ID"
-                     
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '16px' } }}
-                    >
-                         
-                      <MenuItem value="Patient ID">Select ID Type</MenuItem>
-                      <MenuItem value="Name">Passport</MenuItem>
-                      <MenuItem value="Email">Driver's License</MenuItem>
-                      <MenuItem value="Phone">National ID Card</MenuItem>
-                      <MenuItem value="Phone">Voter ID</MenuItem>
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={12} sm={4} md={4}>
-                   {/* <TextField
-                    
-                      label="National ID"
-                     
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      InputLabelProps={{ style: { fontSize: '16px' } }}
-                     
-                    /> */}
-                     <input
-                      type="file"
-                      id="nationalIdUpload"
-                      className="form-control"
-                      onChange={handleFileChange}
-                      disabled={!selectedId}
-                    />
-                         
-               
-                   
-                  </Grid>
-                 
-                 
-                  <Grid item xs={12}>
-                  <TextareaAutosize
-          minRows={7}
-          maxRows={8}
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="location"
+            label="Location"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
 
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', borderColor: '#eaeaea ', borderWidth: '1px', borderStyle: 'solid' }}
-          placeholder="Note"
-         
-        />
-                  </Grid>
-               
-                  {/* </Grid> */}
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="pin"
+            label="PIN"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
 
-                  
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="passport"
+            label="Passport"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
 
-                </Grid>
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="country"
+            label="Country"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
 
-             
-                <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="state"
+            label="State"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="district"
+            label="District"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="city"
+            label="City"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="village"
+            label="Village"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="localbody"
+            label="Local Body"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="localbodytype"
+            label="Local Body Type"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            select
+            id="nationalIdType"
+            value={selectedId}
+            onChange={handleIdChange}
+            label="National ID"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '16px' } }}
+          >
+            <MenuItem value="Patient ID">Select ID Type</MenuItem>
+            <MenuItem value="Name">Passport</MenuItem>
+            <MenuItem value="Email">Driver's License</MenuItem>
+            <MenuItem value="Phone">National ID Card</MenuItem>
+            <MenuItem value="Phone">Voter ID</MenuItem>
+          </TextField>
+        </Grid>
+
+        <Grid item xs={12} sm={4} md={4}>
+          <input
+            type="file"
+            id="nationalIdUpload"
+            className="form-control"
+            onChange={handleFileChange}
+            disabled={!selectedId}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextareaAutosize
+            minRows={6}
+            maxRows={8}
+            style={{
+              width: '100%',
+              padding: '8px',
+              borderRadius: '4px',
+              borderColor: '#eaeaea',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+            }}
+            placeholder="Note"
+          />
+        </Grid>
+      </Grid>
+
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
     </CardContent>
-   </Card>
-    </Grid>
+  </Card>
+</Grid>
+
     <Grid item xs={12} >
       <Buttons/>
      
