@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
-import Additional from './views/base/patient/Additional'
-import ProceedToBill from './views/base/PatientBill/MainBody/Main'
+
+import PatientMain from './views/base/PatientBill/Main/PatientMain'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -16,6 +16,9 @@ const Login = React.lazy(() => import('./views/pages/login/Login'))
 
 
 const App = () => {
+  // useEffect(() => {
+  //   document.body.style.zoom = "80%";
+  // }, []);
   // const { isColorModeSet, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
   // const storedTheme = useSelector((state) => state.theme)
   const isAuthenticated = useSelector((state) => state.isAuthenticated)
@@ -45,7 +48,7 @@ const App = () => {
         <Routes>
           <Route exact path="/login" name="Login Page" element={<Login />} />
           <Route path="*" name="Home" element={isAuthenticated ? <DefaultLayout /> : <Navigate to="/login" />} />
-          <Route path="/proceedtobill" element={< ProceedToBill/>} />
+          {/* <Route path="/proceedtobill" element={< PatientMain/>} /> */}
         </Routes>
       </Suspense>
     </HashRouter>

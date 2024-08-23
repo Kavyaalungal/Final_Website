@@ -19,7 +19,7 @@ function Register() {
   // const { setPatientDetails } = usePatient();
   const { patientDetails, setPatientDetails } = usePatient();
 // console.log({ patientDetails, setPatientDetails }); 
-
+const [patientId, setPatientId] = useState(null);
     // declaring state variables needed
     const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
     const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
@@ -27,9 +27,52 @@ function Register() {
     // const [patientDetails, setPatientDetails] = useState(null); // state variable for storing the details of the patient
     const [isEditMode, setIsEditMode] = useState(false); // Track edit mode initially it is set to false
     const [errors, setErrors] = useState({}); // state variable for storing the errors 
-
-
-    
+    const [error, setError] = useState(null);
+    // useEffect(() => {
+    //   // Define the API endpoint and parameters
+    //   const apiUrl = 'http://172.16.16.10:8060/api/MaxOpdNoPatReg';
+    //   const params = {
+    //     Yrid: 2425,
+    //     cmpid: 2,
+    //     Editflag: false
+    //   };
+  
+    //   // Make the GET request
+    //   axios.get(apiUrl, { params })
+    //     .then(response => {
+    //       // Log the entire response to inspect the structure
+    //       console.log('API Response:', response.data);
+          
+    //       // Assuming the response contains the patient ID in a specific path
+    //       const { exist_list } = response.data; // Adjust according to the actual response
+    //       if (exist_list && exist_list.length > 0) {
+    //         const patientIdFromResponse = exist_list[0].opdno; // Adjust path based on the actual response structure
+    //         setPatientId(patientIdFromResponse);
+    //       } else {
+    //         setPatientId(null);
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error('Error fetching data:', error);
+    //       setError('Failed to fetch patient ID');
+    //     });
+    // }, []);
+    useEffect(() => {
+      // Fetch a random patient ID from the API when the component mounts
+      const fetchRandomPatientId = async () => {
+        try {
+          const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg');
+          const patientId = response.data.exist_list[0].opdno; // Adjust this based on API response structure
+          setPatientDetails({ ...patientDetails, Patient_Code: patientId });
+        } catch (error) {
+          console.error('Error fetching patient ID:', error);
+          setError('Failed to fetch patient ID');
+        }
+      };
+  
+      fetchRandomPatientId();
+    }, [setPatientDetails]);
+  
        useEffect(() => {
         console.log('Component mounted or updated.');
        }, []);
@@ -81,7 +124,8 @@ function Register() {
          
         });
         
-
+        console.log(response.data);
+        
         if (response.data && response.data.patientList) { // if response.data exist and the patientlist is not null then the suggestions is set with the patient details
           setSuggestions(response.data.patientList);
          
@@ -95,6 +139,30 @@ function Register() {
         toast.error('Error fetching suggestions');  // any error in fetching data is displayed using toast
       }
     };
+    // const patientidGeneration = async () => {
+    //   try {
+    //     // Make the POST request to the API
+    //     const response = await axios.post('http://172.16.16.10:8060/api/maxopdnopatreg/msgopd', {
+    //       Yrid: 2425,
+    //       cmpid: 2,
+    //       Editflag: false // Add any additional parameters required by the API
+    //     });
+    
+    //     // Inspect the response to find where the patientid is located
+    //     console.log('API response:', response.data);
+    
+    //     // Extract patientid from the response
+    //     // Adjust the path based on the actual response structure
+    //     const patientId = response.data.patientid; // Adjust according to the actual response structure
+    //     console.log('Patient ID generated:', patientId);
+    
+    //     return patientId;
+    
+    //   } catch (error) {
+    //     console.error('Error fetching patient ID:', error);
+    //     throw error; // Optional: Rethrow the error to handle it elsewhere if needed
+    //   }
+    // };
     // function for normailizing the title ie, to convert title to standard form
     const normalizeTitle = (title) => {
       switch (title) {   // differnt cases for that if the title is MR it is set to Mr form like that rest of the following
@@ -469,7 +537,10 @@ const renderOption = (props, option) => { // two parameters props and option pro
     // console.log('CDatePicker value:', parsedDate); // For debugging
   return (
    <>
-   
+    {/* <div>
+    
+      {patientId !== null ? <p>Patient ID: {patientId}</p> : <p>Loading...</p>}
+    </div> */}
    <Grid container spacing={2}>
     <Grid item xs={12}>
     <Card
@@ -550,11 +621,49 @@ const renderOption = (props, option) => { // two parameters props and option pro
   >
     <CardContent>
       <Grid container spacing={2}>
+      {/* <Grid item xs={12} sm={4} md={4}>
+        <TextField
+          id="patientid"
+          label="Patient ID"
+          variant="outlined"
+          value={patientId} // Use the fetched patient ID here
+          size="small"
+          fullWidth
+          InputLabelProps={{ style: { fontSize: '1rem' } }}
+          InputProps={{ readOnly: true }} // Make it read-only if needed
+        />
+      </Grid> */}
+       {/* <Grid item xs={12} sm={4} md={4}>
+      <Autocomplete
+        id="patientid-autocomplete"
+        options={suggestions.map((option) => option.Patient_Code)} // Adjust based on your data structure
+        value={patientDetails ? patientDetails.Patient_Code : ''}
+        onChange={(event, newValue) => {
+          setPatientDetails({ ...patientDetails, Patient_Code: newValue });
+        }}
+        freeSolo
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            id="patientid"
+            label="Patient ID"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Code :''}
+            onChange={(e) => setPatientDetails({ ...patientDetails, Patient_Code: e.target.value })}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        )}
+      />
+      {error && <p>{error}</p>}
+    </Grid> */}
         <Grid item xs={12} sm={4} md={4}>
           <TextField
             id="patientid"
             label="Patient ID"
             variant="outlined"
+            
             value={patientDetails ? patientDetails.Patient_Code : ''}
             onChange={(e) => setPatientDetails({ ...patientDetails, Patient_Code: e.target.value })}
             size="small"
@@ -563,14 +672,14 @@ const renderOption = (props, option) => { // two parameters props and option pro
           />
         </Grid>
 
-        <Grid item xs={12} sm={8} md={8}>
+        <Grid item xs={12} sm={4} md={4}>
           <TextField
             id="abhaid"
             label="ABHA ID"
             variant="outlined"
             size="small"
             fullWidth
-            sx={{ width: { xs: '100%', sm: 240 } }} // Make width responsive
+            // sx={{ width: { xs: '100%', sm: 240 } }} 
             InputLabelProps={{ style: { fontSize: '1rem' } }}
             InputProps={{
               endAdornment: (
@@ -579,6 +688,17 @@ const renderOption = (props, option) => { // two parameters props and option pro
                 </InputAdornment>
               ),
             }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4} md={4}>
+          <TextField
+            id="memberid"
+            label="Member ID"
+            variant="outlined"
+            
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
           />
         </Grid>
 
@@ -770,8 +890,21 @@ const renderOption = (props, option) => { // two parameters props and option pro
             helperText={errors.Patient_Email}
           />
         </Grid>
-
-        <Grid item xs={12}>
+        <Grid item xs={12} >
+          <TextField
+            id="address"
+            label="Address"
+            variant="outlined"
+            multiline
+            rows={3}
+            size="small"
+            value={patientDetails ? patientDetails.Patient_Address : ''}    
+            onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
+        {/* <Grid item xs={12}>
           <TextareaAutosize
             minRows={3}
             maxRows={6}
@@ -781,12 +914,12 @@ const renderOption = (props, option) => { // two parameters props and option pro
               width: "100%",
              
                padding: 4,
-              fontSize: 15,
-              fontFamily: 'Roboto'
+              fontSize: 16,
+             
             }}
             placeholder="Enter your Address"
           />
-        </Grid>
+        </Grid> */}
       </Grid>
     </CardContent>
   </Card>

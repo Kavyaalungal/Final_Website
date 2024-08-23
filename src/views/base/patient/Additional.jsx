@@ -177,8 +177,20 @@ function Additional() {
             disabled={!selectedId}
           />
         </Grid>
+        <Grid item xs={12} >
+          <TextField
+            id="note"
+            label="Note"
+            variant="outlined"
+            multiline
+            rows={7}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        </Grid>
 
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <TextareaAutosize
             minRows={6}
             maxRows={8}
@@ -192,7 +204,7 @@ function Additional() {
             }}
             placeholder="Note"
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <ToastContainer position="top-center" autoClose={3000} hideProgressBar />

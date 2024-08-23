@@ -4,6 +4,7 @@ import { CContainer, CSpinner } from '@coreui/react'
 
 // routes config
  import routes from '../Routes'
+import PatientMain from '../views/base/PatientBill/Main/PatientMain'
 
 const AppContent = () => {
   return (
@@ -24,6 +25,7 @@ const AppContent = () => {
             )
           })}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
+          <Route path="/proceedtobill" element={< PatientMain/>} />
         </Routes>
       </Suspense>
     </CContainer>

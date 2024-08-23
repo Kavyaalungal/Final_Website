@@ -40,7 +40,7 @@ const NavigationWithModals = () => {
 
   return (
     <>
-    <div className=' custom-nav-container'>
+    <div className=' custom-nav-container' >
     <CNavItem className="custom-nav-item">
         <CNavLink className="custom-nav-link">
           <CIcon icon={cilSpeedometer} className="me-2" /> Dashboard
@@ -64,22 +64,18 @@ const NavigationWithModals = () => {
       </CNavItem>
     <CModal visible={modal} onClose={() => setModal(false)} 
               size={modalSize}
-              // visible={visibleLg}
-              // onClose={() => setVisibleLg(false)}
-              className='modal custom-modal-close'
+              centered 
+              className='modal custom-modal-close custom-modal-width custom-centered-modal'
               backdrop='static'
               scrollable
               aria-labelledby="OptionalSizesExample2">
         <CModalHeader className='custom-modal-header'>
           <CModalTitle className='custom-modal-title '>{modalTitle}</CModalTitle>
-          {/* <CCloseButton onClick={() => setVisibleXL(false)} /> */}
         </CModalHeader>
-        <CModalBody className='c-modal-body no-scroll' >
+        <CModalBody className='c-modal-body no-scroll'  >
           {modalContent}
         </CModalBody>
-        {/* <CModalFooter>
-          <CButton color="secondary" onClick={() => setModal(false)}>Close</CButton>
-        </CModalFooter> */}
+       
       </CModal>
       </div>
     </>

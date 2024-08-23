@@ -100,12 +100,30 @@
     margin: 0;
   }
   
- 
+  /* .custom-modal-width {
+    max-width: 910px;
+    
+  }
+  .custom-centered-modal .modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+    margin-left: 80px; 
+    max-width: 910px; 
+  }
+   */
+  .custom-modal-close {
+    width: 100%; /* Ensure the modal takes up the full width (up to the max-width) */
+  }
+  
+  
   .c-modal-body {
 
     background-color:#fbefef; 
     color: #000; 
     height: 590px;
+
   }
   
   .c-modal {

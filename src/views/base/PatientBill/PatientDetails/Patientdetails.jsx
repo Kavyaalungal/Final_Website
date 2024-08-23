@@ -6,8 +6,8 @@ function Patientdetails() {
       <Card sx={{ 
         width: { xs: '100%', sm: '100%', md: '97%' }, // Responsive width
         maxWidth: 'auto', 
-        maxHeight: 510,
-        height: 500,  
+        maxHeight: 700,
+        height: 522,  
         p: 2
       }}>
         <CardContent>
@@ -49,7 +49,7 @@ function Patientdetails() {
               sx={{ 
                 marginTop: -1, 
                 fontWeight: 'bold', 
-                fontSize: { xs: 16, sm: 18, md: 19 } // Responsive font size
+                fontSize: { xs: 16, sm: 18, md: 17 } // Responsive font size
               }}
             >
               Patient Name
@@ -64,9 +64,10 @@ function Patientdetails() {
             }}>
               <Typography 
                 sx={{ 
-                  mr: 2, 
+                  mr: 2,
+                  mt:-2, 
                   fontWeight: 'bold', 
-                  fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
+                  fontSize: { xs: 14, sm: 16, md: 15 } // Responsive font size
                 }} 
                 color="black"
               >
@@ -74,9 +75,10 @@ function Patientdetails() {
               </Typography>
               <Typography 
                 color="black" 
-                sx={{ 
+                sx={{
+                  mt:-2,
                   fontWeight: 'bold', 
-                  fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
+                  fontSize: { xs: 14, sm: 16, md: 15 } // Responsive font size
                 }}
               >
                 Male
@@ -96,45 +98,81 @@ function Patientdetails() {
                 mb: 1.5, 
                 fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
               }} 
-              color="black"
+              color="#b0b0b0"
             >
-              Phno: Patient number
+              Contact Number
             </Typography>
             <Typography 
               sx={{ 
-                mb: 1.5, 
+                mt:-2,
                 fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
               }} 
-              color="black"
+              color="#b0b0b0"
             >
-              Email: Patient@gmail.com
+              8129691215
             </Typography>
             <Typography 
               sx={{ 
-                mb: 1.5, 
+                mt: 1, 
                 fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
               }} 
-              color="black"
+              color="#b0b0b0"
             >
-              PatientID: 10244
+              Email Patient@gmail.com
             </Typography>
             <Typography 
               sx={{ 
-                mb: 1.5, 
+                mt: 1, 
                 fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
               }} 
-              color="black"
+              color="#b0b0b0"
+            >
+              PatientID
+            </Typography>
+            <Typography 
+              sx={{ 
+        
+                fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
+              }} 
+              color="#b0b0b0"
+            >
+             1258
+            </Typography>
+            <Typography 
+              sx={{ 
+                mt: 1, 
+                fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
+              }} 
+              color="#b0b0b0"
             >
               Address:
             </Typography>
             <Typography 
               sx={{ 
-                mb: 1.5, 
+              
                 fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
               }} 
-              color="black"
+              color="#b0b0b0"
+            >
+              05,flat,india
+            </Typography>
+            <Typography 
+              sx={{ 
+                mt: 1, 
+                fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
+              }} 
+              color="#b0b0b0"
             >
               Branch: Branch Name
+            </Typography>
+            <Typography 
+              sx={{ 
+             
+                fontSize: { xs: 14, sm: 16, md: 16 } // Responsive font size
+              }} 
+              color="#b0b0b0"
+            >
+              Branch Name
             </Typography>
           </Box>
         </CardContent>
