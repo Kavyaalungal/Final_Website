@@ -24,10 +24,186 @@ const [patientId, setPatientId] = useState(null);
     const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
     const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
     const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
+    // const [patientDetails, setPatientDetails] = useState(null); // state variable for storing the details of the patient
     const [isEditMode, setIsEditMode] = useState(false); // Track edit mode initially it is set to false
     const [errors, setErrors] = useState({}); // state variable for storing the errors 
     const [error, setError] = useState(null);
-    useEffect(() => {
+    // useEffect(() => {
+    //   // Define the API endpoint and parameters
+    //   const apiUrl = 'http://172.16.16.10:8060/api/MaxOpdNoPatReg';
+    //   const params = {
+    //     Yrid: 2425,
+    //     cmpid: 2,
+    //     Editflag: false
+    //   };
+  
+    //   // Make the GET request
+    //   axios.get(apiUrl, { params })
+    //     .then(response => {
+    //       // Log the entire response to inspect the structure
+    //       console.log('API Response:', response.data);
+          
+    //       // Assuming the response contains the patient ID in a specific path
+    //       const { exist_list } = response.data; // Adjust according to the actual response
+    //       if (exist_list && exist_list.length > 0) {
+    //         const patientIdFromResponse = exist_list[0].opdno; // Adjust path based on the actual response structure
+    //         setPatientId(patientIdFromResponse);
+    //       } else {
+    //         setPatientId(null);
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error('Error fetching data:', error);
+    //       setError('Failed to fetch patient ID');
+    //     });
+    // }, []);
+    // useEffect(() => {
+    //   // Fetch a random patient ID from the API when the component mounts
+    //   const fetchRandomPatientId = async () => {
+    //     try {
+    //       const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg');
+    //       const patientId = response.data.exist_list[0].opdno; // Adjust this based on API response structure
+    //       setPatientDetails({ ...patientDetails, Patient_Code: patientId });
+    //     } catch (error) {
+    //       console.error('Error fetching patient ID:', error);
+    //       setError('Failed to fetch patient ID');
+    //     }
+    //   };
+  
+    //   fetchRandomPatientId();
+    // }, [setPatientDetails]);
+  
+
+ // Initialize patientDetails as an empty object if it's not already set
+useEffect(() => {
+  const fetchRandomPatientId = async () => {
+    try {
+      const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg?yrId=2425&CmId=2');
+      if (response.data.success) {
+        const patientId = response.data.opdno; // Get the opdno value from the response
+        setPatientDetails((prevDetails) => ({
+          ...prevDetails,
+          Patient_Code: patientId
+        }));
+      } else {
+        throw new Error('API response indicated failure');
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.error('Error fetching patient ID:', error.response.data);
+        toast.error(`Failed to fetch patient ID: ${error.response.data.Message || error.response.statusText}`);
+      } else if (error.request) {
+        // No response received
+        console.error('Error fetching patient ID, no response received:', error.request);
+        toast.error('Failed to fetch patient ID: No response from server');
+      } else {
+        // Something else happened in setting up the request
+        console.error('Error fetching patient ID:', error.message);
+        toast.error(`Failed to fetch patient ID: ${error.message}`);
+      }
+    }
+  };
+
+  // Fetch the patient ID if it's not already set
+  if (!patientDetails?.Patient_Code) {
+    fetchRandomPatientId();
+  }
+}, [patientDetails?.Patient_Code, setPatientDetails]);
+
+
+
+const handleSelectPatient = async (event, newValue) => {
+  if (!newValue) {
+    // If no patient is selected, fetch a new patient ID for registration
+    try {
+      const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg');
+      if (response.data.success) {
+        const newPatientId = response.data.opdno; // Adjust based on your API response structure
+        
+        // Update state with the new patient ID
+        setPatientDetails((prevDetails) => ({
+          ...prevDetails,
+          Patient_Code: newPatientId
+        }));
+        setIsEditMode(true);  // Set to edit mode for new patient registration
+  
+      } else {
+        throw new Error('API response indicated failure');
+      }
+    } catch (error) {
+      console.error('Error fetching new patient ID:', error);
+      toast.error('Failed to generate new patient ID');
+    }
+    return; // Exit after generating a new patient ID
+  }
+  
+  try {
+    console.log('Selected Patient:', newValue); // Log selected patient for debugging
+  
+    // Request patient details from the backend
+    const response = await axios.post('http://172.16.16.10:8060/api/PatientMstr/PatientDetailsMaster', {
+      YearId: 2425,
+      BranchId: 2,
+      PatCode: newValue.Patient_Code, // Use selected patient's code
+    });
+  
+    console.log('Response from fetchPatientDetails:', response); // Log API response for debugging
+  
+    if (response.data && response.data.patDetails) {
+      const { patDetails } = response.data;
+  
+      // Function to trim string values and remove unnecessary spaces around commas
+      const trimStrings = (obj) => {
+        const trimmedObj = {};
+        Object.keys(obj).forEach(key => {
+          if (typeof obj[key] === 'string') {
+            trimmedObj[key] = obj[key].trim().replace(/\s*,\s*/g, ',');
+          } else {
+            trimmedObj[key] = obj[key];
+          }
+        });
+        return trimmedObj;
+      };
+  
+      const trimmedPatientDetails = trimStrings(patDetails);
+      trimmedPatientDetails.Patient_Title = normalizeTitle(trimmedPatientDetails.Patient_Title);
+  
+      // Update the patient details state
+      setPatientDetails(trimmedPatientDetails);
+      setIsEditMode(false);  // Disable edit mode after fetching details
+  
+      // Determine which value to show in the search field based on selected search criteria
+      let selectedValue;
+      switch (searchCriteria) {
+        case 'Phone':
+          selectedValue = newValue.Patient_Phno;
+          break;
+        case 'Patient ID':
+          selectedValue = newValue.Patient_Code;
+          break;
+        case 'Name':
+          selectedValue = newValue.Patient_Name;
+          break;
+        case 'Email':
+          selectedValue = newValue.Patient_Email;
+          break;
+        default:
+          selectedValue = '';
+      }
+      setSearchValue(selectedValue); // Update the search field with the appropriate value
+  
+    } else {
+      toast.error('Patient details not found'); // Show error if no patient details are returned
+    }
+  } catch (error) {
+    console.error('Error fetching patient details:', error); // Log any errors
+    toast.error('Error fetching patient details'); // Display error message
+  }
+};
+
+
+       useEffect(() => {
         console.log('Component mounted or updated.');
        }, []);
        useEffect(() => {
@@ -110,170 +286,75 @@ const [patientId, setPatientId] = useState(null);
      }
    };
   // for selecting the patient object from the list and populating it to the form
- const handleSelectPatient = async (event, newValue) => { // two parameters the value and event is passed
-  if (!newValue) return; // if no value it exits here and stop the function
+//  const handleSelectPatient = async (event, newValue) => { // two parameters the value and event is passed
+//   if (!newValue) return; // if no value it exits here and stop the function
 
-  try {
-    console.log('Selected Patient:', newValue); // Log selected patient for debugging
-    const response = await axios.post('http://172.16.16.10:8060/api/PatientMstr/PatientDetailsMaster', { //request sends to backend for taking the patient details
-      YearId: 2425,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
-      BranchId: 2,
-      PatCode: newValue.Patient_Code,
-    });
-    console.log('Response from fetchPatientDetails:', response); // Log API response for debugging
+//   try {
+//     console.log('Selected Patient:', newValue); // Log selected patient for debugging
+//     const response = await axios.post('http://172.16.16.10:8060/api/PatientMstr/PatientDetailsMaster', { //request sends to backend for taking the patient details
+//       YearId: 2425,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
+//       BranchId: 2,
+//       PatCode: newValue.Patient_Code,
+//     });
+//     console.log('Response from fetchPatientDetails:', response); // Log API response for debugging
 
-    if (response.data && response.data.patDetails) { // if response data exists and patdetils is not null then spreading the details and also normalizing the title
-      const { patDetails } = response.data; // destructuring the patientdetails from response.data
+//     if (response.data && response.data.patDetails) { // if response data exists and patdetils is not null then spreading the details and also normalizing the title
+//       const { patDetails } = response.data; // destructuring the patientdetails from response.data
 
-      // Function to trim string values and remove commas
-      const trimStrings = (obj) => { // obj is passed as an argument to trimStrings function
-        const trimmedObj = {}; // an empty is created to store the  processed key value pairs
-        Object.keys(obj).forEach(key => { // iterate over each key in obj object
-          if (typeof obj[key] === 'string') { // checks if the value associated with the key of the type is string 
-            trimmedObj[key] = obj[key].trim().replace(/\s*,\s*/g, ','); // remove all the white spaces around it replace with th regular expression trim all spaces before and after comma
-          } else {
-            trimmedObj[key] = obj[key];  //if it is not string directly assigned to the key in trimmedObj without any modification
-          }
-        });
-        return trimmedObj;// return the trimmed object
-      };
+//       // Function to trim string values and remove commas
+//       const trimStrings = (obj) => { // obj is passed as an argument to trimStrings function
+//         const trimmedObj = {}; // an empty is created to store the  processed key value pairs
+//         Object.keys(obj).forEach(key => { // iterate over each key in obj object
+//           if (typeof obj[key] === 'string') { // checks if the value associated with the key of the type is string 
+//             trimmedObj[key] = obj[key].trim().replace(/\s*,\s*/g, ','); // remove all the white spaces around it replace with th regular expression trim all spaces before and after comma
+//           } else {
+//             trimmedObj[key] = obj[key];  //if it is not string directly assigned to the key in trimmedObj without any modification
+//           }
+//         });
+//         return trimmedObj;// return the trimmed object
+//       };
       
 
-      // Trim patient details
-      const trimmedPatientDetails = trimStrings(patDetails);
+//       // Trim patient details
+//       const trimmedPatientDetails = trimStrings(patDetails);
 
-      // Normalize title
-      trimmedPatientDetails.Patient_Title = normalizeTitle(trimmedPatientDetails.Patient_Title);
+//       // Normalize title
+//       trimmedPatientDetails.Patient_Title = normalizeTitle(trimmedPatientDetails.Patient_Title);
 
-      // Update patient details
-      setPatientDetails(trimmedPatientDetails);// Update patient details with full details
-      setIsEditMode(false);  // Log updated state
+//       // Update patient details
+//       setPatientDetails(trimmedPatientDetails);// Update patient details with full details
+//       setIsEditMode(false);  // Log updated state
 
-    // Update searchValue to show the selected search item value in the TextField only 
-      let selectedValue;
-      switch (searchCriteria) {
-          case 'Phone':
-          selectedValue = newValue.Patient_Phno;
-          break;
-        case 'Patient ID':
-          selectedValue = newValue.Patient_Code;
-          break;
-        case 'Name':
-          selectedValue = newValue.Patient_Name;
-          break;
-        case 'Email':
-          selectedValue = newValue.Patient_Email;
-          break;
-        default:
-          selectedValue = '';
-      }
-      setSearchValue(selectedValue); // update the value with the selected value field  ie, when name is selected corresponding value only appears on the textfield 
-    } else {
-      toast.error('Patient details not found');  // if no data it displays a toast message
-    }
-  } catch (error) {
-    console.error('Error fetching patient details:', error); // Log the error to console
-    toast.error('Error fetching patient details'); // for displaying any errors during the request
-  }
-};
+//     // Update searchValue to show the selected search item value in the TextField only 
+//       let selectedValue;
+//       switch (searchCriteria) {
+//           case 'Phone':
+//           selectedValue = newValue.Patient_Phno;
+//           break;
+//         case 'Patient ID':
+//           selectedValue = newValue.Patient_Code;
+//           break;
+//         case 'Name':
+//           selectedValue = newValue.Patient_Name;
+//           break;
+//         case 'Email':
+//           selectedValue = newValue.Patient_Email;
+//           break;
+//         default:
+//           selectedValue = '';
+//       }
+//       setSearchValue(selectedValue); // update the value with the selected value field  ie, when name is selected corresponding value only appears on the textfield 
+//     } else {
+//       toast.error('Patient details not found');  // if no data it displays a toast message
+//     }
+//   } catch (error) {
+//     console.error('Error fetching patient details:', error); // Log the error to console
+//     toast.error('Error fetching patient details'); // for displaying any errors during the request
+//   }
+// };
 
-// Fetch new Patient ID when saving a new patient
-const fetchNewPatientId = async () => {
-  try {
-    // Fetch new Patient ID
-    const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg', {
-      params: {
-        yrId: 2425,
-        CmId: 2
-      }
-    });
-
-    if (response.data.success) {
-      setPatientDetails(prevDetails => ({
-        ...prevDetails,
-        Patient_Code: response.data.opdno, // Set new Patient ID
-      }));
-      return response.data.opdno; // Return the new Patient ID
-    } else {
-      toast.error('Failed to fetch new patient ID');
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching new patient ID:', error);
-    toast.error('Error fetching new patient ID');
-    return null;
-  }
-};
-
-// Save or update patient details
-const handleSaveOrUpdate = async () => {
-  if (!validate()) {
-    return;
-  }
-
-  let patientCode = patientDetails.Patient_Code;
-
-  // If not in edit mode, fetch a new Patient ID before saving
-  if (!isEditMode) {
-    const newPatientId = await fetchNewPatientId();
-    if (newPatientId) {
-      patientCode = newPatientId; // Use the new patient ID
-    } else {
-      return; // Stop execution if fetching a new ID failed
-    }
-  }
-
-  // Trim necessary fields
-  const trimmedDetails = {
-    ...patientDetails,
-    Patient_Code: patientCode, // Use the new or existing Patient_Code
-    Patient_Name: patientDetails.Patient_Name.trim(),
-    Patient_Email: patientDetails.Patient_Email?.trim(),
-    Patient_Phno: patientDetails.Patient_Phno?.trim(),
-  };
-
-  try {
-    // Determine EditFlag value
-    const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
-
-    // Make the API request
-    const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
-      ...trimmedDetails,
-      Patient_CpyId: 2,
-      Patient_YrId: 2425,
-      EditFlag: editFlag,
-    });
-
-    // Check the response for success
-    if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
-      if (isEditMode) {
-        toast.success('Patient details updated successfully');
-        setIsEditMode(false); // Exit edit mode after updating
-      } else {
-        toast.success('Patient details saved successfully');
-        resetForm(); // Reset the form after saving a new patient
-      }
-    } else {
-      toast.error('Failed to save/update patient details');
-    }
-  } catch (error) {
-    console.error('Error saving/updating patient details:', error);
-    toast.error('Error saving/updating patient details');
-  }
-};
-
-
-const handlePatientIdChange = (e) => {
-  setPatientDetails({
-    ...patientDetails,
-    Patient_Code: e.target.value
-  });
-};
- 
-
-
-
-   
+    
+    
  
     // function to calculate age in days, months, and years with the dob value 
 const calculateAge = (dob) => { // dob is passed as parameter
@@ -310,6 +391,20 @@ const calculateAge = (dob) => { // dob is passed as parameter
   }));
 };
 
+
+// const handleDateChange = (date) => {
+//   console.log('Selected date:', date);
+//   const formattedDate = date ? format(date, 'MM/dd/yyyy') : '';
+//   console.log('Formatted date:', formattedDate);
+//   setPatientDetails(prevDetails => ({
+//     ...prevDetails,
+//     Patient_Dob: formattedDate
+//   }));
+//   calculateAge(formattedDate);
+// };
+
+// console.log('Parsed date:',patientDetails ? patientDetails.Patient_Dob ? parseISO(patientDetails.Patient_Dob) : '' : '');
+// console.log('Value for CDatePicker:',patientDetails ? patientDetails.Patient_Dob ? parseISO(patientDetails.Patient_Dob) : '' : '');
 
 
 // function to validate some fields before saving back to server
@@ -352,89 +447,88 @@ const validate = () => {
   return Object.keys(newErrors).length === 0; // returns true if there is no error and otherwise it is false
 };
   // function to set the gender field according to the title
- const handleTitleChange = (e) => {
- const newTitle = e.target.value; // for storing the selected title
- let gender = ''; // initially is null 
-
-  switch (newTitle) { // when the prefix changes gender is set according to it 
-    case 'Mr':     // if is selected Mr then gender is set to Male 
-      gender = 'Male';
-     break;
-    case 'Mrs':  // if it selects these fields it is set to female
-    case 'Ms':
-    case 'Miss':
-      gender = 'Female';
-      break;
-    default:    // if no value is selected it is set to null as initial value 
-      gender = '';
-  }
-    // update the patient details again 
- setPatientDetails((prevDetails) => ({
-    ...prevDetails, // spreading the details fetched and updating the title according to the selected one 
-   Patient_Title: newTitle,
-    Patient_Ismale: gender, // updates the gender according to it 
-  }));
-  setErrors((prevErrors) => ({   // if any errors occurs in the gender field 
-    ...prevErrors,
-    Patient_Ismale: '',
-  }));
-};
-
-
-// function for saving the data back to server
-// const handleSaveOrUpdate = async () => {
-//   if (!validate()) {
-//     return;
-//   }
-
-//   // Trim all necessary fields
-//   const trimmedDetails = {
-//     ...patientDetails,
-//     Patient_Name: patientDetails.Patient_Name.trim(),
-//     // Patient_Email: patientDetails.Patient_Email.trim(),
-//     // Patient_Phno: patientDetails.Patient_Phno.trim(),
-//     // Add more fields as needed
-//   };
-
-//   try {
-//     // Determine EditFlag value
-//     const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
-    
-//     // Make the API request
-//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
-//       ...trimmedDetails,
-//       Patient_CpyId: 2,
-//       Patient_YrId: 2425,
-//       EditFlag: editFlag,
-//     });
-
-//     // Check the response for success
-//     if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
-//       if (isEditMode) {
-//         toast.success('Patient details updated successfully');
-//       } else {
-//         toast.success('Patient details saved successfully');
-//       }
-
-//       // Reset or update form based on mode
-//       if (!isEditMode) {
-//         resetForm(); // Reset the form after saving a new patient
-//       } else {
-//         setIsEditMode(false); // Exit edit mode after updating
-//       }
-//     } else {
-//       toast.error('Failed to save/update patient details');
-//     }
-//   } catch (error) {
-//     console.error('Error saving/updating patient details:', error);
-//     toast.error('Error saving/updating patient details');
-//   }
-// };
-
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value; // Store the selected title
+    let gender = ''; // Initialize gender
+  
+    console.log('Selected Title:', newTitle); // Debugging statement
+  
+    // Determine gender based on title
+    switch (newTitle) {
+      case 'Mr':
+        gender = 'Male';
+        break;
+      case 'Mrs':
+      case 'Ms':
+      case 'Miss':
+        gender = 'Female';
+        break;
+      default:
+        gender = ''; // Default value if no title is selected
+    }
+  
+    console.log('Determined Gender:', gender); // Debugging statement
+  
+    // Update state with new title and gender
+    setPatientDetails((prevDetails) => ({
+      ...prevDetails,
+      Patient_Title: newTitle,
+      Patient_Ismale: gender,
+    }));
+  
+    // Clear any previous errors related to gender
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      Patient_Ismale: '',
+    }));
+  };
+  
   
 
 
+// function for saving the data back to server
 
+const handleSaveOrUpdate = async () => {
+if (!validate()) {
+  return;
+}
+
+// Trim all necessary fields
+const trimmedDetails = {
+  ...patientDetails,
+  Patient_Name: patientDetails.Patient_Name.trim(),
+  Patient_Email: patientDetails.Patient_Email.trim(),
+  Patient_Phno: patientDetails.Patient_Phno.trim(),
+  // Patient_mobile: patientDetails.Patient_mobile.trim(),
+  // Add more fields as needed
+};
+
+try {
+  const editFlag = isEditMode ? 1 : 0;
+  const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
+    ...trimmedDetails,
+    Patient_CpyId: 2,
+    Patient_YrId: 2425,
+    EditFlag: editFlag,
+  });
+
+  if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
+    console.log('patient details successfully');
+    
+    // toast.success('Patient details saved successfully');
+    if (!isEditMode) {
+      resetForm();
+    } else {
+      setIsEditMode(false);
+    }
+  } else {
+    toast.error('Failed to save/update patient details');
+  }
+} catch (error) {
+  console.error('Error saving/updating patient details:', error);
+  toast.error('Error saving/updating patient details');
+}
+};
 
 // function to display the list of options , hightlighing the matched option .....
 const renderOption = (props, option) => { // two parameters props and option props contains the attributes or other things from the parent component and option contains the patient details
@@ -475,9 +569,95 @@ const renderOption = (props, option) => { // two parameters props and option pro
         </li>
     );
     };
- 
+  //   const parsedDate = patientDetails && patientDetails.Patient_Dob 
+  //   ? parseISO(patientDetails.Patient_Dob) 
+  //   : null;
+
+  // // Format the parsed Date object to 'MM/dd/yyyy'
+  // const formattedDate = parsedDate ? format(parsedDate, 'dd/MM/yyyy') : '';
+
+  // console.log('Parsed date value:', formattedDate); // Debugging output
+  // console.log('CDatePicker value:', formattedDate); // Debugging output
+
+
+
+
+  // const calculateAge = (dob) => {
+  //   if (!dob) return;
+  
+  //   // Ensure dob is a Date object
+  //   const birthDate = new Date(dob);
+  //   // if (isNaN(birthDate.getTime())) return; // Check for invalid date
+  
+  //   const today = new Date();
+  
+  //   let ageYear = today.getFullYear() - birthDate.getFullYear();
+  //   let ageMonth = today.getMonth() - birthDate.getMonth();
+  //   let ageDay = today.getDate() - birthDate.getDate();
+  
+  //   // Adjust for negative months
+  //   if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {
+  //     ageYear--;
+  //     ageMonth += 12;
+  //   }
+  
+  //   // Adjust for negative days
+  //   if (ageDay < 0) {
+  //     const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);
+  //     ageDay = tempDate.getDate() + ageDay;
+  //     ageMonth--;
+  //   }
+  
+  //   // Update the state with calculated age
+  //   setPatientDetails((prevDetails) => ({
+  //     ...prevDetails,
+  //     Patient_Ageyy: ageYear.toString(),
+  //     Patient_Agemm: ageMonth.toString(),
+  //     Patient_Agedd: ageDay.toString(),
+  //   }));
+  // };
+  
+
+  // const handleDateChange = (date) => {
+  //   if (!date) return;
+
+  //   const formattedDate = format(date, 'MM/dd/yyyy');
+  //   setPatientDetails((prevDetails) => ({
+  //     ...prevDetails,
+  //     Patient_Dob: formattedDate,
+  //   }));
+
+  //   // Calculate and set age based on the new DOB
+  //   calculateAge(date);
+  // };
+
+  // const handleDateChange = (date) => {
+  //   console.log('Selected date:', date);
+
+  //   // Format the new date as 'MM/dd/yyyy'
+  //   const formattedDate = date ? format(date, 'MM/dd/yyyy') : '';
+  //   console.log('Formatted date:', formattedDate);
+
+  //   // Update the state with the formatted date
+  //   setPatientDetails(prevDetails => ({
+  //     ...prevDetails,
+  //     Patient_Dob: formattedDate
+  //   }));
+
+  //   // Calculate age based on the selected date
+  //   calculateAge(date);
+  // };
+
+    // const parsedDate = patientDetails ? patientDetails.Patient_Dob ? parseISO(patientDetails.Patient_Dob) : null : null;   
+    // console.log('Parsed date type:', typeof parsedDate); // Should be 'object'
+    // console.log('Parsed date value:', parsedDate); // For debugging
+    // console.log('CDatePicker value:', parsedDate); // For debugging
   return (
    <>
+    {/* <div>
+    
+      {patientId !== null ? <p>Patient ID: {patientId}</p> : <p>Loading...</p>}
+    </div> */}
    <Grid container spacing={2}>
     <Grid item xs={12}>
     <Card
@@ -558,25 +738,57 @@ const renderOption = (props, option) => { // two parameters props and option pro
   >
     <CardContent>
       <Grid container spacing={2}>
-      <Grid item xs={12} sm={4} md={4}>
+      {/* <Grid item xs={12} sm={4} md={4}>
+        <TextField
+          id="patientid"
+          label="Patient ID"
+          variant="outlined"
+          value={patientId} // Use the fetched patient ID here
+          size="small"
+          fullWidth
+          InputLabelProps={{ style: { fontSize: '1rem' } }}
+          InputProps={{ readOnly: true }} // Make it read-only if needed
+        />
+      </Grid> */}
+       {/* <Grid item xs={12} sm={4} md={4}>
+      <Autocomplete
+        id="patientid-autocomplete"
+        options={suggestions.map((option) => option.Patient_Code)} // Adjust based on your data structure
+        value={patientDetails ? patientDetails.Patient_Code : ''}
+        onChange={(event, newValue) => {
+          setPatientDetails({ ...patientDetails, Patient_Code: newValue });
+        }}
+        freeSolo
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            id="patientid"
+            label="Patient ID"
+            variant="outlined"
+            value={patientDetails ? patientDetails.Patient_Code :''}
+            onChange={(e) => setPatientDetails({ ...patientDetails, Patient_Code: e.target.value })}
+            size="small"
+            fullWidth
+            InputLabelProps={{ style: { fontSize: '1rem' } }}
+          />
+        )}
+      />
+      {error && <p>{error}</p>}
+    </Grid> */}
+       
+       <Grid item xs={12} sm={4} md={4}>
   <TextField
     id="patientid"
     label="Patient ID"
     variant="outlined"
-    value={patientDetails ? patientDetails.Patient_Code : ''}
-    onChange={handlePatientIdChange}
+    value={patientDetails?.Patient_Code || ''}  // Ensure the value is a string
+    onChange={(e) => setPatientDetails((prevDetails) => ({
+      ...prevDetails,
+      Patient_Code: e.target.value
+    }))}
     size="small"
     fullWidth
     InputLabelProps={{ style: { fontSize: '1rem' } }}
-    // InputProps={{
-    //   endAdornment: (
-    //     <InputAdornment position="end">
-    //       <Button onClick={fetchNewPatientId} variant="contained" color="primary">
-    //         New
-    //       </Button>
-    //     </InputAdornment>
-    //   )
-    // }}
   />
 </Grid>
 
@@ -720,31 +932,33 @@ const renderOption = (props, option) => { // two parameters props and option pro
         </Grid>
 
         <Grid item xs={12} sm={3} md={3}>
-          <FormControl variant="outlined" size="small" fullWidth>
-            <InputLabel id="genderLabel">Gender</InputLabel>
-            <Select
-              labelId="genderLabel"
-              id="gender"
-              label="Gender"
-              value={patientDetails ? patientDetails.Patient_Ismale : ''}    
-              InputProps={{
-                readOnly: true,
-              }}
-              InputLabelProps={{ style: { fontSize: '1rem' } }}
-              error={!!errors.Patient_Ismale}
-            >
-              <MenuItem value=""><em>None</em></MenuItem>
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
-              <MenuItem value="Other">Other</MenuItem>
-            </Select>
-            {errors.Patient_Ismale && (
-              <Typography variant="caption" color="error">
-                {errors.Patient_Ismale}
-              </Typography>
-            )}
-          </FormControl>
-        </Grid>
+  <FormControl variant="outlined" size="small" fullWidth>
+    <InputLabel id="genderLabel">Gender</InputLabel>
+    <Select
+  labelId="genderLabel"
+  id="gender"
+  label="Gender"
+  value={patientDetails?.Patient_Ismale || ''}  // Fallback to empty string
+  InputProps={{
+    readOnly: true,
+  }}
+  InputLabelProps={{ style: { fontSize: '1rem' } }}
+  error={!!errors.Patient_Ismale}
+>
+  <MenuItem value=""><em>None</em></MenuItem>
+  <MenuItem value="Male">Male</MenuItem>
+  <MenuItem value="Female">Female</MenuItem>
+  <MenuItem value="Other">Other</MenuItem>
+</Select>
+
+    {errors.Patient_Ismale && (
+      <Typography variant="caption" color="error">
+        {errors.Patient_Ismale}
+      </Typography>
+    )}
+  </FormControl>
+</Grid>
+
 
         <Grid item xs={12} sm={4}>
           <TextField
@@ -813,13 +1027,29 @@ const renderOption = (props, option) => { // two parameters props and option pro
             InputLabelProps={{ style: { fontSize: '1rem' } }}
           />
         </Grid>
+        {/* <Grid item xs={12}>
+          <TextareaAutosize
+            minRows={3}
+            maxRows={6}
+            value={patientDetails ? patientDetails.Patient_Address : ''}    
+            onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
+            style={{
+              width: "100%",
+             
+               padding: 4,
+              fontSize: 16,
+             
+            }}
+            placeholder="Enter your Address"
+          />
+        </Grid> */}
       </Grid>
     </CardContent>
   </Card>
 </Grid>
 
     <Grid item xs={12} >
-      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode}/>
+      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} isEditMode={isEditMode}/>
      
   
     </Grid>

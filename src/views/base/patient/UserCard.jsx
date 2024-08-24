@@ -143,8 +143,9 @@ function UserCard() {
   };
 
   const details = patientDetails || placeholderDetails;
-  const genderAvatar = details.Patient_Ismale === 'Male' ? '/images/male.jpg' : '/images/avatar2.png';
+  
   const genderDisplay = details.Patient_Ismale === 'Male' ? 'M' : 'F';
+  const genderAvatar = genderDisplay === 'M' ? '/images/male.jpg' : '/images/avatar2.png';
   const age = details.Patient_Dob ? calculateAge(details.Patient_Dob) : '';
 
   return (

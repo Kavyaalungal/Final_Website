@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Buttons.css'
 import Additional from './Additional';
 
-function Buttons({handleSaveOrUpdate,resetForm}) {
+function Buttons({handleSaveOrUpdate,resetForm,fetchNewPatientId,isEditMode}) {
   const navigate = useNavigate();
   const handleButtonClick = () => {
     navigate('/proceedtobill'); 
@@ -69,11 +69,20 @@ function Buttons({handleSaveOrUpdate,resetForm}) {
     }}
     onClick={() => {
       resetForm();
+      fetchNewPatientId();
     }}
   >
     New
   </Button>
   <Button
+        variant="contained"
+        className="button"
+        sx={{ textTransform: 'none', marginRight: 1 }}
+        onClick={handleSaveOrUpdate}
+      >
+        {isEditMode ? 'Update' : 'Save'}
+      </Button>
+  {/* <Button
     variant="contained"
     className="button"
     sx={{
@@ -82,11 +91,13 @@ function Buttons({handleSaveOrUpdate,resetForm}) {
     }}
     onClick={() => {
       handleSaveOrUpdate();
-      toast.success('Data saved successfully!');
+      // toast.success('Data saved successfully!');
+
     }}
+    
   >
     Save
-  </Button>
+  </Button> */}
   <Button
     onClick={handleButtonClick}
     variant="contained"

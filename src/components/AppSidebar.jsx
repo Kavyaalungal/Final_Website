@@ -76,7 +76,7 @@ import CIcon from '@coreui/icons-react';
 import { AppSidebarNav } from './AppSidebarNav';
 import { sygnet } from 'src/assets/brand/Sygnet';
 import iconLogo from '../assets/images/icon logo white.png';
-import logo from '../assets/images/icon infoware logo white.svg';
+import logo from '../assets/images/icon infoware logo white (3).svg';
 import NavigationWithModals from './NavigationWithModals'; // Import the modal handling component
 import './AppSidebar.css';
 // import { ReactComponent as Logo } from '../assets/images/icon logo white.svg'; 
@@ -98,8 +98,8 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
-        {/* <img src={logo} alt="logo" style={{ height: '60px', width:'200px' }} /> */}
-          <img src={iconLogo} alt="icon logo" style={{ height: '60px', width:'200px' }} />
+        <img src={logo} alt="logo" style={{ height: '60px', width:'200px', }} />
+          {/* <img src={iconLogo} alt="icon logo" style={{ height: '60px', width:'200px' }} /> */}
           <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} />
         </CSidebarBrand>
         <CCloseButton
