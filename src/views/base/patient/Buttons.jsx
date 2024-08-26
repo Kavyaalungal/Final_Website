@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Buttons.css'
 import Additional from './Additional';
 
-function Buttons({handleSaveOrUpdate,resetForm,fetchNewPatientId,isEditMode}) {
+function Buttons({handleSaveOrUpdate,resetForm,fetchNewPatientId,isEditMode,handleNewPatient,saveNewPatient,updatePatient}) {
   const navigate = useNavigate();
   const handleButtonClick = () => {
     navigate('/proceedtobill'); 
@@ -19,85 +19,34 @@ function Buttons({handleSaveOrUpdate,resetForm,fetchNewPatientId,isEditMode}) {
    <Grid container spacing={2}>
    
     <Grid item xs={12}>
-    {/* <Card sx={{marginLeft:-38,width:1105}} className='patients'> */}
-    {/* <CardContent> */}
-    
-   {/* <Grid container spacing={2}>
-                  <Grid item className='but'>
-                  <Button
-                      variant="contained"
-                      // onClick={resetForm}
-                      className="button"
-                      sx={{  marginRight:1,
-                        textTransform: 'none' 
-                      }}
-                    >
-                      New
-                    </Button>
-                    <Button
-                      variant="contained"
-                      className="button"
-                      // onClick={handleSaveOrUpdate}
-                      sx={{  marginRight: 1,
-                        textTransform: 'none' 
-                       }}
-                    >
-                      Save
-                    </Button>
-                  
-                    <Button
-                      variant="contained"
-                      className="button"
-                      
-                      sx={{  marginRight:1,
-                         
-                        textTransform: 'none' 
-                      }}
-                    >
-                      Proceed to bill
-                    </Button>
-                   
-                  </Grid>
-                </Grid> */}
-                <div className="responsive-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px', marginRight: '-25px' }}>
+  <div className="responsive-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px', marginRight: '-25px' }}>
+ 
   <Button
-    variant="contained"
-    className="button"
-    sx={{
-      textTransform: 'none',
-      marginRight: 1,
-    }}
-    onClick={() => {
-      resetForm();
-      fetchNewPatientId();
-    }}
-  >
-    New
-  </Button>
+  variant="contained"
+   className="button"
+  sx={{ textTransform: 'none', marginRight: 1 }}
+  onClick={handleNewPatient}
+>
+  New
+</Button>
   <Button
-        variant="contained"
-        className="button"
-        sx={{ textTransform: 'none', marginRight: 1 }}
-        onClick={handleSaveOrUpdate}
-      >
-        {isEditMode ? 'Update' : 'Save'}
-      </Button>
-  {/* <Button
-    variant="contained"
-    className="button"
-    sx={{
-      textTransform: 'none',
-      marginRight: 1,
-    }}
-    onClick={() => {
-      handleSaveOrUpdate();
-      // toast.success('Data saved successfully!');
+  variant="contained"
+  className="button"
+  sx={{ textTransform: 'none', marginRight: 1 }}
+  onClick={updatePatient}
 
-    }}
-    
-  >
-    Save
-  </Button> */}
+>
+Update
+</Button>
+<Button
+  variant="contained"
+  className="button"
+  sx={{ textTransform: 'none', marginRight: 1 }}
+  onClick={saveNewPatient}
+
+>
+Save
+</Button>
   <Button
     onClick={handleButtonClick}
     variant="contained"
@@ -114,8 +63,7 @@ function Buttons({handleSaveOrUpdate,resetForm,fetchNewPatientId,isEditMode}) {
                 
              
                 <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
-    {/* </CardContent> */}
-   {/* </Card> */}
+
     </Grid>
     </Grid>
    </>

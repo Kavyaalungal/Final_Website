@@ -112,6 +112,272 @@ useEffect(() => {
 }, [patientDetails?.Patient_Code, setPatientDetails]);
 
 
+const saveOrUpdate = async () => {
+  if (!validate()) {
+    toast.error('Validation failed');
+    return;
+  }
+
+  // Collecting data from form inputs
+  const patientCode = patientDetails.Patient_Code;
+  const newPatientId = patientCode ? patientCode : await fetchNewPatientId(); // Fetch a new ID if not present
+
+  const trimmedDetails = {
+    Patient_Code: newPatientId,
+    Patient_Name: patientDetails.Patient_Name.trim(),
+    Patient_Email: patientDetails.Patient_Email?.trim() || '',
+    Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+    Patient_Title: patientDetails.Patient_Title,
+    Patient_Ismale: patientDetails.Patient_Ismale,
+    Patient_YrId: 2425, 
+    Patient_CpyId: 2,  
+  };
+
+  // Determine if this is an update or a save
+  const editFlag = patientCode ? 1 : 0; // 1 for update if Patient_Code exists, 0 for save otherwise
+
+  const payload = {
+    ...trimmedDetails,
+    EditFlag: editFlag,
+  };
+
+  console.log('Payload:', payload);
+  console.log('EditFlag:', editFlag);
+  console.log('Patient Code:', patientCode);
+
+  try {
+    const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
+    console.log('Save or update patient response:', response.data);
+
+    if (response.data.status && response.data.status.length > 0) {
+      const responseStatus = response.data.status[0];
+      if (responseStatus.status === 'Success') {
+        toast.success('Patient details saved/updated successfully');
+        resetForm();
+      } else {
+        toast.error(`Failed to save/update patient details: ${responseStatus.Message}`);
+      }
+    } else {
+      toast.error('Invalid response format from server');
+    }
+  } catch (error) {
+    toast.error('Error saving/updating patient details');
+    console.error('Error saving/updating patient details:', error);
+  }
+};
+// const handleSaveOrUpdate = async () => {
+//   // Validate the form fields
+//   if (!validate()) {
+//     return;
+//   }
+
+//   let patientCode = patientDetails.Patient_Code;
+
+//   // Fetch a new Patient ID if not in edit mode
+//   if (!isEditMode) {
+//     const newPatientId = await fetchNewPatientId();
+//     if (newPatientId) {
+//       patientCode = newPatientId; // Use the new patient ID
+//     } else {
+//       toast.error('Failed to fetch a new patient ID');
+//       return; // Stop execution if fetching a new ID failed
+//     }
+//   }
+
+//   // Trim necessary fields
+//   const trimmedDetails = {
+//     ...patientDetails,
+//     Patient_Code: patientCode, // Use the new or existing Patient_Code
+//     Patient_Name: patientDetails.Patient_Name.trim(),
+//     Patient_Email: patientDetails.Patient_Email?.trim() || '', // Handle undefined values
+//     Patient_Phno: patientDetails.Patient_Phno?.trim() || '', // Handle undefined values
+//     Patient_Title: patientDetails.Patient_Title,
+//     Patient_Ismale: patientDetails.Patient_Ismale,
+//     Patient_YrId: patientDetails.Patient_YrId,
+//     Patient_CpyId: patientDetails.Patient_CpyId,
+//   };
+
+//   // Determine EditFlag value based on isEditMode
+//   const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
+//   console.log('isEditMode:', isEditMode);
+//   console.log('EditFlag:', isEditMode ? 1 : 0);
+  
+//   // Log the data to be sent to the backend
+//   console.log('Data to be sent to backend:', {
+//     ...trimmedDetails,
+//     Patient_CpyId: 2,
+//     Patient_YrId: 2425,
+//     EditFlag: editFlag,
+//   });
+
+//   try {
+//     // Make the API request
+//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
+//       ...trimmedDetails,
+//       Patient_CpyId: 2,
+//       Patient_YrId: 2425,
+//       EditFlag: editFlag,
+//     });
+
+//     console.log('API Response:', response.data);
+
+//     // Check the response for success
+//     if (response.data.status && response.data.status.length > 0) {
+//       const responseStatus = response.data.status[0];
+
+//       if (responseStatus.status === 'Success') {
+//         if (isEditMode) {
+//           toast.success('Patient details updated successfully');
+//           setIsEditMode(false); // Exit edit mode after updating
+//         } else {
+//           toast.success('Patient details saved successfully');
+//           resetForm(); // Reset the form after saving a new patient
+//         }
+//       } else if (responseStatus.status === 'Failed') {
+//         toast.error(`Failed to save/update patient details: ${responseStatus.Message}`);
+//       } else {
+//         toast.error('Unexpected response from the server');
+//       }
+//     } else {
+//       toast.error('Invalid response format from server');
+//     }
+//   } catch (error) {
+//     console.error('Error saving/updating patient details:', error);
+//     toast.error('Error saving/updating patient details');
+//   }
+// };
+// Save or update patient details
+// const handleSaveOrUpdate = async () => {
+//   // Validate the form fields
+//   if (!validate()) {
+//     return;
+//   }
+
+//   let patientCode = patientDetails.Patient_Code;
+
+//   // If not in edit mode, fetch a new Patient ID before saving
+//   if (!isEditMode) {
+//     const newPatientId = await fetchNewPatientId();
+//     if (newPatientId) {
+//       patientCode = newPatientId; // Use the new patient ID
+//     } else {
+//       toast.error('Failed to fetch a new patient ID');
+//       return; // Stop execution if fetching a new ID failed
+//     }
+//   }
+
+//   // Trim necessary fields
+//   // const trimmedDetails = {
+//   //   ...patientDetails,
+//   //   Patient_Code: patientCode, // Use the new or existing Patient_Code
+//   //   Patient_Name: patientDetails.Patient_Name.trim(),
+//   //   Patient_Email: patientDetails.Patient_Email?.trim(),
+//   //   Patient_Phno: patientDetails.Patient_Phno?.trim(),
+//   // };
+//   const trimmedDetails = {
+//     ...patientDetails,
+//     Patient_Code: patientCode, // Use the new or existing Patient_Code
+//     Patient_Name: patientDetails.Patient_Name.trim(),
+//     Patient_Email: patientDetails.Patient_Email?.trim() || '', // Handle undefined values
+//     Patient_Phno: patientDetails.Patient_Phno?.trim() || '', // Handle undefined values
+//     Patient_Title: patientDetails.Patient_Title,
+//     Patient_Ismale: patientDetails.Patient_Ismale,
+//     Patient_YrId: patientDetails.Patient_YrId,
+//     Patient_CpyId: patientDetails.Patient_CpyId,
+//   };
+//  // Log the data to be sent to the backend
+//  console.log('Data to be sent to backend:', {
+//   ...trimmedDetails,
+//   Patient_CpyId: 2,
+//   Patient_YrId: 2425,
+//   EditFlag: isEditMode ? 1 : 0, // Determine EditFlag value
+// });
+//   try {
+//     // Determine EditFlag value
+//     const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
+
+//     // Make the API request
+//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
+//       ...trimmedDetails,
+//       Patient_CpyId: 2,
+//       Patient_YrId: 2425,
+//       EditFlag: editFlag,
+//     });
+//     console.log('API Response:', response.data);
+//     // Check the response for success
+//     if (response.data.status && response.data.status.length > 0) {
+//       const responseStatus = response.data.status[0];
+
+//       if (responseStatus.status === 'Success') {
+//         if (isEditMode) {
+//           toast.success('Patient details updated successfully');
+//           setIsEditMode(false); // Exit edit mode after updating
+//         } else {
+//           toast.success('Patient details saved successfully');
+//           resetForm(); // Reset the form after saving a new patient
+//         }
+//       } else if (responseStatus.status === 'Failed') {
+//         toast.error(`Failed to save/update patient details: ${responseStatus.Message}`);
+//       } else {
+//         toast.error('Unexpected response from the server');
+//       }
+//     } else {
+//       toast.error('Invalid response format from server');
+//     }
+//   } catch (error) {
+//     console.error('Error saving/updating patient details:', error);
+//     toast.error('Error saving/updating patient details');
+//   }
+// };
+// function for saving the data back to server
+// const handleSaveOrUpdate = async () => {
+//   if (!validate()) {
+//     return;
+//   }
+
+//   // Trim all necessary fields
+//   const trimmedDetails = {
+//     ...patientDetails,
+//     Patient_Name: patientDetails.Patient_Name.trim(),
+//     // Patient_Email: patientDetails.Patient_Email.trim(),
+//     // Patient_Phno: patientDetails.Patient_Phno.trim(),
+//     // Add more fields as needed
+//   };
+
+//   try {
+//     // Determine EditFlag value
+//     const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
+    
+//     // Make the API request
+//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
+//       ...trimmedDetails,
+//       Patient_CpyId: 2,
+//       Patient_YrId: 2425,
+//       EditFlag: editFlag,
+//     });
+
+//     // Check the response for success
+//     if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
+//       if (isEditMode) {
+//         toast.success('Patient details updated successfully');
+//       } else {
+//         toast.success('Patient details saved successfully');
+//       }
+
+//       // Reset or update form based on mode
+//       if (!isEditMode) {
+//         resetForm(); // Reset the form after saving a new patient
+//       } else {
+//         setIsEditMode(false); // Exit edit mode after updating
+//       }
+//     } else {
+//       toast.error('Failed to save/update patient details');
+//     }
+//   } catch (error) {
+//     console.error('Error saving/updating patient details:', error);
+//     toast.error('Error saving/updating patient details');
+//   }
+// };
 
 const handleSelectPatient = async (event, newValue) => {
   if (!newValue) {

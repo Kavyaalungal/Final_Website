@@ -19,22 +19,32 @@ function Register() {
   // const { setPatientDetails } = usePatient();
   const { patientDetails, setPatientDetails } = usePatient();
 // console.log({ patientDetails, setPatientDetails }); 
-const [patientId, setPatientId] = useState(null);
+
     // declaring state variables needed
     const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
     const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
     const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
-    const [isEditMode, setIsEditMode] = useState(false); // Track edit mode initially it is set to false
+    const [isEditMode, setIsEditMode] = useState(false); // Default to false for new patients
+ // Track edit mode initially it is set to false
     const [errors, setErrors] = useState({}); // state variable for storing the errors 
     const [error, setError] = useState(null);
+    useEffect(() => {
+      saveNewPatient(); // Call it directly to see if it runs
+    }, []);
+     
     useEffect(() => {
         console.log('Component mounted or updated.');
        }, []);
        useEffect(() => {
         if (patientDetails) {
+          // If patientDetails exists, switch to edit mode
           setIsEditMode(true);
+        } else {
+          // If patientDetails is null or undefined, switch to new mode
+          setIsEditMode(false);
         }
       }, [patientDetails]);
+      
         // function for clearing the form fields
        const resetForm = () => {  
          console.log('Resetting form.');
@@ -205,38 +215,103 @@ const fetchNewPatientId = async () => {
   }
 };
 
-// Save or update patient details
-const handleSaveOrUpdate = async () => {
-  if (!validate()) {
-    return;
+const handleNewPatient = async () => {
+  resetForm();
+  const newPatientId = await fetchNewPatientId();
+  if (newPatientId) {
+    setPatientDetails(prevDetails => ({
+      ...prevDetails,
+      Patient_Code: newPatientId
+    }));
+    setIsEditMode(false); // Ensure this is set correctly for a new patient
+  } else {
+    toast.error('Failed to fetch a new patient ID');
   }
+};
 
-  let patientCode = patientDetails.Patient_Code;
 
-  // If not in edit mode, fetch a new Patient ID before saving
-  if (!isEditMode) {
-    const newPatientId = await fetchNewPatientId();
-    if (newPatientId) {
-      patientCode = newPatientId; // Use the new patient ID
-    } else {
-      return; // Stop execution if fetching a new ID failed
-    }
-  }
 
-  // Trim necessary fields
+const saveNewPatient = async () => {
+  console.log('saveNewPatient function called');
+  
+  if (!validate()) return;
+
+  // Collecting data directly from form inputs
   const trimmedDetails = {
-    ...patientDetails,
-    Patient_Code: patientCode, // Use the new or existing Patient_Code
+    Patient_Code: await fetchNewPatientId(), // Fetch a new patient ID
+    Patient_Title: patientDetails.Patient_Title,
     Patient_Name: patientDetails.Patient_Name.trim(),
-    Patient_Email: patientDetails.Patient_Email?.trim(),
-    Patient_Phno: patientDetails.Patient_Phno?.trim(),
+    Patient_Ismale: patientDetails.Patient_Ismale,
+    Patient_Dob: patientDetails.Patient_Dob, // Assuming this is in the correct format
+    Patient_Ageyy: patientDetails.Patient_Ageyy,
+    Patient_Agemm: patientDetails.Patient_Agemm,
+    Patient_Agedd: patientDetails.Patient_Agedd,
+    Patient_Email: patientDetails.Patient_Email?.trim() || '',
+    Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+    Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
+    Patient_Address: patientDetails.Patient_Address?.trim() || '',
+    Patient_Note: patientDetails.Patient_Note?.trim() || '',
+    Patient_YrId: 2425, 
+    Patient_CpyId: 2,  
   };
 
-  try {
-    // Determine EditFlag value
-    const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
+  const editFlag = 0;
 
-    // Make the API request
+  const payload = {
+    ...trimmedDetails,
+    EditFlag: editFlag,
+  };
+  
+  console.log(payload);
+
+  try {
+    const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
+    console.log('Save new patient response:', response.data);
+
+    if (response.data.status && response.data.status.length > 0) {
+      const responseStatus = response.data.status[0];
+      if (responseStatus.status === 'Success') {
+        toast.success('Patient details saved successfully');
+        resetForm();
+      } else {
+        toast.error(`Failed to save patient details: ${responseStatus.Message}`);
+      }
+    } else {
+      toast.error('Invalid response format from server');
+    }
+  } catch (error) {
+    toast.error('Error saving new patient details');
+    console.error('Error saving new patient details:', error);
+  }
+};
+
+
+
+
+const updatePatient = async () => {
+  // Update patient logic
+  if (!validate()) return;
+
+  const trimmedDetails = {
+    ...patientDetails,
+    Patient_Name: patientDetails.Patient_Name.trim(),
+    Patient_Email: patientDetails.Patient_Email?.trim() || '',
+    Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+    // Patient_Title: patientDetails.Patient_Title,
+    // Patient_Ismale: patientDetails.Patient_Ismale,
+    Patient_YrId: patientDetails.Patient_YrId,
+    Patient_CpyId: patientDetails.Patient_CpyId,
+  };
+
+  const editFlag = 1;
+  console.log('Data to be sent for saving new patient:', {
+    ...trimmedDetails,
+    Patient_CpyId: 2,
+    Patient_YrId: 2425,
+    EditFlag: editFlag,
+  });
+
+  try {
     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
       ...trimmedDetails,
       Patient_CpyId: 2,
@@ -244,23 +319,38 @@ const handleSaveOrUpdate = async () => {
       EditFlag: editFlag,
     });
 
-    // Check the response for success
-    if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
-      if (isEditMode) {
+    if (response.data.status && response.data.status.length > 0) {
+      const responseStatus = response.data.status[0];
+      if (responseStatus.status === 'Success') {
         toast.success('Patient details updated successfully');
-        setIsEditMode(false); // Exit edit mode after updating
+        setIsEditMode(false);
       } else {
-        toast.success('Patient details saved successfully');
-        resetForm(); // Reset the form after saving a new patient
+        toast.error(`Failed to update patient details: ${responseStatus.Message}`);
       }
     } else {
-      toast.error('Failed to save/update patient details');
+      toast.error('Invalid response format from server');
     }
   } catch (error) {
-    console.error('Error saving/updating patient details:', error);
-    toast.error('Error saving/updating patient details');
+    console.error('Error updating patient details:', error);
+    toast.error('Error updating patient details');
   }
 };
+
+const handleSaveOrUpdate = async () => {
+  console.log(`isEditMode: ${isEditMode}`); // Log current mode
+  if (isEditMode) {
+    console.log('Calling updatePatient()');
+    await updatePatient();
+  } else {
+    console.log('Calling saveNewPatient()');
+    await saveNewPatient();
+  }
+};
+
+
+
+
+
 
 
 const handlePatientIdChange = (e) => {
@@ -381,55 +471,6 @@ const validate = () => {
 };
 
 
-// function for saving the data back to server
-// const handleSaveOrUpdate = async () => {
-//   if (!validate()) {
-//     return;
-//   }
-
-//   // Trim all necessary fields
-//   const trimmedDetails = {
-//     ...patientDetails,
-//     Patient_Name: patientDetails.Patient_Name.trim(),
-//     // Patient_Email: patientDetails.Patient_Email.trim(),
-//     // Patient_Phno: patientDetails.Patient_Phno.trim(),
-//     // Add more fields as needed
-//   };
-
-//   try {
-//     // Determine EditFlag value
-//     const editFlag = isEditMode ? 1 : 0; // 1 for update, 0 for new patient
-    
-//     // Make the API request
-//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
-//       ...trimmedDetails,
-//       Patient_CpyId: 2,
-//       Patient_YrId: 2425,
-//       EditFlag: editFlag,
-//     });
-
-//     // Check the response for success
-//     if (response.data.status && response.data.status.length > 0 && response.data.status[0].status === 'Success') {
-//       if (isEditMode) {
-//         toast.success('Patient details updated successfully');
-//       } else {
-//         toast.success('Patient details saved successfully');
-//       }
-
-//       // Reset or update form based on mode
-//       if (!isEditMode) {
-//         resetForm(); // Reset the form after saving a new patient
-//       } else {
-//         setIsEditMode(false); // Exit edit mode after updating
-//       }
-//     } else {
-//       toast.error('Failed to save/update patient details');
-//     }
-//   } catch (error) {
-//     console.error('Error saving/updating patient details:', error);
-//     toast.error('Error saving/updating patient details');
-//   }
-// };
 
   
 
@@ -483,8 +524,8 @@ const renderOption = (props, option) => { // two parameters props and option pro
     <Card
   sx={{
     height: {xs:140,sm:75},
-    marginLeft: { xs: -2, sm: -3.5 }, // Responsive margin for different screen sizes
-    width: { xs: 370, sm: 830, },  // Full width on small screens, fixed width on larger screens
+    marginLeft: { xs: -2, sm: -3.5 }, 
+    width: { xs: 370, sm: 830, }, 
     marginTop: { xs: 0, sm: -1 },
   }}
   //  className="patient heights"
@@ -550,8 +591,8 @@ const renderOption = (props, option) => { // two parameters props and option pro
     <Grid item xs={12}>
   <Card 
     sx={{
-      marginLeft: { xs: -2, sm: -3.5 }, // Adjust margin for smaller screens
-      width: { xs: 370, sm: 830 }, // Make the card take full width on smaller screens
+      marginLeft: { xs: -2, sm: -3.5 }, 
+      width: { xs: 370, sm: 830 },
       height: {xs:'auto',sm:345},
     }} 
     // className='patient cardheight'
@@ -568,18 +609,10 @@ const renderOption = (props, option) => { // two parameters props and option pro
     size="small"
     fullWidth
     InputLabelProps={{ style: { fontSize: '1rem' } }}
-    // InputProps={{
-    //   endAdornment: (
-    //     <InputAdornment position="end">
-    //       <Button onClick={fetchNewPatientId} variant="contained" color="primary">
-    //         New
-    //       </Button>
-    //     </InputAdornment>
-    //   )
-    // }}
   />
 </Grid>
 
+{/* <Button onClick={saveOrUpdate}>Save Patient</Button> */}
 
         <Grid item xs={12} sm={4} md={4}>
           <TextField
@@ -819,7 +852,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
 </Grid>
 
     <Grid item xs={12} >
-      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode}/>
+      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient}/>
      
   
     </Grid>
