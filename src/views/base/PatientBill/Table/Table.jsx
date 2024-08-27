@@ -1,6 +1,6 @@
-import { useState, useRef} from 'react';
+import { useState, useRef } from 'react';
 import {
-  Card, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton
+  Card, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -23,30 +23,35 @@ function Maintable() {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (currentRow.testCode && !currentRow.testName) {
-        // Move to the testName field when Enter is pressed after testCode is entered
         testNameRef.current.focus();
       } else if (currentRow.testCode && currentRow.testName) {
-        // Add the row and reset currentRow when both testCode and testName are entered
         setRows([...rows, currentRow]);
         setCurrentRow({ id: Date.now(), testCode: '', testName: '', isEditable: true });
-        testCodeRef.current.focus();  // Focus back to testCode field
+        testCodeRef.current.focus();
       }
     }
   };
 
+  // Calculate the total value from rows
+  const calculateTotal = () => {
+    return rows.reduce((sum, row) => sum + (parseFloat(row.total) || 0), 0).toFixed(2);
+  };
+
   return (
-    <Card sx={{ height: '85%', overflow: 'auto' }}>
+    <Card sx={{ height: '80%', overflow: 'auto',marginLeft:-7 ,width:1100,marginTop:1}}>
       <CardContent>
         <Grid container justifyContent="flex-end" sx={{ mb: 1 }}>
           <TextField
             label="Lab No"
             variant="outlined"
             size="small"
-            sx={{ 
+            InputProps={{readOnly:true}}
+            sx={{
               fontSize: '1rem',
               height: 40,
-              '& input': { padding: '8px' },
+              '& input': { padding: '8px' ,textAlign:'right' },
               maxWidth: '100%' 
+              
             }}
           />
         </Grid>
@@ -59,9 +64,9 @@ function Maintable() {
               size="small"
               fullWidth
               sx={{ 
-                fontSize: '1rem',
+             
                 height: 40,
-                '& input': { padding: '8px' }
+                '& input': { padding: '8px',fontSize:'0.95rem' }
               }}
             />
           </Grid>
@@ -87,7 +92,7 @@ function Maintable() {
                 sx={{ 
                   fontSize: '1rem',
                   height: 40,
-                  '& .MuiSelect-select': { padding: '8px' }
+                  '& .MuiSelect-select': { padding: '8px',fontSize:'0.95rem' }
                 }}
               >
                 <MenuItem value="Direct">Direct</MenuItem>
@@ -97,7 +102,7 @@ function Maintable() {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} sx={{ mb: 2 }}>
+        <Grid container spacing={2} sx={{ mb: 1, marginTop: -3 }}>
           <Grid item xs={12} sm={4}>
             <TextField
               label="IP/OP"
@@ -107,7 +112,7 @@ function Maintable() {
               sx={{ 
                 fontSize: '1rem',
                 height: 40,
-                '& input': { padding: '8px' }
+                '& input': { padding: '8px',fontSize:'0.95rem' }
               }}
             />
           </Grid>
@@ -120,7 +125,7 @@ function Maintable() {
               sx={{ 
                 fontSize: '1rem',
                 height: 40,
-                '& input': { padding: '8px' }
+                '& input': { padding: '8px',fontSize:'0.95rem' }
               }}
             />
           </Grid>
@@ -133,7 +138,7 @@ function Maintable() {
               sx={{ 
                 fontSize: '1rem',
                 height: 40,
-                '& input': { padding: '8px' }
+                '& input': { padding: '8px' ,fontSize:'0.95rem'}
               }}
             />
           </Grid>
@@ -143,10 +148,10 @@ function Maintable() {
           component={Paper}
           sx={{
             height: 240, 
-            overflowY: 'auto',
+            overflowY: 'scroll',
             '&::-webkit-scrollbar': {
-              width: 0,
-              background: 'transparent',
+              width: '0px',
+              background: 'transparent'
             },
             scrollbarWidth: 'none',
             marginTop: 1,
@@ -227,6 +232,26 @@ function Maintable() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Total Box */}
+        <Grid container justifyContent="flex-end" sx={{ mt: 2}}>
+          <Grid item xs={12} sm={2}>
+            <TextField
+              label="Total"
+              variant="outlined"
+              size="small"
+            
+              value={calculateTotal()}
+              InputProps={{
+                readOnly: true,
+                sx: {
+                  '& input': { textAlign: 'right', padding: '6px' ,fontSize:'1rem' },
+                }
+              }}
+            />
+          </Grid>
+        </Grid>
+      
       </CardContent>
     </Card>
   );

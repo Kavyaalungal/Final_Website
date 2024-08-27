@@ -15,7 +15,8 @@ import { usePatient } from './PatientContext';
 
 
 
-function Register() {
+function Register({ closeModal }) {
+  console.log("Parent component closeModal:", closeModal);
   // const { setPatientDetails } = usePatient();
   const { patientDetails, setPatientDetails } = usePatient();
 // console.log({ patientDetails, setPatientDetails }); 
@@ -324,6 +325,7 @@ const updatePatient = async () => {
       if (responseStatus.status === 'Success') {
         toast.success('Patient details updated successfully');
         setIsEditMode(false);
+        resetForm();
       } else {
         toast.error(`Failed to update patient details: ${responseStatus.Message}`);
       }
@@ -852,7 +854,8 @@ const renderOption = (props, option) => { // two parameters props and option pro
 </Grid>
 
     <Grid item xs={12} >
-      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient}/>
+      
+      <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient} closeModal={closeModal}/>
      
   
     </Grid>

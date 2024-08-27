@@ -1,0 +1,1 @@
+import{j as r}from"./index-WrV3SgJe.js";import o from"./WidgetsDropdown-CFFo4TIz.js";import{C as s}from"./CCardBody-CWEbJH8N.js";import"./DefaultLayout-Bt_hO4Vh.js";import"./TextField-C2sCDKYg.js";import"./CRow-Bwoo3-m0.js";const d=()=>r.jsxs(r.Fragment,{children:[r.jsx(o,{className:"mb-4"}),r.jsx(s,{})]});export{d as default};

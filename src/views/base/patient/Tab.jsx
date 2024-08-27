@@ -36,7 +36,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({ setPatientDetails }) {
+export default function BasicTabs({ setPatientDetails,closeModal }) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -53,10 +53,10 @@ export default function BasicTabs({ setPatientDetails }) {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <Register setPatientDetails={setPatientDetails}/>
+        <Register setPatientDetails={setPatientDetails} closeModal={closeModal}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Additional/>
+        <Additional closeModal={closeModal}/>
       </CustomTabPanel>
     </Box>
   );

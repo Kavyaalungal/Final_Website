@@ -11,7 +11,7 @@ import { format, parseISO } from 'date-fns';
 import './Patient.css'
 import Buttons from './Buttons';
 
-function Additional() {
+function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,isEditMode,handleNewPatient,saveNewPatient,updatePatient}) {
   const [selectedId, setSelectedId] = useState('');
   const [idFile, setIdFile] = useState(null);
 
@@ -213,7 +213,7 @@ function Additional() {
 </Grid>
 
     <Grid item xs={12} >
-      <Buttons/>
+    <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient} closeModal={closeModal}/>
      
   
     </Grid>
