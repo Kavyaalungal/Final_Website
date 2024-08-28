@@ -66,7 +66,7 @@ function Maintable() {
               sx={{ 
              
                 height: 40,
-                '& input': { padding: '8px',fontSize:'0.95rem' }
+                '& input': { padding: '8px',fontSize:'0.95remrem' }
               }}
             />
           </Grid>
@@ -92,7 +92,7 @@ function Maintable() {
                 sx={{ 
                   fontSize: '1rem',
                   height: 40,
-                  '& .MuiSelect-select': { padding: '8px',fontSize:'0.95rem' }
+                  '& .MuiSelect-select': { padding: '8px',fontSize:'0.95remrem' }
                 }}
               >
                 <MenuItem value="Direct">Direct</MenuItem>
@@ -112,7 +112,7 @@ function Maintable() {
               sx={{ 
                 fontSize: '1rem',
                 height: 40,
-                '& input': { padding: '8px',fontSize:'0.95rem' }
+                '& input': { padding: '8px',fontSize:'0.95remrem' }
               }}
             />
           </Grid>
@@ -125,7 +125,7 @@ function Maintable() {
               sx={{ 
                 fontSize: '1rem',
                 height: 40,
-                '& input': { padding: '8px',fontSize:'0.95rem' }
+                '& input': { padding: '8px',fontSize:'0.95remrem' }
               }}
             />
           </Grid>
@@ -138,7 +138,7 @@ function Maintable() {
               sx={{ 
                 fontSize: '1rem',
                 height: 40,
-                '& input': { padding: '8px' ,fontSize:'0.95rem'}
+                '& input': { padding: '8px' ,fontSize:'0.95remrem'}
               }}
             />
           </Grid>
@@ -160,19 +160,19 @@ function Maintable() {
           <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
             <TableHead sx={{ position: 'sticky', zIndex: 1, backgroundColor: 'white', top: 0 }}>
               <TableRow>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Sl No</TableCell>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Test Code</TableCell>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Test Name</TableCell>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Price</TableCell>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Discount</TableCell>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Total</TableCell>
-                <TableCell sx={{ fontSize: '0.75rem', padding: '4px 8px' }}>Remove</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Sl No</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Test Code</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Test Name</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Price</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Discount</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Total</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>Remove</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{ fontSize: '0.75rem' }}>{index + 1}</TableCell>
+                  <TableCell sx={{ fontSize: '0.95rem' }}>{index + 1}</TableCell>
                   <TableCell>{row.testCode}</TableCell>
                   <TableCell>{row.testName}</TableCell>
                   <TableCell>{row.price || ''}</TableCell>
@@ -186,7 +186,7 @@ function Maintable() {
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell sx={{ fontSize: '0.75rem' }}>{rows.length + 1}</TableCell>
+                <TableCell sx={{ fontSize: '0.95rem' }}>{rows.length + 1}</TableCell>
                 <TableCell>
                   <TextField
                     name="testCode"
@@ -200,7 +200,7 @@ function Maintable() {
                     InputProps={{
                       sx: {
                         '& fieldset': { border: 'none' },
-                        input: { padding: '0px', fontSize: '0.75rem', height: 20 }
+                        input: { padding: '0px', fontSize: '0.95rem', height: 20 }
                       }
                     }}
                   />
@@ -219,7 +219,7 @@ function Maintable() {
                     InputProps={{
                       sx: {
                         '& fieldset': { border: 'none' },
-                        input: { padding: '0px', fontSize: '0.75rem', height: 40 }
+                        input: { padding: '0px', fontSize: '0.95rem', height: 40 }
                       }
                     }}
                   />

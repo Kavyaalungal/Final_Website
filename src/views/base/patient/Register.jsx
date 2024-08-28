@@ -29,6 +29,8 @@ function Register({ closeModal }) {
  // Track edit mode initially it is set to false
     const [errors, setErrors] = useState({}); // state variable for storing the errors 
     const [error, setError] = useState(null);
+    const [newPatientId, setNewPatientId] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
     useEffect(() => {
       saveNewPatient(); // Call it directly to see if it runs
     }, []);
@@ -54,6 +56,7 @@ function Register({ closeModal }) {
          setSuggestions([]);
          setIsEditMode(false);
          setErrors({});
+         setNewPatientId(null);
       };
 
   //     // function for entering the searchcriteria 
@@ -188,43 +191,87 @@ function Register({ closeModal }) {
   }
 };
 
-// Fetch new Patient ID when saving a new patient
+
+
+// Fetch a new patient ID
 const fetchNewPatientId = async () => {
   try {
-    // Fetch new Patient ID
     const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg', {
       params: {
         yrId: 2425,
         CmId: 2
       }
     });
-
     if (response.data.success) {
-      setPatientDetails(prevDetails => ({
-        ...prevDetails,
-        Patient_Code: response.data.opdno, // Set new Patient ID
-      }));
-      return response.data.opdno; // Return the new Patient ID
+      setNewPatientId(response.data.opdno);
+      return response.data.opdno;
     } else {
       toast.error('Failed to fetch new patient ID');
       return null;
     }
   } catch (error) {
-    console.error('Error fetching new patient ID:', error);
     toast.error('Error fetching new patient ID');
+    console.error('Error fetching new patient ID:', error);
     return null;
   }
 };
 
+// Save new patient details
+const saveNewPatient = async () => {
+  if (isSaving || !newPatientId) return; // Prevent multiple calls and ensure ID is available
+
+  setIsSaving(true);
+
+
+
+  const payload = {
+        Patient_Code: newPatientId, // Use the new patient ID
+        Patient_Title: patientDetails.Patient_Title.trim(),
+        Patient_Name: patientDetails.Patient_Name.trim(),
+        Patient_Ismale: patientDetails.Patient_Ismale,
+        Patient_Dob: patientDetails.Patient_Dob, // Ensure date format is correct
+        Patient_Ageyy: patientDetails.Patient_Ageyy,
+        Patient_Agemm: patientDetails.Patient_Agemm,
+        Patient_Agedd: patientDetails.Patient_Agedd,
+        Patient_Email: patientDetails.Patient_Email?.trim() || '',
+        Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+        Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
+        Patient_Address: patientDetails.Patient_Address?.trim() || '',
+        Patient_Note: patientDetails.Patient_Note?.trim() || '',
+        Patient_YrId: 2425, 
+        Patient_CpyId: 2, 
+        EditFlag: 0 // Indicate this is a new record
+      };
+
+  try {
+    const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
+    if (response.data.status && response.data.status[0].status === 'Success') {
+      toast.success('Patient details saved successfully');
+      resetForm();
+    } else {
+      toast.error(`Failed to save patient details: ${response.data.status[0].Message}`);
+    }
+  } catch (error) {
+    toast.error('Error saving new patient details');
+    console.error('Error saving new patient details:', error);
+  } finally {
+    setIsSaving(false); // Reset saving status
+  }
+};
+
+
+
+
+
+
 const handleNewPatient = async () => {
-  resetForm();
   const newPatientId = await fetchNewPatientId();
   if (newPatientId) {
     setPatientDetails(prevDetails => ({
       ...prevDetails,
       Patient_Code: newPatientId
     }));
-    setIsEditMode(false); // Ensure this is set correctly for a new patient
+    setIsEditMode(false); // Set edit mode for a new patient
   } else {
     toast.error('Failed to fetch a new patient ID');
   }
@@ -232,59 +279,57 @@ const handleNewPatient = async () => {
 
 
 
-const saveNewPatient = async () => {
-  console.log('saveNewPatient function called');
-  
-  if (!validate()) return;
+// const saveNewPatient = async () => {
+//   // Validate user input before proceeding
+//   // if (!validatePatientDetails(patientDetails)) {
+//   //   toast.error('Please fill out all required fields.');
+//   //   return;
+//   // }
 
-  // Collecting data directly from form inputs
-  const trimmedDetails = {
-    Patient_Code: await fetchNewPatientId(), // Fetch a new patient ID
-    Patient_Title: patientDetails.Patient_Title,
-    Patient_Name: patientDetails.Patient_Name.trim(),
-    Patient_Ismale: patientDetails.Patient_Ismale,
-    Patient_Dob: patientDetails.Patient_Dob, // Assuming this is in the correct format
-    Patient_Ageyy: patientDetails.Patient_Ageyy,
-    Patient_Agemm: patientDetails.Patient_Agemm,
-    Patient_Agedd: patientDetails.Patient_Agedd,
-    Patient_Email: patientDetails.Patient_Email?.trim() || '',
-    Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
-    Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
-    Patient_Address: patientDetails.Patient_Address?.trim() || '',
-    Patient_Note: patientDetails.Patient_Note?.trim() || '',
-    Patient_YrId: 2425, 
-    Patient_CpyId: 2,  
-  };
+//   // Fetch a new patient ID
+//   const newPatientId = await fetchNewPatientId();
+//   if (!newPatientId) {
+//     toast.error('Failed to fetch a new patient ID');
+//     return;
+//   }
 
-  const editFlag = 0;
+//   // Prepare payload for API call
+//   const payload = {
+//     Patient_Code: newPatientId, // Use the new patient ID
+//     Patient_Title: patientDetails.Patient_Title.trim(),
+//     Patient_Name: patientDetails.Patient_Name.trim(),
+//     Patient_Ismale: patientDetails.Patient_Ismale,
+//     Patient_Dob: patientDetails.Patient_Dob, // Ensure date format is correct
+//     Patient_Ageyy: patientDetails.Patient_Ageyy,
+//     Patient_Agemm: patientDetails.Patient_Agemm,
+//     Patient_Agedd: patientDetails.Patient_Agedd,
+//     Patient_Email: patientDetails.Patient_Email?.trim() || '',
+//     Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+//     Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
+//     Patient_Address: patientDetails.Patient_Address?.trim() || '',
+//     Patient_Note: patientDetails.Patient_Note?.trim() || '',
+//     Patient_YrId: 2425, 
+//     Patient_CpyId: 2, 
+//     EditFlag: 0 // Indicate this is a new record
+//   };
 
-  const payload = {
-    ...trimmedDetails,
-    EditFlag: editFlag,
-  };
-  
-  console.log(payload);
+//   // Make API call to save patient details
+//   try {
+//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
 
-  try {
-    const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
-    console.log('Save new patient response:', response.data);
+//     // Check response status
+//     if (response.data.status && response.data.status[0].status === 'Success') {
+//       toast.success('Patient details saved successfully');
+//       resetForm(); // Clear form fields
+//     } else {
+//       toast.error(`Failed to save patient details: ${response.data.status[0].Message}`);
+//     }
+//   } catch (error) {
+//     toast.error('Error saving new patient details');
+//     console.error('Error saving new patient details:', error);
+//   }
+// };
 
-    if (response.data.status && response.data.status.length > 0) {
-      const responseStatus = response.data.status[0];
-      if (responseStatus.status === 'Success') {
-        toast.success('Patient details saved successfully');
-        resetForm();
-      } else {
-        toast.error(`Failed to save patient details: ${responseStatus.Message}`);
-      }
-    } else {
-      toast.error('Invalid response format from server');
-    }
-  } catch (error) {
-    toast.error('Error saving new patient details');
-    console.error('Error saving new patient details:', error);
-  }
-};
 
 
 
@@ -761,10 +806,11 @@ const renderOption = (props, option) => { // two parameters props and option pro
               labelId="genderLabel"
               id="gender"
               label="Gender"
-              value={patientDetails ? patientDetails.Patient_Ismale : ''}    
-              InputProps={{
-                readOnly: true,
-              }}
+              value={patientDetails ? patientDetails.Patient_Ismale : ''} 
+              disabled    
+              // InputProps={{
+              //   readOnly: true,
+              // }}
               InputLabelProps={{ style: { fontSize: '1rem' } }}
               error={!!errors.Patient_Ismale}
             >

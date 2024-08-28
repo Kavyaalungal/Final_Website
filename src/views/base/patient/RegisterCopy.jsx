@@ -1327,3 +1327,106 @@ const renderOption = (props, option) => { // two parameters props and option pro
 }
 
 export default Register
+
+
+
+// Fetch new Patient ID when saving a new patient
+const fetchNewPatientId = async () => {
+  try {
+    const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg', {
+      params: {
+        yrId: 2425,
+        CmId: 2
+      }
+    });
+
+    if (response.data.success) {
+      return response.data.opdno; // Return the new Patient ID
+    } else {
+      toast.error('Failed to fetch new patient ID');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching new patient ID:', error);
+    toast.error('Error fetching new patient ID');
+    return null;
+  }
+};
+
+const saveNewPatient = async () => {
+  console.log('saveNewPatient function called');
+
+  if (!validate()) return;
+
+  const trimmedDetails = {
+    Patient_Code: patientDetails.Patient_Code,
+    Patient_Title: patientDetails.Patient_Title,
+    Patient_Name: patientDetails.Patient_Name.trim(),
+    Patient_Ismale: patientDetails.Patient_Ismale,
+    Patient_Dob: patientDetails.Patient_Dob,
+    Patient_Ageyy: patientDetails.Patient_Ageyy,
+    Patient_Agemm: patientDetails.Patient_Agemm,
+    Patient_Agedd: patientDetails.Patient_Agedd,
+    Patient_Email: patientDetails.Patient_Email?.trim() || '',
+    Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+    Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
+    Patient_Address: patientDetails.Patient_Address?.trim() || '',
+    Patient_Note: patientDetails.Patient_Note?.trim() || '',
+    Patient_YrId: 2425,
+    Patient_CpyId: 2,
+  };
+
+  const editFlag = 0;
+
+  const payload = {
+    ...trimmedDetails,
+    EditFlag: editFlag,
+  };
+
+  console.log(payload);
+
+  try {
+    const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
+    console.log('Save new patient response:', response.data);
+
+    if (response.data.status && response.data.status.length > 0) {
+      const responseStatus = response.data.status[0];
+      if (responseStatus.status === 'Success') {
+        toast.success('Patient details saved successfully');
+        resetForm();
+      } else {
+        toast.error(`Failed to save patient details: ${responseStatus.Message}`);
+      }
+    } else {
+      toast.error('Invalid response format from server');
+    }
+  } catch (error) {
+    toast.error('Error saving new patient details');
+    console.error('Error saving new patient details:', error);
+  }
+};
+
+useEffect(() => {
+  const handleNewPatient = async () => {
+    if (shouldRegisterNewPatient) {
+      setIsSaving(true);
+      const newPatientId = await fetchNewPatientId();
+      if (newPatientId) {
+        setPatientDetails(prevDetails => ({
+          ...prevDetails,
+          Patient_Code: newPatientId
+        }));
+        setIsSaving(false);
+        saveNewPatient(); // Call saveNewPatient after ID is set
+      } else {
+        setIsSaving(false);
+        toast.error('Failed to fetch a new patient ID');
+      }
+      setShouldRegisterNewPatient(false); // Reset the flag after processing
+    }
+  };
+
+  handleNewPatient();
+}, [shouldRegisterNewPatient]);
+const [shouldRegisterNewPatient, setShouldRegisterNewPatient] = useState(false);
+const [isSaving, setIsSaving] = useState(false);

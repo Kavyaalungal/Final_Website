@@ -3,7 +3,7 @@
     color-scheme: light;
   }
   
-  .custom-nav-item {
+  .custom-nav-item  {
     list-style-type: none;
     margin-top: 25px;
     margin-left: 6px;
@@ -40,6 +40,7 @@
     background-color: transparent;
     color: #ffffff;
     padding: .5rem 1rem;
+    justify-content: space-between;
     border-radius: 4px;
     transition: background-color 0.3s ease, color 0.3s ease;
     height: 45px;
@@ -48,6 +49,11 @@
     align-items: center; 
     box-sizing: border-box; 
   }
+  
+.dropdown-arrow {
+  font-size: 5rem;
+  transition: transform 0.3s;
+}
   
   .custom-nav-link:hover {
     background-color: #e25f5f;

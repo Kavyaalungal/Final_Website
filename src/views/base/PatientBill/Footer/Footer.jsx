@@ -63,8 +63,9 @@ function PaymentModal() {
         </CardContent>
       </Card>
       
-      <Modal open={modalOpen} onClose={handleClose} hideBackdrop='blur' >
-        <Fade in={modalOpen}>
+      <Modal open={modalOpen} onClose={handleClose} hideBackdrop
+      sx={{backdropFilter:'brightness(60%)'}} >
+        {/* <Fade in={modalOpen}> */}
         <Box sx={{ 
           position: 'absolute', 
           top: '50%', 
@@ -147,7 +148,7 @@ function PaymentModal() {
             Submit
           </Button>
         </Box>
-        </Fade>
+        {/* </Fade> */}
       </Modal>
     </>
   );
