@@ -48,13 +48,13 @@ function PaymentModal() {
 
   return (
     <>
-      <Card sx={{ backgroundColor: '', height: 105, marginTop: 1,marginLeft:-7,width:1100 }}>
+      <Card sx={{  height: 81,marginTop:2,marginLeft:1,width:1040 }}>
         <CardContent sx={{ display: 'flex', justifyContent: 'flex-end' }} >
           <Button 
            
             onClick={handleOpen} 
             sx={{color:'#bd2937',border:'1px solid #bd2937',
-              marginTop:3
+              marginTop:1
             }}
             
           >
@@ -74,7 +74,7 @@ function PaymentModal() {
           width: { xs: '90%', sm: 400 }, // Responsive width
           maxWidth: 500, // Max width for larger screens
           bgcolor: 'background.paper', 
-          border: '1px solid #000', 
+           border: '1px solid #000', 
           boxShadow: 24, 
           p: 2, 
           borderRadius: 2

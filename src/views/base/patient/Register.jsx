@@ -31,10 +31,9 @@ function Register({ closeModal }) {
     const [error, setError] = useState(null);
     const [newPatientId, setNewPatientId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-    useEffect(() => {
-      saveNewPatient(); // Call it directly to see if it runs
-    }, []);
-     
+  const [hasShownToast, setHasShownToast] = useState(false);
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
+
     useEffect(() => {
         console.log('Component mounted or updated.');
        }, []);
@@ -59,27 +58,55 @@ function Register({ closeModal }) {
          setNewPatientId(null);
       };
 
-  //     // function for entering the searchcriteria 
+      // function for entering the searchcriteria 
     const handleSearchCriteriaChange = (event) => {   
       setSearchCriteria(event.target.value); // it sets the value selected
      setSearchValue('');  // acording to the search item resets the value and suggestions 
       setSuggestions([]);
     };
   // function to enter the value according to searchcriteria
-   const handleSearchValueChange = (event, value) => {
-   console.log('Search value changed:', value);
-    // Check if the search criteria is 'Phone'
-    // if (searchCriteria === 'Phone' || searchCriteria === 'Patient ID') {
-    //   // Check if the value contains only digits
-    //   if (!/^\d+$/.test(value)) {
-    //     toast.warn('Please enter  number (only digits allowed).'); // Display toast warning
-    //     return; // Exit the function early
-    //   }
-    // }
-     setSearchValue(value);  // according to search item search value set to the value entered
-     fetchSuggestions(value); // suggestions according to the value
-    };
-    // function for fetching the suggetions according to the search criteria
+    const handleSearchValueChange = (event, value) => {
+    // Skip validation if an option is selected
+    if (isOptionSelected) {
+      setIsOptionSelected(false); // Reset flag after handling selection
+      setSearchValue(value);
+      return;
+    }
+  
+    console.log('Search Criteria:', searchCriteria);
+    console.log('Value:', value);
+  
+    // Clear warnings when input is empty
+    if (value === '') {
+      setSearchValue(value);
+      fetchSuggestions(value);
+      return;
+    }
+  
+    if (searchCriteria === 'Phone' || searchCriteria === 'Patient ID') {
+      const numericValue = value.replace(/\D/g, '');
+      if (numericValue.length === 0) {
+        if (!toast.isActive('phoneValidation')) {
+          toast.warn('Please enter a number (only digits allowed).', { toastId: 'phoneValidation' });
+        }
+        return;
+      }
+    } else if (searchCriteria === 'Name') {
+      const namePattern = /^[a-zA-Z\s]*$/; // Allow empty input for names
+      if (!namePattern.test(value)) {
+        if (!toast.isActive('nameValidation')) {
+          toast.warn('Please enter a valid name (only alphabetic characters and spaces allowed).', { toastId: 'nameValidation' });
+        }
+        return;
+      }
+    }
+  
+    console.log('Setting search value and fetching suggestions.');
+    setSearchValue(value);
+    fetchSuggestions(value);
+  };
+  
+   // function for fetching the suggetions according to the search criteria
     const fetchSuggestions = async (value) => { // search value is passed as parameter 
       console.log('Fetching suggestions with value:', value);
       try {
@@ -221,9 +248,6 @@ const saveNewPatient = async () => {
   if (isSaving || !newPatientId) return; // Prevent multiple calls and ensure ID is available
 
   setIsSaving(true);
-
-
-
   const payload = {
         Patient_Code: newPatientId, // Use the new patient ID
         Patient_Title: patientDetails.Patient_Title.trim(),
@@ -259,12 +283,8 @@ const saveNewPatient = async () => {
   }
 };
 
-
-
-
-
-
 const handleNewPatient = async () => {
+  resetForm();
   const newPatientId = await fetchNewPatientId();
   if (newPatientId) {
     setPatientDetails(prevDetails => ({
@@ -276,62 +296,6 @@ const handleNewPatient = async () => {
     toast.error('Failed to fetch a new patient ID');
   }
 };
-
-
-
-// const saveNewPatient = async () => {
-//   // Validate user input before proceeding
-//   // if (!validatePatientDetails(patientDetails)) {
-//   //   toast.error('Please fill out all required fields.');
-//   //   return;
-//   // }
-
-//   // Fetch a new patient ID
-//   const newPatientId = await fetchNewPatientId();
-//   if (!newPatientId) {
-//     toast.error('Failed to fetch a new patient ID');
-//     return;
-//   }
-
-//   // Prepare payload for API call
-//   const payload = {
-//     Patient_Code: newPatientId, // Use the new patient ID
-//     Patient_Title: patientDetails.Patient_Title.trim(),
-//     Patient_Name: patientDetails.Patient_Name.trim(),
-//     Patient_Ismale: patientDetails.Patient_Ismale,
-//     Patient_Dob: patientDetails.Patient_Dob, // Ensure date format is correct
-//     Patient_Ageyy: patientDetails.Patient_Ageyy,
-//     Patient_Agemm: patientDetails.Patient_Agemm,
-//     Patient_Agedd: patientDetails.Patient_Agedd,
-//     Patient_Email: patientDetails.Patient_Email?.trim() || '',
-//     Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
-//     Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
-//     Patient_Address: patientDetails.Patient_Address?.trim() || '',
-//     Patient_Note: patientDetails.Patient_Note?.trim() || '',
-//     Patient_YrId: 2425, 
-//     Patient_CpyId: 2, 
-//     EditFlag: 0 // Indicate this is a new record
-//   };
-
-//   // Make API call to save patient details
-//   try {
-//     const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
-
-//     // Check response status
-//     if (response.data.status && response.data.status[0].status === 'Success') {
-//       toast.success('Patient details saved successfully');
-//       resetForm(); // Clear form fields
-//     } else {
-//       toast.error(`Failed to save patient details: ${response.data.status[0].Message}`);
-//     }
-//   } catch (error) {
-//     toast.error('Error saving new patient details');
-//     console.error('Error saving new patient details:', error);
-//   }
-// };
-
-
-
 
 
 const updatePatient = async () => {
@@ -394,25 +358,13 @@ const handleSaveOrUpdate = async () => {
   }
 };
 
-
-
-
-
-
-
 const handlePatientIdChange = (e) => {
   setPatientDetails({
     ...patientDetails,
     Patient_Code: e.target.value
   });
 };
- 
-
-
-
-   
- 
-    // function to calculate age in days, months, and years with the dob value 
+   // function to calculate age in days, months, and years with the dob value 
 const calculateAge = (dob) => { // dob is passed as parameter
  if (!dob) return; // if there is no dob stop the execution here
 
@@ -572,7 +524,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
   sx={{
     height: {xs:140,sm:75},
     marginLeft: { xs: -2, sm: -3.5 }, 
-    width: { xs: 370, sm: 830, }, 
+    width: { xs: 370,md:725 }, 
     marginTop: { xs: 0, sm: -1 },
   }}
   //  className="patient heights"
@@ -639,7 +591,7 @@ const renderOption = (props, option) => { // two parameters props and option pro
   <Card 
     sx={{
       marginLeft: { xs: -2, sm: -3.5 }, 
-      width: { xs: 370, sm: 830 },
+      width: { xs: 370 ,md:725},
       height: {xs:'auto',sm:345},
     }} 
     // className='patient cardheight'
@@ -894,6 +846,22 @@ const renderOption = (props, option) => { // two parameters props and option pro
             InputLabelProps={{ style: { fontSize: '1rem' } }}
           />
         </Grid>
+        {/* <Grid item xs={12}>
+          <TextareaAutosize
+            minRows={1}
+            maxRows={6}
+            value={patientDetails ? patientDetails.Patient_Address : ''}    
+            onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
+            style={{
+              width: "100%",
+             
+               padding: 4,
+              fontSize: 16,
+             
+            }}
+            placeholder="Enter your Address"
+          />
+        </Grid> */}
       </Grid>
     </CardContent>
   </Card>

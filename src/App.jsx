@@ -1,13 +1,13 @@
 import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes,Navigate  } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-
-
+import axios from 'axios'
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
 
-import PatientMain from './views/base/PatientBill/Main/PatientMain'
 
+
+axios.defaults.baseURL='http://172.16.16.10:8060'
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 

@@ -182,7 +182,7 @@ const NavigationWithModals = () => {
           </CNavLink>
         </CNavItem> */}
         <CNavItem className="custom-nav-item">
-          <CNavLink className="custom-nav-link" onClick={() => toggleModal('Patient Registration', <Patient closeModal={closeModal} />)}>
+          <CNavLink className="custom-nav-link" onClick={() => toggleModal('Patient Registration', <Patient closeModal={closeModal} />,'lg')}>
             <CIcon icon={cilGroup} className="me-2" /> Patient Registration
           </CNavLink>
         </CNavItem>
@@ -233,11 +233,12 @@ const NavigationWithModals = () => {
                 className='modal custom-modal-close custom-modal-width custom-centered-modal'
                 backdrop='static'
                 scrollable
-                aria-labelledby="OptionalSizesExample2">
+                aria-labelledby="OptionalSizesExample2"
+               >
           <CModalHeader className='custom-modal-header'>
             <CModalTitle className='custom-modal-title'>{modalTitle}</CModalTitle>
           </CModalHeader>
-          <CModalBody className='c-modal-body no-scroll'>
+          <CModalBody className='c-modal-body no-scroll' style={{zoom:'0.8'}}>
             {modalContent}
           </CModalBody>
         </CModal>

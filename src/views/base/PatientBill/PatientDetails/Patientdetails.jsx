@@ -36,11 +36,11 @@ function Patientdetails() {
           width: { xs: "100%", sm: "100%", md: "100%" }, // Responsive width
           maxWidth: "auto",
           maxHeight: 700,
-          height: 600,
+          height: 562,
           p: 2,
           overflowY: "auto",
-          marginLeft:-8,
-          marginTop:1 // Enable scrolling if content overflows
+          marginLeft:-1,
+          marginTop:-2 // Enable scrolling if content overflows
         }}
       >
         <CardContent
@@ -219,7 +219,7 @@ function Patientdetails() {
             >
               {patientData.Patient_Address || "N/A"}
             </Typography>
-            <Typography
+            {/* <Typography
               sx={{
                 mt: 1,
                 fontSize: { xs: 14, sm: 16, md: 16 },
@@ -239,7 +239,7 @@ function Patientdetails() {
               color="#000"
             >
               {patientData.branch || "N/A"}
-            </Typography>
+            </Typography> */}
           </Box>
         </CardContent>
       </Card>

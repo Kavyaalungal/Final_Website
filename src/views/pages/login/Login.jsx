@@ -124,72 +124,77 @@ const Login = () => {
 
   return (
     <>
-      <style>{`
-        .content-wrapper {
-          border: 2px solid #523885; 
-          border-radius: 8px;
-          padding: 20px;
-          background-color: #fff;
-        }
-      `}</style>
-      <CCard className="mb-4">
-        <div className="container-fluid d-flex justify-content-center align-items-center min-vh-100 p-0">
-          <div className="row g-0 justify-content-center align-items-center w-100">
-            <div className="col-lg-4 d-flex justify-content-center align-items-center">
-              <div className="content-wrapper w-100 p-4">
-                <div className="text-center">
-                  <a href="index.html" className="authentication-logo">
-                    <img
-                       src={iconLogo}
-                      alt="Logo"
-                      height={50}
-                      className="auth-logo logo-dark mx-auto"
-                    />
-                  </a>
-                </div>
-                <div className="p-2 mt-5">
-                  <form onSubmit={handleLogin}>
-                    <div className="mb-3 auth-form-group-custom">
-                      <TextField
-                        id="username"
-                        label="Username"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        InputLabelProps={{ style: { fontSize: '18px' } }}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        style={{ marginTop: '10px' }}
-                      />
-                    </div>
-                    <div className="mb-3 auth-form-group-custom">
-                      <TextField
-                        id="password"
-                        label="Password"
-                        variant="outlined"
-                        size="small"
-                        type="password"
-                        fullWidth
-                        InputLabelProps={{ style: { fontSize: '18px' } }}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={{ marginTop: '10px' }}
-                      />
-                    </div>
-                    <div className="mt-4 text-center">
-                      <CButton type="submit" color="primary">Login</CButton>
-                    </div>
-                    <div className="mt-4 text-center">
-                      {/* Add additional links or functionality here */}
-                    </div>
-                  </form>
-                </div>
+     <style>{`
+  body {
+    overflow: hidden;
+  }
+  .content-wrapper {
+    border: 2px solid #523885; 
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+  }
+`}</style>
+
+<CCard className="mb-4">
+  <div className="container-fluid d-flex justify-content-center align-items-center vh-100 p-0">
+    <div className="row g-0 justify-content-center align-items-center w-100">
+      <div className="col-lg-4 d-flex justify-content-center align-items-center">
+        <div className="content-wrapper w-100 p-4">
+          <div className="text-center">
+            <a href="index.html" className="authentication-logo">
+              <img
+                src={iconLogo}
+                alt="Logo"
+                height={50}
+                className="auth-logo logo-dark mx-auto"
+              />
+            </a>
+          </div>
+          <div className="p-2 mt-5">
+            <form onSubmit={handleLogin}>
+              <div className="mb-3 auth-form-group-custom">
+                <TextField
+                  id="username"
+                  label="Username"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{ style: { fontSize: '18px' } }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  style={{ marginTop: '10px' }}
+                />
               </div>
-            </div>
+              <div className="mb-3 auth-form-group-custom">
+                <TextField
+                  id="password"
+                  label="Password"
+                  variant="outlined"
+                  size="small"
+                  type="password"
+                  fullWidth
+                  InputLabelProps={{ style: { fontSize: '18px' } }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ marginTop: '10px' }}
+                />
+              </div>
+              <div className="mt-4 text-center">
+                <CButton type="submit" color="primary">Login</CButton>
+              </div>
+              <div className="mt-4 text-center">
+                {/* Add additional links or functionality here */}
+              </div>
+            </form>
           </div>
         </div>
-        <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
-      </CCard>
+      </div>
+    </div>
+  </div>
+  <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+</CCard>
+
     </>
   );
 };

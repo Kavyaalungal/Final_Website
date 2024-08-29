@@ -2,7 +2,7 @@ import { Card, CardContent, Typography } from '@mui/material';
 
 function Header() {
   return (
-    <Card sx={{ backgroundColor: '#fbf5f6', height: 40, marginLeft: -14, marginTop: -4, width: 1465 }}>
+    <Card sx={{ backgroundColor: '#fbf5f6', height: 40, marginLeft: -10, marginTop: -8, width: 1428 }}>
     <CardContent>
       <Typography
         variant="h5"

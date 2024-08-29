@@ -30,7 +30,7 @@ function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,i
   <Card
     sx={{
       marginLeft: { xs: -2, sm: -3.5 }, // Adjusting margin for smaller screens
-      width: { xs: 370, sm: 830 },  // Full width on small screens, fixed width on larger screens
+      width: { xs: 370, sm: 830 ,md:720},  // Full width on small screens, fixed width on larger screens
       height: { xs: 'auto', sm: 435 }, // Adjust height for smaller screens
       marginTop: { xs: 0, sm: -1 },
     }}
