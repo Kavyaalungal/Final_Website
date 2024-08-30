@@ -4,20 +4,19 @@ import Patientdetails from "../PatientDetails/Patientdetails"
 import Maintable from "../Table/Table"
 import Footer from "../Footer/Footer"
 import CustomBreadcrumbs from "../Breadcrumbs"
-
+import './PattientMain.css';
 
 function PatientMain() {
     return (
         <>
-         <CustomBreadcrumbs current="Lab Invoice" />
+         {/* <CustomBreadcrumbs current="Lab Invoice" /> */}
             <Box sx={{
-
+                zoom:0.9,
                 padding: 1,
-                zoom: 0.8
             }}>
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={12}>
-                        {/* <Header /> */}
+                        <Header />
                     </Grid>
                     <Grid item xs={12} sm={2.5}>
                         <Patientdetails />

@@ -32,3 +32,6 @@ body {
     --cui-header-disabled-color: rgba(var(--cui-emphasis-color-rgb), 0.3);
     --cui-header-active-color: rgba(var(--cui-emphasis-color-rgb), 1);
 }
+.border-bottom {
+    border-bottom: var(--bs-border-width) var(--bs-border-style) #7e8691 !important;
+}

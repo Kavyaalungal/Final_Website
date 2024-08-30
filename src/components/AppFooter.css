@@ -1,0 +1,23 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa; /* Optional: Customize the background color */
+    padding: 10px 300px;
+    z-index: 1000; /* Ensure the footer is above other content */
+
+  }
+  
+  .left-content {
+    flex: 1;
+  }
+  
+  .right-content {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  

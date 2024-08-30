@@ -1,110 +1,112 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
-import { CCard, CCardBody } from "@coreui/react";
 
 function Patientdetails() {
   const [patientData, setPatientData] = useState([]);
 
   useEffect(() => {
-    axios.post("http://172.16.16.10:8060/api/PatientMstr/PatientSearchMaster", {
-      YearId: 2425,
-      BranchId: 2,
-      SrchItem: "Name",
-      SrchVal: "Manu",
-    })
-      .then(response => {
+    axios
+      .post("http://172.16.16.10:8060/api/PatientMstr/PatientSearchMaster", {
+        YearId: 2425,
+        BranchId: 2,
+        SrchItem: "Name",
+        SrchVal: "An",
+      })
+      .then((response) => {
         if (response.data && response.data.patientList) {
           setPatientData(response.data.patientList[0]);
-          console.log(response.data.patientList[0]);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("There was an error fetching the patient data!", error);
       });
   }, []);
 
   return (
-    <>
-    {/* <CCard className="w-50">
-    <CCardBody>
-      
-     </CCardBody>
-   </CCard> */}
-      <Card
+    <Card
+      sx={{
+        width: "100%",
+        maxWidth: "auto",
+        maxHeight: 700,
+        height: 565,
+        p: 2,
+        overflowY: "auto",
+        marginLeft:-7,
+        marginTop:1
+      }}
+    >
+      <CardContent
         sx={{
-          width: { xs: "100%", sm: "100%", md: "100%" }, // Responsive width
-          maxWidth: "auto",
-          maxHeight: 700,
-          height: 562,
-          p: 2,
-          overflowY: "auto",
-          marginLeft:-1,
-          marginTop:-2 // Enable scrolling if content overflows
+          height: "100%",
+          overflowY: "hidden",
         }}
       >
-        <CardContent
+        <Typography
           sx={{
-            height: "100%",
-            overflowY: "hidden"
-            , // Enable scrolling within the content
+            fontSize: { xs: 16, sm: 18, md: 20 },
+            mb: 1,
+            mt: -2,
+            textAlign: "start", // Align title to the left
+          }}
+          color="#0d6efd"
+          variant="h6"
+        >
+          Patient Details
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mb: 2,
           }}
         >
-          <Typography
+          <Avatar
             sx={{
-              fontSize: { xs: 16, sm: 18, md: 20 },
-              mb: 1,
-              mt: -2,
-              textAlign: "center",
+              width: { xs: 60, sm: 70, md: 80 },
+              height: { xs: 60, sm: 70, md: 80 },
+              mb: 3,
             }}
-            color="#0d6efd"
-            variant="h6"
-          >
-            Patient Details
-          </Typography>
+            alt="Patient Avatar"
+            src={
+              patientData.avatar ||
+              "https://avatars.githubusercontent.com/u/10924138"
+            }
+          />
 
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
-              mb: 2,
+              alignItems: "flex-start",
+              ml:-8 // Align patient name and details to the left
             }}
           >
-            <Avatar
-              sx={{
-                width: { xs: 60, sm: 70, md: 80 },
-                height: { xs: 60, sm: 70, md: 80 },
-                mb: 3,
-              }}
-              alt="Patient Avatar"
-              src={patientData.avatar || "https://avatars.githubusercontent.com/u/10924138"}
-            />
-
             <Typography
               variant="h6"
               component="div"
               sx={{
-                marginTop: -1,
                 fontWeight: "bold",
-                fontSize: { xs: 16, sm: 18, md: 17 },
+                fontSize: { xs: 17, sm: 17, md: 17 },
               }}
             >
               {patientData.Patient_Name || "Patient Name"}
             </Typography>
 
+          
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
+                flexDirection: "row", // Horizontal alignment
+                justifyContent: "flex-start",
+                gap: 1, // Space between Age and Gender
                 mt: 1,
               }}
             >
               <Typography
                 sx={{
-                  mr: 2,
-                  mt: -2,
                   fontWeight: "bold",
                   fontSize: { xs: 14, sm: 16, md: 15 },
                 }}
@@ -113,137 +115,137 @@ function Patientdetails() {
                 {patientData.Patient_Ageyy || "Age"}
               </Typography>
               <Typography
-                color="black"
                 sx={{
-                  mt: -2,
                   fontWeight: "bold",
                   fontSize: { xs: 14, sm: 16, md: 15 },
                 }}
+                color="black"
               >
                 {patientData.Patient_Ismale || "Gender"}
               </Typography>
             </Box>
           </Box>
+        </Box>
 
-          <Box
+      
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            mt: 2,
+          }}
+        >
+          <Typography
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              mt: 2,
+              mb: 1.5,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
             }}
+            color="#b0b0b0"
           >
-            <Typography
-              sx={{
-                mb: 1.5,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word", // Ensures long text wraps
-                overflowWrap: "break-word", // Ensures long text wraps
-              }}
-              color="#b0b0b0"
-            >
-              Contact No
-            </Typography>
-            <Typography
-              sx={{
-                mt: -2,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#000"
-            >
-              {patientData.Patient_mobile || "N/A"}
-            </Typography>
-            <Typography
-              sx={{
-                mt: 1,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#b0b0b0"
-            >
-              Email
-            </Typography>
-            <Typography
-              sx={{
-                mt: 0,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#000"
-            >
-              {patientData.Patient_Email || "N/A"}
-            </Typography>
-            <Typography
-              sx={{
-                mt: 1,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#b0b0b0"
-            >
-              PatientID
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#000"
-            >
-              {patientData.patientID || "N/A"}
-            </Typography>
-            <Typography
-              sx={{
-                mt: 1,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#b0b0b0"
-            >
-              Address
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#000"
-            >
-              {patientData.Patient_Address || "N/A"}
-            </Typography>
-            {/* <Typography
-              sx={{
-                mt: 1,
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#b0b0b0"
-            >
-              Branch
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-              }}
-              color="#000"
-            >
-              {patientData.branch || "N/A"}
-            </Typography> */}
-          </Box>
-        </CardContent>
-      </Card>
-    </>
+            Contact No
+          </Typography>
+          <Typography
+            sx={{
+              mt: -2,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            {patientData.Patient_mobile || "N/A"}
+          </Typography>
+          <Typography
+            sx={{
+              mt: 1,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            Email
+          </Typography>
+          <Typography
+            sx={{
+              mt: 0,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            {patientData.Patient_Email || "N/A"}
+          </Typography>
+          <Typography
+            sx={{
+              mt: 1,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            PatientID
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            {patientData.patientID || "N/A"}
+          </Typography>
+          <Typography
+            sx={{
+              mt: 1,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            Address
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            {patientData.Patient_Address || "N/A"}
+          </Typography>
+          <Typography
+            sx={{
+              mt: 1,
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            Branch
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+            color="#b0b0b0"
+          >
+            {patientData.branch || "N/A"}
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
 

@@ -38,7 +38,7 @@ function Maintable() {
   };
 
   return (
-    <Card sx={{ height: '83%', overflow: 'hidden',marginLeft:1 ,width:1040,marginTop:-2}}>
+    <Card sx={{ height: '80%', overflow: 'hidden',marginLeft:-5 ,width:1030,marginTop:1}}>
       <CardContent>
         <Grid container justifyContent="flex-end" sx={{ mb: 1 }}>
           <TextField

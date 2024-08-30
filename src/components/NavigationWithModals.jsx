@@ -232,13 +232,13 @@ const NavigationWithModals = () => {
                 centered 
                 className='modal custom-modal-close custom-modal-width custom-centered-modal'
                 backdrop='static'
-                scrollable
+                // scrollable
                 aria-labelledby="OptionalSizesExample2"
                >
           <CModalHeader className='custom-modal-header'>
             <CModalTitle className='custom-modal-title'>{modalTitle}</CModalTitle>
           </CModalHeader>
-          <CModalBody className='c-modal-body no-scroll' style={{zoom:'0.8'}}>
+          <CModalBody className='c-modal-body no-scroll ' style={{zoom:'0.8'}}>
             {modalContent}
           </CModalBody>
         </CModal>
