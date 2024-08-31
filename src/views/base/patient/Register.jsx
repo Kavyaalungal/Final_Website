@@ -180,22 +180,22 @@ function Register({patientDetails,setPatientDetails, closeModal ,resetForm,fetch
         </Grid>
 
         <Grid item xs={12} sm={2} md={2}>
-          <TextField
-            id="yyyy"
-            label="Age YY"
-            variant="outlined"
-            size="small"
-            value={patientDetails ? patientDetails.Patient_Ageyy : ''}    
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Ageyy: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-            }}
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            // error={!!errors.Patient_Age}
-            // helperText={errors.Patient_Age}
-          />
-        </Grid>
+  <TextField
+    id="yyyy"
+    label="Age YY"
+    variant="outlined"
+    size="small"
+    value={patientDetails ? patientDetails.Patient_Ageyy : ''}
+    onChange={(e) => {
+      setPatientDetails({ ...patientDetails, Patient_Ageyy: e.target.value });
+      setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
+    }}
+    fullWidth
+    InputLabelProps={{ style: { fontSize: '1rem' } }}
+    // error={!!errors.Patient_Age}
+    // helperText={errors.Patient_Age}
+  />
+</Grid>
 
         <Grid item xs={12} sm={2} md={2}>
           <TextField

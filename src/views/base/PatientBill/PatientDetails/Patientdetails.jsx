@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
+import { Bold } from "lucide-react";
+import avatar from "../../../../../public/images/female.png"
 
 function Patientdetails() {
   const [patientData, setPatientData] = useState([]);
@@ -32,8 +34,8 @@ function Patientdetails() {
         height: 565,
         p: 2,
         overflowY: "auto",
-        marginLeft:-7,
-        marginTop:1
+        marginLeft:-24,
+        marginTop:-2
       }}
     >
       <CardContent
@@ -44,13 +46,15 @@ function Patientdetails() {
       >
         <Typography
           sx={{
-            fontSize: { xs: 16, sm: 18, md: 20 },
+            fontSize: { xs: 16, sm: 18, md: 16 },
             mb: 1,
             mt: -2,
-            textAlign: "start", // Align title to the left
+            textAlign: "start",
+            fontWeight:'Bold' // Align title to the left
           }}
-          color="#0d6efd"
+          color="#bd2937"
           variant="h6"
+          // fontWeight={300}
         >
           Patient Details
         </Typography>
@@ -72,7 +76,7 @@ function Patientdetails() {
             alt="Patient Avatar"
             src={
               patientData.avatar ||
-              "https://avatars.githubusercontent.com/u/10924138"
+              avatar
             }
           />
 
@@ -102,7 +106,7 @@ function Patientdetails() {
                 flexDirection: "row", // Horizontal alignment
                 justifyContent: "flex-start",
                 gap: 1, // Space between Age and Gender
-                mt: 1,
+                mt: -1,
               }}
             >
               <Typography
@@ -154,7 +158,7 @@ function Patientdetails() {
               wordBreak: "break-word",
               overflowWrap: "break-word",
             }}
-            color="#b0b0b0"
+            color="#000"
           >
             {patientData.Patient_mobile || "N/A"}
           </Typography>
@@ -176,7 +180,7 @@ function Patientdetails() {
               wordBreak: "break-word",
               overflowWrap: "break-word",
             }}
-            color="#b0b0b0"
+            color="#000"
           >
             {patientData.Patient_Email || "N/A"}
           </Typography>
@@ -197,7 +201,7 @@ function Patientdetails() {
               wordBreak: "break-word",
               overflowWrap: "break-word",
             }}
-            color="#b0b0b0"
+            color="#000"
           >
             {patientData.patientID || "N/A"}
           </Typography>
@@ -218,7 +222,7 @@ function Patientdetails() {
               wordBreak: "break-word",
               overflowWrap: "break-word",
             }}
-            color="#b0b0b0"
+            color="#000"
           >
             {patientData.Patient_Address || "N/A"}
           </Typography>
@@ -239,7 +243,7 @@ function Patientdetails() {
               wordBreak: "break-word",
               overflowWrap: "break-word",
             }}
-            color="#b0b0b0"
+            color="#000"
           >
             {patientData.branch || "N/A"}
           </Typography>

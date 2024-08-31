@@ -1,4 +1,4 @@
-import{u as p,l as m,r,j as e}from"./index-BnJAx5pm.js";import{af as n,ak as u,al as h}from"./ReactToastify-DfMiB5_P.js";import{C as x,a as g}from"./CCard-Cq8-Jq3C.js";const f=()=>({type:"login"}),j=""+new URL("icon-logo-B4shHpSM.png",import.meta.url).href,y=()=>{const o=p(),i=m(),[t,l]=r.useState(""),[s,d]=r.useState(""),c=a=>{if(a.preventDefault(),!t||!s){h.warn("Please enter username and password");return}o(f()),i("/")};return e.jsxs(e.Fragment,{children:[e.jsx("style",{children:`
+import{u as p,l as m,r,j as e}from"./index-Cizr-H-9.js";import{af as n,ak as u,al as h}from"./ReactToastify-DVFpmC3Z.js";import{C as x,a as g}from"./CCard-f8AFX7Ip.js";const f=()=>({type:"login"}),j=""+new URL("icon-logo-B4shHpSM.png",import.meta.url).href,y=()=>{const o=p(),i=m(),[t,l]=r.useState(""),[s,d]=r.useState(""),c=a=>{if(a.preventDefault(),!t||!s){h.warn("Please enter username and password");return}o(f()),i("/")};return e.jsxs(e.Fragment,{children:[e.jsx("style",{children:`
         body, html {
           margin: 0;
           padding: 0;

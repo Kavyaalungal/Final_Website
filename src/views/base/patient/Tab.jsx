@@ -74,45 +74,10 @@ export default function BasicTabs({ closeModal }) {
   };
   // function to enter the value according to searchcriteria
   const handleSearchValueChange = (event, value) => {
-    // Skip validation if an option is selected
-    if (isOptionSelected) {
-      setIsOptionSelected(false); // Reset flag after handling selection
-      setSearchValue(value);
-      return;
-    }
-  
-    console.log('Search Criteria:', searchCriteria);
-    console.log('Value:', value);
-  
-    // Clear warnings when input is empty
-    if (value === '') {
-      setSearchValue(value);
-      fetchSuggestions(value);
-      return;
-    }
-  
-    if (searchCriteria === 'Phone' || searchCriteria === 'Patient ID') {
-      const numericValue = value.replace(/\D/g, '');
-      if (numericValue.length === 0) {
-        if (!toast.isActive('phoneValidation')) {
-          toast.warn('Please enter a number (only digits allowed).', { toastId: 'phoneValidation' });
-        }
-        return;
-      }
-    } else if (searchCriteria === 'Name') {
-      const namePattern = /^[a-zA-Z\s]*$/; // Allow empty input for names
-      if (!namePattern.test(value)) {
-        if (!toast.isActive('nameValidation')) {
-          toast.warn('Please enter a valid name (only alphabetic characters and spaces allowed).', { toastId: 'nameValidation' });
-        }
-        return;
-      }
-    }
-  
-    console.log('Setting search value and fetching suggestions.');
-    setSearchValue(value);
-    fetchSuggestions(value);
-  };
+    console.log('Search value changed:', value);
+      setSearchValue(value);  // according to search item search value set to the value entered
+      fetchSuggestions(value); // suggestions according to the value
+     };
 
    // function for fetching the suggetions according to the search criteria
   const fetchSuggestions = async (value) => { // search value is passed as parameter 
@@ -308,39 +273,80 @@ export default function BasicTabs({ closeModal }) {
 
    
    // function to calculate age in days, months, and years with the dob value 
-   const calculateAge = (dob) => { // dob is passed as parameter
-    if (!dob) return; // if there is no dob stop the execution here
+  //  const calculateAge = (dob) => { // dob is passed as parameter
+  //   if (!dob) return; // if there is no dob stop the execution here
    
-     const today = new Date();  // takes the current date that is todays date '04-07-2024'
-     const birthDate = new Date(dob);  // dob is taken '17-12-2000'
+  //    const today = new Date();  // takes the current date that is todays date '04-07-2024'
+  //    const birthDate = new Date(dob);  // dob is taken '17-12-2000'
    
-     // Calculate age
-     let ageYear = today.getFullYear() - birthDate.getFullYear();  // 2024-2000 = 24
-     let ageMonth = today.getMonth() - birthDate.getMonth();  // 7-12 = -5
-     let ageDay = today.getDate() - birthDate.getDate();   // 4-17 = -13
+  //    // Calculate age
+  //    let ageYear = today.getFullYear() - birthDate.getFullYear();  // 2024-2000 = 24
+  //    let ageMonth = today.getMonth() - birthDate.getMonth();  // 7-12 = -5
+  //    let ageDay = today.getDate() - birthDate.getDate();   // 4-17 = -13
    
-     // Adjust negative ageMonth
-     if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {   // here month is -5 so it is negative then
-       ageYear--;                                          // 1 is decremented from year here it becomes 24-1 = 23
-       ageMonth += 12;                                      // 12 is added to month ie, -5 +12 = 7
-     }
+  //    // Adjust negative ageMonth
+  //    if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {   // here month is -5 so it is negative then
+  //      ageYear--;                                          // 1 is decremented from year here it becomes 24-1 = 23
+  //      ageMonth += 12;                                      // 12 is added to month ie, -5 +12 = 7
+  //    }
    
-     // Adjust negative ageDay
-     if (ageDay < 0) {
-       const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);  // for getting the last day of previous month of the current date here we get '30-06-2024'
-       ageDay = tempDate.getDate() + ageDay;   // 30 + -13 = 17
-       ageMonth--;                      // one is decremented from month 7 -1 = 6
-     }
+  //    // Adjust negative ageDay
+  //    if (ageDay < 0) {
+  //      const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);  // for getting the last day of previous month of the current date here we get '30-06-2024'
+  //      ageDay = tempDate.getDate() + ageDay;   // 30 + -13 = 17
+  //      ageMonth--;                      // one is decremented from month 7 -1 = 6
+  //    }
    
-     // Update state
+  //    // Update state
    
-     setPatientDetails((prevDetails) => ({
-       ...prevDetails,
-       Patient_Ageyy: ageYear !== 0 ? ageYear.toString() : prevDetails.Patient_Ageyy,
-       Patient_Agemm: ageMonth !== 0 ? ageMonth.toString() : prevDetails.Patient_Agemm,
-       Patient_Agedd: ageDay !== 0 ? ageDay.toString() : prevDetails.Patient_Agedd,
-     }));
-   };
+  //    setPatientDetails((prevDetails) => ({
+  //      ...prevDetails,
+  //      Patient_Ageyy: ageYear !== 0 ? ageYear.toString() : prevDetails.Patient_Ageyy,
+  //      Patient_Agemm: ageMonth !== 0 ? ageMonth.toString() : prevDetails.Patient_Agemm,
+  //      Patient_Agedd: ageDay !== 0 ? ageDay.toString() : prevDetails.Patient_Agedd,
+  //    }));
+  //  };
+
+  const calculateAge = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    const ageYY = today.getFullYear() - birthDate.getFullYear();
+    const ageMM = today.getMonth() - birthDate.getMonth();
+    const ageDD = today.getDate() - birthDate.getDate();
+  
+    return {
+      years: ageYY,
+      months: ageMM < 0 ? 12 + ageMM : ageMM,
+      days: ageDD < 0 ? new Date(today.getFullYear(), today.getMonth(), 0).getDate() + ageDD : ageDD
+    };
+  };
+  
+  const handleDateOfBirthChange = (e) => {
+    const dob = e.target.value;
+    setPatientDetails({ ...patientDetails, Patient_Dob: dob });
+    const { years, months, days } = calculateAge(dob);
+    setPatientDetails({
+      ...patientDetails,
+      Patient_Ageyy: years,
+      Patient_Agemm: months,
+      Patient_Agedd: days
+    });
+  };
+  
+  const handleAgeChange = (field, value) => {
+    const ageYY = parseInt(patientDetails.Patient_Ageyy, 10) || 0;
+    const ageMM = parseInt(patientDetails.Patient_Agemm, 10) || 0;
+    const ageDD = parseInt(patientDetails.Patient_Agedd, 10) || 0;
+    const today = new Date();
+    const dob = new Date(today.getFullYear() - ageYY, today.getMonth() - ageMM, today.getDate() - ageDD).toISOString().split('T')[0];
+  
+    setPatientDetails({
+      ...patientDetails,
+      [`Patient_Age${field}`]: value,
+      Patient_Dob: dob
+    });
+  };
+  
   // Save new patient details
   const saveNewPatient = async () => {
     if (isSaving || !newPatientId) return; // Prevent multiple calls and ensure ID is available
@@ -619,6 +625,8 @@ export default function BasicTabs({ closeModal }) {
              setIsEditMode={setIsEditMode}
              errors={errors}
              setErrors={setErrors}
+             handleDateOfBirthChange={handleDateOfBirthChange}
+             handleAgeChange={handleAgeChange}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

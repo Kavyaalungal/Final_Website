@@ -27,7 +27,7 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/lab": "^5.0.0-alpha.172",
     "@mui/system": "^5.16.7",
-    "@mui/x-date-pickers": "^7.10.0",
+    "@mui/x-date-pickers": "^7.15.0",
     "axios": "^1.7.4",
     "axios-jsonp": "^1.0.4",
     "bootstrap": "^5.3.3",

@@ -172,7 +172,8 @@ function Buttons({
   isEditMode,
   handleNewPatient,
   saveNewPatient,
-  updatePatient
+  updatePatient,
+  patientDetails 
 }) {
   const navigate = useNavigate();
 
@@ -188,7 +189,10 @@ function Buttons({
     
     // Delay navigation to ensure modal closes
     setTimeout(() => {
-      navigate('/proceedtobill', { replace: true });
+      navigate('/proceedtobill', {
+        replace: true,
+        state: { patientDetails } // Pass the patient details to the billing page
+      });
     }, 300); // Adjust the delay if necessary
   };
 

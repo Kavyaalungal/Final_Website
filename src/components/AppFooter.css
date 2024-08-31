@@ -6,7 +6,7 @@
     bottom: 0;
     width: 100%;
     background-color: #f8f9fa; /* Optional: Customize the background color */
-    padding: 10px 300px;
+    padding: 10px 400px;
     z-index: 1000; /* Ensure the footer is above other content */
 
   }
