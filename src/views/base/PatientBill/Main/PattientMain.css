@@ -1,4 +1,12 @@
-#root{
-    transform: scale();
-    transform-origin: 'top left';
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent body scrolling and delegate scrolling to the container */
+}
+
+.Box {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }

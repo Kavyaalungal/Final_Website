@@ -1,7 +1,7 @@
 
 .sidebar-dark {
     --cui-body-color: rgba(255, 255, 255, 0.87);
-    --cui-body-bg: #bd2937;;
+    --cui-body-bg:  var(--primary-bg-color);;
     --cui-emphasis-color: #fff;
     --cui-secondary-color: rgba(255, 255, 255, 0.6);
     --cui-secondary-bg: #323a49;

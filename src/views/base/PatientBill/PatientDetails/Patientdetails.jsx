@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
 import { Bold } from "lucide-react";
-import avatar from "../../../../../public/images/female.png"
+import avatar from "../../../../assets/images/female.png";
 
 function Patientdetails() {
   const [patientData, setPatientData] = useState([]);
@@ -31,7 +31,7 @@ function Patientdetails() {
         width: "100%",
         maxWidth: "auto",
         maxHeight: 700,
-        height: 565,
+        height: 643,
         p: 2,
         overflowY: "auto",
         marginLeft:-24,

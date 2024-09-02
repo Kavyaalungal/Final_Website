@@ -243,35 +243,59 @@ export default function BasicTabs({ closeModal }) {
     });
   };
  // function to set the gender field according to the title
-  const handleTitleChange = (e) => {
-    const newTitle = e.target.value; // for storing the selected title
-    let gender = ''; // initially is null 
+  // const handleTitleChange = (e) => {
+  //   const newTitle = e.target.value; // for storing the selected title
+  //   let gender = ''; // initially is null 
    
-     switch (newTitle) { // when the prefix changes gender is set according to it 
-       case 'Mr':     // if is selected Mr then gender is set to Male 
-         gender = 'Male';
-        break;
-       case 'Mrs':  // if it selects these fields it is set to female
-       case 'Ms':
-       case 'Miss':
-         gender = 'Female';
-         break;
-       default:    // if no value is selected it is set to null as initial value 
-         gender = '';
-     }
-       // update the patient details again 
-    setPatientDetails((prevDetails) => ({
-       ...prevDetails, // spreading the details fetched and updating the title according to the selected one 
-      Patient_Title: newTitle,
-       Patient_Ismale: gender, // updates the gender according to it 
-     }));
-     setErrors((prevErrors) => ({   // if any errors occurs in the gender field 
-       ...prevErrors,
-       Patient_Ismale: '',
-     }));
-   };
+  //    switch (newTitle) { // when the prefix changes gender is set according to it 
+  //      case 'Mr':     // if is selected Mr then gender is set to Male 
+  //        gender = 'Male';
+  //       break;
+  //      case 'Mrs':  // if it selects these fields it is set to female
+  //      case 'Ms':
+  //      case 'Miss':
+  //        gender = 'Female';
+  //        break;
+  //      default:    // if no value is selected it is set to null as initial value 
+  //        gender = '';
+  //    }
+  //      // update the patient details again 
+  //   setPatientDetails((prevDetails) => ({
+  //      ...prevDetails, // spreading the details fetched and updating the title according to the selected one 
+  //     Patient_Title: newTitle,
+  //      Patient_Ismale: gender, // updates the gender according to it 
+  //    }));
+  //    setErrors((prevErrors) => ({   // if any errors occurs in the gender field 
+  //      ...prevErrors,
+  //      Patient_Ismale: '',
+  //    }));
+  //  };
 
-   
+   const handleTitleChange = (event) => {
+    const newTitle = event.target.value;
+    // Update title and gender based on selected title
+    setPatientDetails((prevDetails) => ({
+      ...prevDetails,
+      Patient_Title: newTitle,
+      Patient_Ismale: 
+        newTitle === 'Mr' ? 'Male' :
+        newTitle === 'Mrs' || newTitle === 'Ms' || newTitle === 'Miss' ? 'Female' :
+        '', // Default value when no title is selected
+    }));
+  };
+
+  const handleGenderChange = (event) => {
+    const newGender = event.target.value;
+    // Update gender and title based on selected gender
+    setPatientDetails((prevDetails) => ({
+      ...prevDetails,
+      Patient_Ismale: newGender,
+      Patient_Title: 
+        newGender === 'Male' ? 'Mr' :
+        newGender === 'Female' ? 'Ms' :
+        '', // Default value when no gender is selected
+    }));
+  };
    // function to calculate age in days, months, and years with the dob value 
   //  const calculateAge = (dob) => { // dob is passed as parameter
   //   if (!dob) return; // if there is no dob stop the execution here
@@ -310,42 +334,59 @@ export default function BasicTabs({ closeModal }) {
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);
     const today = new Date();
-    const ageYY = today.getFullYear() - birthDate.getFullYear();
-    const ageMM = today.getMonth() - birthDate.getMonth();
-    const ageDD = today.getDate() - birthDate.getDate();
-  
+    let ageYY = today.getFullYear() - birthDate.getFullYear();
+    let ageMM = today.getMonth() - birthDate.getMonth();
+    let ageDD = today.getDate() - birthDate.getDate();
+
+    // Adjust months and years if days or months are negative
+    if (ageDD < 0) {
+      ageMM--;
+      ageDD += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); // Get last day of the previous month
+    }
+    if (ageMM < 0) {
+      ageYY--;
+      ageMM += 12;
+    }
+
     return {
       years: ageYY,
-      months: ageMM < 0 ? 12 + ageMM : ageMM,
-      days: ageDD < 0 ? new Date(today.getFullYear(), today.getMonth(), 0).getDate() + ageDD : ageDD
+      months: ageMM,
+      days: ageDD
     };
   };
-  
+
   const handleDateOfBirthChange = (e) => {
     const dob = e.target.value;
-    setPatientDetails({ ...patientDetails, Patient_Dob: dob });
+    setPatientDetails(prevDetails => ({ 
+      ...prevDetails, 
+      Patient_Dob: dob 
+    }));
     const { years, months, days } = calculateAge(dob);
-    setPatientDetails({
-      ...patientDetails,
+    setPatientDetails(prevDetails => ({
+      ...prevDetails,
       Patient_Ageyy: years,
       Patient_Agemm: months,
       Patient_Agedd: days
-    });
+    }));
   };
-  
+
   const handleAgeChange = (field, value) => {
     const ageYY = parseInt(patientDetails.Patient_Ageyy, 10) || 0;
     const ageMM = parseInt(patientDetails.Patient_Agemm, 10) || 0;
     const ageDD = parseInt(patientDetails.Patient_Agedd, 10) || 0;
     const today = new Date();
+    
+    // Calculate the Date of Birth based on the age fields
     const dob = new Date(today.getFullYear() - ageYY, today.getMonth() - ageMM, today.getDate() - ageDD).toISOString().split('T')[0];
-  
-    setPatientDetails({
-      ...patientDetails,
+    
+    setPatientDetails(prevDetails => ({
+      ...prevDetails,
       [`Patient_Age${field}`]: value,
       Patient_Dob: dob
-    });
+    }));
   };
+
+  
   
   // Save new patient details
   const saveNewPatient = async () => {
@@ -627,6 +668,7 @@ export default function BasicTabs({ closeModal }) {
              setErrors={setErrors}
              handleDateOfBirthChange={handleDateOfBirthChange}
              handleAgeChange={handleAgeChange}
+             handleGenderChange={handleGenderChange}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

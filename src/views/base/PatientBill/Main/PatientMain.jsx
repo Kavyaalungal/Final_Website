@@ -5,6 +5,8 @@ import Maintable from "../Table/Table"
 import Footer from "../Footer/Footer"
 import CustomBreadcrumbs from "../Breadcrumbs"
 import './PattientMain.css';
+import Card from "../Card";
+import ImageCard from "../Card"
 
 function PatientMain() {
     return (
@@ -21,12 +23,18 @@ function PatientMain() {
                     <Grid item xs={12} sm={2.5}>
                         <Patientdetails />
                     </Grid>
-                    <Grid item xs={12} sm={9.5}>
+                   
+                    <Grid item xs={12} sm={7}>
                         <Maintable />
-                        <Grid item spacing={1}>
+                        {/* <Grid item spacing={1}>
                         <Footer/>
+                    </Grid> */}
+                    
                     </Grid>
+                    <Grid item xs={12} sm={2.5}>
+                      <ImageCard/>
                     </Grid>
+                    
                    
 
 

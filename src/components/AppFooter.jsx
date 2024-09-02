@@ -8,7 +8,7 @@ const AppFooter = () => {
       <div className="left-content">
         <span className="ms-1"></span>
       </div>
-      <div className="right-content ms-auto">
+      <div className="right-content">
         <span className="me-1">Powered by</span>
         <a href="https://iconinfoware.com/" target="_blank" rel="noopener noreferrer">
           Icon Infoware Admin &amp; Dashboard 

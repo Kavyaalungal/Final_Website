@@ -2,13 +2,15 @@ import { Box, Card, CardContent, Grid } from '@mui/material';
 import React, { useState } from 'react';
 import { usePatient } from './PatientContext'; // import custom hook to access the patient details from a context
 import './Patient.css';
-import commonDefault from '../../../../public/images/common.png'; // Ensure correct import path
+import commonDefault from '../../../assets/images/common.png'; // Ensure correct import path
 import Patient from './Patient';
-
+import male from '../../../assets/images/male1.png';
+import female from '../../../assets/images/female.png';
 function UserCard() {
   const { patientDetails } = usePatient(); // retrieves patient data from a context using custom hook usePatient
   const [image, setImage] = useState(null); // Initializes state for storing the selected image with a default value of null.
-
+    
+  
   // Function for handling file input changes
   const handleImageChange = (event) => {
     const file = event.target.files[0]; // Select the file input and store it into the variable file
@@ -44,12 +46,29 @@ function UserCard() {
   };
 
   const details = patientDetails || placeholderDetails; // Use patient details if available, otherwise use placeholder data
-  const genderDisplay = details.Patient_Ismale === 'Male' ? 'M' : 'F'; // Display gender as M for male and F for female
-  const genderAvatar = genderDisplay === 'M' ? '/images/male1.png' : '/images/female.png'; // Set avatar based on gender
+  // const genderDisplay = details.Patient_Ismale === 'Male' ? 'M' : 'F'; // Display gender as M for male and F for female
+  // const genderAvatar = genderDisplay === 'M' ? male : female; // Set avatar based on gender
   // const age = details.Patient_Dob ? calculateAge(details.Patient_Dob) : ''; // Calculate age if DOB is available
 const age = details.Patient_Ageyy || (details.Patient_Dob? calculateAge(details.Patient_Dob): '');
   // Determine which image to use: user-uploaded image, gender-based avatar, or default image
-  const avatarSrc =  (details.Patient_Ismale ? genderAvatar : commonDefault);
+  // const avatarSrc =  (details.Patient_Ismale ? genderAvatar : commonDefault);
+
+
+  const genderDisplay = details.Patient_Ismale === 'Male'
+  ? 'M'
+  : (details.Patient_Ismale === 'Female' ? 'F' : 'O'); // Use 'O' for 'Other'
+
+// Determine the gender-specific avatar
+const genderAvatar = genderDisplay === 'M'
+  ? male
+  : (genderDisplay === 'F' ? female : commonDefault); // Use commonDefault for 'Other' as well
+
+// Set the avatar source based on gender display
+const avatarSrc = genderAvatar;
+
+
+
+
 
   return (
     <>

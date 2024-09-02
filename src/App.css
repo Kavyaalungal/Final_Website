@@ -1,3 +1,8 @@
 #root{
     zoom: 80%;
+    --primary-bg-color: #bd2937;
+    --header-bg-color: #bd2937;
+}
+.commonColor{
+    background-color: #bd2937;
 }

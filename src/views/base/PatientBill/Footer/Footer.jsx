@@ -48,7 +48,7 @@ function PaymentModal() {
 
   return (
     <>
-      <Card sx={{  height: 81,marginTop:2,marginLeft:-23,width:1030 }}>
+      <Card sx={{  height: 81,marginTop:1,marginLeft:-24,width:1000 }}>
         <CardContent sx={{ display: 'flex', justifyContent: 'flex-end' }} >
           <Button 
            
