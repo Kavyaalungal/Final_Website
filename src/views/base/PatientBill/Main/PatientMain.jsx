@@ -12,36 +12,59 @@ function PatientMain() {
     return (
         <>
          {/* <CustomBreadcrumbs current="Lab Invoice" /> */}
-            <Box sx={{
-                zoom:0.9,
-                padding: 1,
-            }}>
-                <Grid container spacing={1}>
-                    <Grid item xs={12} sm={12}>
-                        <Header />
-                    </Grid>
-                    <Grid item xs={12} sm={2.5}>
-                        <Patientdetails />
-                    </Grid>
-                   
-                    <Grid item xs={12} sm={7}>
-                        <Maintable />
-                        {/* <Grid item spacing={1}>
-                        <Footer/>
-                    </Grid> */}
-                    
-                    </Grid>
-                    <Grid item xs={12} sm={2.5}>
-                      <ImageCard/>
-                    </Grid>
-                    
-                   
+         <Box 
+  sx={{ 
+    position: 'relative',
+    width: '100%', 
+    maxWidth: '1200px', // Initially, the max-width is set
+    margin: '0 auto',   // Center-align at full zoom
+    transition: 'all 0.3s ease-in-out',
+    zoom:'0.9',
 
+    '@media (max-width: 1200px)': {
+      maxWidth: '1100px', // Reduce width at lower resolutions
+      marginLeft: '-2%',  // Slightly move left
+    },
 
-                </Grid>
-               
+    '@media (max-width: 992px)': {
+      maxWidth: '900px',
+      marginLeft: '-5%',
+    },
 
-            </Box>
+    '@media (max-width: 768px)': {
+      maxWidth: '700px',
+      marginLeft: '-10%',
+    },
+
+    '@media (max-width: 576px)': {
+      maxWidth: '500px',
+      marginLeft: '-15%',
+    },
+
+    '@media (max-width: 360px)': {
+      maxWidth: '300px',
+      marginLeft: '-20%',
+    }
+  }}
+>
+  <Grid container spacing={1}>
+    <Grid item xs={12} sm={12}>
+      <Header />
+    </Grid>
+    <Grid item xs={12} sm={2.5}>
+      <Patientdetails />
+    </Grid>
+    <Grid item xs={12} sm={7}>
+      <Maintable />
+    </Grid>
+    <Grid item xs={12} sm={2.5}>
+      <ImageCard />
+    </Grid>
+
+    
+  </Grid>
+</Box>
+
 
         </>
     )

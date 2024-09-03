@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import './Patient.css'
+import './Register.css';
 import Buttons from './Buttons';
 
 function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,isEditMode,handleNewPatient,saveNewPatient,updatePatient}) {
@@ -34,7 +35,7 @@ function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,i
       height: { xs: 'auto', sm: 435 }, // Adjust height for smaller screens
       marginTop: { xs: 0, sm: -1 },
     }}
-    // className="patient height1"
+    className='customwidth customheight'
   >
     <CardContent>
       <Grid container spacing={2}>

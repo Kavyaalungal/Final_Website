@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
-import { Bold } from "lucide-react";
+import { Card, CardContent, Typography, Box, Avatar, Link } from "@mui/material";
 import avatar from "../../../../assets/images/female.png";
 
 function Patientdetails() {
@@ -31,11 +30,11 @@ function Patientdetails() {
         width: "100%",
         maxWidth: "auto",
         maxHeight: 700,
-        height: 643,
+        height: 620,
         p: 2,
         overflowY: "auto",
-        marginLeft:-24,
-        marginTop:-2
+        marginLeft: -25,
+        marginTop: -3,
       }}
     >
       <CardContent
@@ -44,20 +43,41 @@ function Patientdetails() {
           overflowY: "hidden",
         }}
       >
-        <Typography
+
+
+<Typography
           sx={{
             fontSize: { xs: 16, sm: 18, md: 16 },
             mb: 1,
             mt: -2,
             textAlign: "start",
-            fontWeight:'Bold' // Align title to the left
+            fontWeight: "Bold",
           }}
           color="#bd2937"
           variant="h6"
-          // fontWeight={300}
         >
           Patient Details
         </Typography>
+        {/* Hyperlink at the top of the card */}
+        <Box sx={{ mb: 2
+, textAlign: "right" ,mt:-2}}>
+          <Link
+            href="#"
+            sx={{
+              fontSize: { xs: 14, sm: 16, md: 16 },
+              color: "#bd2937",
+              // fontWeight: "bold",
+              textDecoration: "none",
+              '&:hover': {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Edit
+          </Link>
+        </Box>
+
+    
 
         <Box
           sx={{
@@ -74,10 +94,7 @@ function Patientdetails() {
               mb: 3,
             }}
             alt="Patient Avatar"
-            src={
-              patientData.avatar ||
-              avatar
-            }
+            src={patientData.avatar || avatar}
           />
 
           <Box
@@ -85,7 +102,7 @@ function Patientdetails() {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              ml:-8 // Align patient name and details to the left
+              ml: -8,
             }}
           >
             <Typography
@@ -99,13 +116,12 @@ function Patientdetails() {
               {patientData.Patient_Name || "Patient Name"}
             </Typography>
 
-          
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "row", // Horizontal alignment
+                flexDirection: "row",
                 justifyContent: "flex-start",
-                gap: 1, // Space between Age and Gender
+                gap: 1,
                 mt: -1,
               }}
             >
@@ -131,7 +147,6 @@ function Patientdetails() {
           </Box>
         </Box>
 
-      
         <Box
           sx={{
             display: "flex",

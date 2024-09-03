@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  Card, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, 
+  Card,Box, CardContent, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { CheckBox } from '@mui/icons-material';
@@ -84,13 +84,42 @@ function Maintable() {
   container 
   justifyContent="flex-end" 
   spacing={2} // Add space between the Grid items
-  sx={{ mb: 1, position: 'relative', top: '-68px', left: '94px' }} // Adjust the top and left position of the fields
+  sx={{ mb: 1, position: 'relative', top: '-63px', left: '90px' }} // Adjust the top and left position of the fields
 >
 <Grid 
   item 
-  sx={{ position: 'relative', left: '-110px',width:'220px' }} // Adjust 'left' value as needed
+  sx={{ position: 'relative', left: '-110px',width:'220px' ,top:'2px'}} // Adjust 'left' value as needed
 >
-<TextField
+<Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Aligns content to the right
+        alignItems: 'center',
+        width:300,
+        mt:2,
+        ml:-27
+       // Margin bottom for spacing
+      }}
+    >
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+        }}
+      >
+        Date/Time: 
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'normal',
+        }}
+      >
+       {currentDateTime}
+      </Typography>
+    </Box>
+{/* <TextField
       label="Date/Time"
       variant="standard"  // Changed variant to 'standard'
       size="small"
@@ -98,7 +127,7 @@ function Maintable() {
       InputLabelProps={{ shrink: true }}
       value={currentDateTime}  // Set the current date and time as the default value
       fullWidth
-    />
+    /> */}
 {/* <TextField
         label="Date/Time"
         variant="outlined"
@@ -109,12 +138,43 @@ function Maintable() {
       /> */}
 </Grid>
 
+
 <Grid item>
-  <TextField
+<Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end', // Align content to the right
+        alignItems: 'center',
+        
+        // Margin bottom for spacing
+      }}
+    >
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+          mr: 1, 
+          mt:2
+          // Margin right for spacing between label and value
+        }}
+      >
+        Lab No:
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'normal',
+        }}
+      >
+        2
+      </Typography>
+    </Box>
+  {/* <TextField
     id="standard-basic"
     label="Lab No"
     variant="standard"
-    // value={labNo}
+    value={labNo}
     fullWidth
     
     InputProps={{
@@ -133,7 +193,7 @@ function Maintable() {
         transformOrigin: 'top right', // Align transform origin to the right
       },
     }}
-  />
+  /> */}
 </Grid>
 
 </Grid>
@@ -241,31 +301,31 @@ function Maintable() {
       background: 'transparent',
     },
     scrollbarWidth: 'none',
-    marginTop: 3,
+    marginTop: 2,
   }}
 >
   <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
     <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
       <TableRow sx={{ border: '2px solid #d6d1d1',position: 'sticky' }}>
         <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '6%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1 '}}>Sl No</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '15%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Test Code</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '40%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Test Name</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Price</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Discount</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Total</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '5.5%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}></TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Test Code</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '35%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Test Name</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Price</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Discount</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}>Total</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '5%', border: '1px solid #d6d1d1',backgroundColor:'#d6d1d1' }}></TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
       {rows.map((row, index) => (
         <TableRow key={row.id}>
           <TableCell sx={{ fontSize: '0.95rem', width: '6%' }}>{index + 1}</TableCell>
-          <TableCell sx={{ fontSize: '0.95rem', width: '15%' }}>{row.testCode}</TableCell>
-          <TableCell sx={{ fontSize: '0.95rem,',width: '40%' }}>{row.testName}</TableCell>
-          <TableCell sx={{fontSize: '0.95rem', width: '10%' }}>{row.price || ''}</TableCell>
-          <TableCell sx={{ fontSize: '0.95rem',width: '10%' }}>{row.discount || ''}</TableCell>
-          <TableCell sx={{fontSize: '0.95rem', width: '10%' }}>{row.total || ''}</TableCell>
-          <TableCell sx={{fontSize: '0.95rem', width: '8%' }}>
+          <TableCell sx={{ fontSize: '0.95rem', width: '10%' }}>{row.testCode}</TableCell>
+          <TableCell sx={{ fontSize: '0.95rem,',width: '35%' }}>{row.testName}</TableCell>
+          <TableCell sx={{fontSize: '0.95rem', width: '7%' }}>{row.price || ''}</TableCell>
+          <TableCell sx={{ fontSize: '0.95rem',width: '12%' }}>{row.discount || ''}</TableCell>
+          <TableCell sx={{fontSize: '0.95rem', width: '12%' }}>{row.total || ''}</TableCell>
+          <TableCell sx={{fontSize: '0.95rem', width: '5%' }}>
             <IconButton onClick={() => handleRemoveRow(row.id)}>
               <DeleteIcon />
             </IconButton>
@@ -274,7 +334,7 @@ function Maintable() {
       ))}
       <TableRow>
         <TableCell sx={{ fontSize: '0.95rem', width: '6%' }}>{rows.length + 1}</TableCell>
-        <TableCell sx={{ width: '15%' }}>
+        <TableCell sx={{ width: '10%' }}>
           <TextField
             name="testCode"
             variant="outlined"
@@ -292,7 +352,7 @@ function Maintable() {
             }}
           />
         </TableCell>
-        <TableCell sx={{ width: '40%' }}>
+        <TableCell sx={{ width: '35%' }}>
           <TextField
             id={`testName-${currentRow.id}`}
             name="testName"
@@ -311,10 +371,10 @@ function Maintable() {
             }}
           />
         </TableCell>
-        <TableCell sx={{ width: '10%' }}></TableCell>
-        <TableCell sx={{ width: '10%' }}></TableCell>
-        <TableCell sx={{ width: '10%' }}></TableCell>
-        <TableCell sx={{ width: '8%' }}></TableCell>
+        <TableCell sx={{ width: '7%' }}></TableCell>
+        <TableCell sx={{ width: '12%' }}></TableCell>
+        <TableCell sx={{ width: '12%' }}></TableCell>
+        <TableCell sx={{ width: '5%' }}></TableCell>
       </TableRow>
     </TableBody>
   </Table>
@@ -366,7 +426,7 @@ function Maintable() {
   </Grid>
 </Grid> */}
 
-<Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
+<Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
      
       <Grid item xs={12} sm={3}>
         <TextField
@@ -374,6 +434,7 @@ function Maintable() {
           label="Sample On"
           type="datetime-local"
           variant="outlined"
+          value={currentDateTime} 
           size="small"
           fullWidth
           InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
@@ -384,14 +445,16 @@ function Maintable() {
           id="reportTime"
           label="Report Time"
           type="datetime-local"
+          value={currentDateTime} 
           variant="outlined"
           size="small"
           fullWidth
           InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
         />
       </Grid>
-      <Grid item xs={12} sm={2}>
+      <Grid item xs={12} sm={1.5}>
         <TextField
+           id="standard-basic"
           label="Discount"
           variant="outlined"
           size="small"
@@ -406,7 +469,7 @@ function Maintable() {
           fullWidth
         />
       </Grid>
-      <Grid item xs={12} sm={2}>
+      <Grid item xs={12} sm={1.5}>
         <TextField
           label="Total"
           variant="outlined"
@@ -423,7 +486,7 @@ function Maintable() {
         />
       </Grid>
     </Grid>
-    <FormControl component="fieldset" fullWidth sx={{ mt: 2 }}>
+    <FormControl component="fieldset" fullWidth sx={{ mt: 1 }}>
       <Grid container alignItems="center" spacing={2}>
         <Grid item>
           <Typography variant="body1">Report Requested Through</Typography>
@@ -475,7 +538,7 @@ function Maintable() {
         />
       </Grid>
     </Grid>
-    <Grid container alignItems="center" spacing={2} sx={{ mt: 1 }}>
+    <Grid container alignItems="center" spacing={2} sx={{ mt: -1 }}>
       
       <Grid item xs>
         <TextField
@@ -486,6 +549,32 @@ function Maintable() {
         />
       </Grid>
     </Grid>
+    <Grid container alignItems="center" spacing={2} sx={{mt:-1}}>
+     
+     <Grid item xs>
+       <TextField
+         label="User Info"
+         variant="outlined"
+         size="small"
+         fullWidth
+         InputProps={{
+          readOnly: true,
+       }}
+       />
+     </Grid>
+     <Grid item>
+       <FormControlLabel
+         control={<Checkbox name="printpreview" />}
+         label="Print Preview"
+       />
+     </Grid>
+     <Grid item>
+       <FormControlLabel
+         control={<Checkbox name="billformattwo" />}
+         label="Bill Format Two"
+       />
+     </Grid>
+   </Grid>
         {/* <Grid container justifyContent="flex-end" sx={{ mt: 2}}>
           <Grid item xs={12} sm={2}>
             <TextField

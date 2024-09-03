@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import './Patient.css';
+import './Register.css';
 import Buttons from './Buttons';
 import SearchIcon from '@mui/icons-material/Search';
 import { usePatient } from './PatientContext';
@@ -43,6 +44,7 @@ function Register({patientDetails,setPatientDetails,handleGenderChange, closeMod
     width: { xs: 370,md:725 }, 
     marginTop: { xs: 0, sm: -1 },
   }}
+  className='customwidth'
 >
   <CardContent>
     <Grid container spacing={2}>
@@ -109,6 +111,7 @@ function Register({patientDetails,setPatientDetails,handleGenderChange, closeMod
       width: { xs: 370 ,md:725},
       height: {xs:'auto',sm:345},
     }} 
+    className='customwidth customheight'
   >
     <CardContent>
       <Grid container spacing={2}>

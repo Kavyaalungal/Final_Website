@@ -4,6 +4,7 @@ import { usePatient } from './PatientContext'; // import custom hook to access t
 import './Patient.css';
 import commonDefault from '../../../assets/images/common.png'; // Ensure correct import path
 import Patient from './Patient';
+import './Register.css';
 import male from '../../../assets/images/male1.png';
 import female from '../../../assets/images/female.png';
 function UserCard() {
