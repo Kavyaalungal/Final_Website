@@ -29,20 +29,20 @@ const Login = () => {
     <>
       <style>{`
         body, html {
-          margin: 0;
-          padding: 0;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          // margin: 0;
+          // padding: 0;
+          // height: 100%;
+           display: flex;
+           justify-content: center;
+           align-items: center;
           background-color: #f8f9fa;
         }
         .card-container {
           display: flex;
           justify-content: center;
-          align-items: center;
+           align-items: center;
           height: 100%;
-          width: 130%;
+          width: 100%;
         }
         .content-wrapper {
           padding: 40px; /* Increase padding to make the card larger */

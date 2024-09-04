@@ -1,0 +1,8 @@
+@media (max-width: 430px) {
+    .firstcard {
+      margin-left: -396px; /* Reset the margin-left */
+      margin-right: 0; /* Optionally reset margin-right */
+      position: relative; /* Ensure the card is positioned correctly */
+      transform: translateX(100%); /* Move the card to the right */
+    }
+  }

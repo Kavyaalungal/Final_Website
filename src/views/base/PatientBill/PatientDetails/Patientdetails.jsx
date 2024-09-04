@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, CardContent, Typography, Box, Avatar, Link } from "@mui/material";
+import { Card, CardContent, Typography, Box, Avatar, Link,Grid,TextField } from "@mui/material";
 import avatar from "../../../../assets/images/female.png";
-
+import './PatientDetails.css';
 function Patientdetails() {
   const [patientData, setPatientData] = useState([]);
 
@@ -25,6 +25,7 @@ function Patientdetails() {
   }, []);
 
   return (
+    <>
     <Card
       sx={{
         width: "100%",
@@ -36,6 +37,7 @@ function Patientdetails() {
         marginLeft: -25,
         marginTop: -3,
       }}
+      className="firstcard"
     >
       <CardContent
         sx={{
@@ -265,6 +267,23 @@ function Patientdetails() {
         </Box>
       </CardContent>
     </Card>
+     <Grid item xs>
+     <TextField id="standard-basic" 
+     label="User Info" variant="standard" sx={{marginLeft:-25,marginTop:5,width:250}}
+     InputProps={{
+      readOnly:true
+     }}/>
+       {/* <TextField
+         label="User Info"
+         variant="outlined"
+         size="small"
+         fullWidth
+         InputProps={{
+          readOnly: true,
+       }}
+       /> */}
+     </Grid> 
+     </>
   );
 }
 

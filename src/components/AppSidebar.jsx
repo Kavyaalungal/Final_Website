@@ -77,6 +77,7 @@ import { AppSidebarNav } from './AppSidebarNav';
 import { sygnet } from 'src/assets/brand/Sygnet';
 import iconLogo from '../assets/images/icon logo white.png';
 import logo from '../assets/images/icon infoware logo white (3).svg';
+import iconlogo from '../assets/images/icon-logo.png';
 import NavigationWithModals from './NavigationWithModals'; // Import the modal handling component
 import './AppSidebar.css';
 // import { ReactComponent as Logo } from '../assets/images/icon logo white.svg'; 

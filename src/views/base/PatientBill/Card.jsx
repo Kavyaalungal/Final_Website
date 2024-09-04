@@ -114,8 +114,8 @@
 // }
 
 // export default ImageCard;
-import React, { useState } from 'react';
-import { Card, CardContent, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Modal, Box } from '@mui/material';
+import React, { useRef, useState } from 'react';
+import { Card, CardContent, Typography, Button, Table, TableBody, TextField,TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Modal, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
@@ -134,13 +134,33 @@ const modalStyle = {
 
 function ImageCard() {
   // Sample data for the table
-  const initialRows = [
-    { slno: '1', docName: 'prescription 1', details: 'Details of prescription 1' },
-    { slno: '2', docName: 'prescription 2', details: 'Details of prescription 2' },
-    // Add more rows as needed
-  ];
+  const [rows, setRows] = useState([{ slno: 1, docName: '', completed: false }]);
+  const [editMode, setEditMode] = useState({ rowIndex: null, column: null });
+  const [tempValue, setTempValue] = useState('');
 
-  const [rows, setRows] = useState(initialRows);
+  const handleCellClick = (rowIndex, column) => {
+    setEditMode({ rowIndex, column });
+    setTempValue(rows[rowIndex][column]);
+  };
+
+  const handleKeyPress = (e, rowIndex, column) => {
+    if (e.key === 'Enter') {
+      const newRows = [...rows];
+      newRows[rowIndex][column] = tempValue;
+      setRows(newRows);
+      setEditMode({ rowIndex: null, column: null });
+
+      // Move to the next column or row
+      if (column === 'docName' && rowIndex === rows.length - 1) {
+        // Automatically add a new row if both columns are filled
+        setRows([...newRows, { slno: rows.length + 1, docName: '', completed: false }]);
+      }
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setTempValue(e.target.value);
+  };
   const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -153,9 +173,18 @@ function ImageCard() {
     setOpen(false);
   };
 
-  const handleDeleteClick = (rowToDelete) => {
-    setRows(rows.filter(row => row.slno !== rowToDelete.slno));
+   const handleDeleteClick = (rowIndex) => {
+    const newRows = rows.filter((_, index) => index !== rowIndex);
+
+    // Update the serial numbers after a row is deleted
+    const updatedRows = newRows.map((row, index) => ({
+      ...row,
+      slno: index + 1,
+    }));
+
+    setRows(updatedRows);
   };
+
 
   return (
     <Card
@@ -186,41 +215,94 @@ function ImageCard() {
             Add Document
           </Button>
         </div>
-        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-          <Table>
-            <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
-              <TableRow sx={{ border: '2px solid #d6d1d1', position: 'sticky' }}>
-                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Sl #</TableCell>
-                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Doc.Name</TableCell>
-                <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.slno}</TableCell>
-                  <TableCell>{row.docName}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="view"
-                      onClick={() => handleOpen(row)}
-                      size="small"
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => handleDeleteClick(row)}
-                      size="small"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {/* <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+  <Table>
+    <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
+      <TableRow sx={{ border: '2px solid #d6d1d1', height: '32px' }}>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Sl #</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Doc. Name</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Action</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {rows.map((row, index) => (
+        <TableRow key={index} sx={{ height: '32px' }}>
+          <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.slno}</TableCell>
+          <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.docName}</TableCell>
+          <TableCell sx={{ padding: '4px 8px' }}>
+            <IconButton
+              aria-label="view"
+              onClick={() => handleOpen(row)}
+              size="small"
+              sx={{ padding: '6px' }}
+            >
+              <VisibilityIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              aria-label="delete"
+              onClick={() => handleDeleteClick(row)}
+              size="small"
+              sx={{ padding: '6px' }}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer> */}
+ <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+      <Table>
+        <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
+          <TableRow sx={{ border: '2px solid #d6d1d1', height: '32px' }}>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Sl #</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Doc. Name</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Action</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, rowIndex) => (
+            <TableRow key={rowIndex} sx={{ height: '32px' }}>
+              <TableCell sx={{ padding: '4px 8px' }}>
+                {row.slno}
+              </TableCell>
+              <TableCell sx={{ padding: '4px 8px' }} onClick={() => handleCellClick(rowIndex, 'docName')}>
+                {editMode.rowIndex === rowIndex && editMode.column === 'docName' ? (
+                  <input
+                    value={tempValue}
+                    onChange={handleInputChange}
+                    onKeyPress={(e) => handleKeyPress(e, rowIndex, 'docName')}
+                    autoFocus
+                    onBlur={() => setEditMode({ rowIndex: null, column: null })}
+                  />
+                ) : (
+                  row.docName
+                )}
+              </TableCell>
+              <TableCell sx={{ padding: '4px 8px' }}>
+                <IconButton
+                  aria-label="view"
+                  onClick={() => handleOpen(row)}
+                  size="small"
+                  sx={{ padding: '6px' }}
+                >
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => handleDeleteClick(rowIndex)}
+                  size="small"
+                  sx={{ padding: '6px' }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
         
         {/* Modal for viewing details */}
         <Modal
