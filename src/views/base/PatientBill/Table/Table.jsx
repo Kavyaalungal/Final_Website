@@ -5,35 +5,97 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { CheckBox } from '@mui/icons-material';
 import {   FormControlLabel, FormGroup, Checkbox, Typography ,Button} from '@mui/material';
+import axios from 'axios';
+import { CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react';
+
+
+
+// Function to get formatted current date and time
+const getCurrentDateTime = () => {
+  const current = new Date();
+  const year = current.getFullYear();
+  const month = String(current.getMonth() + 1).padStart(2, '0');
+  const day = String(current.getDate()).padStart(2, '0');
+  let hours = current.getHours();
+  const minutes = String(current.getMinutes()).padStart(2, '0');
+  const amPm = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert 24-hour time to 12-hour time
+  hours = hours % 12 || 12; // Convert 0 hours to 12 for 12 AM
+  const hoursFormatted = String(hours).padStart(2, '0');
+
+  return `${month}/${day}/${year} ${hoursFormatted}:${minutes}${amPm}`;
+};
+
+
+const getCurrentDateTimeForInput = () => {
+  const current = new Date();
+  const year = current.getFullYear();
+  const month = String(current.getMonth() + 1).padStart(2, '0');
+  const day = String(current.getDate()).padStart(2, '0');
+  const hours = String(current.getHours()).padStart(2, '0');
+  const minutes = String(current.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+
+
 function Maintable() {
+  const [visible, setVisible] = useState(false)
+  const [currentDateTimeForInput, setCurrentDateTimeForInput] = useState(getCurrentDateTimeForInput());
   const [rows, setRows] = useState([]);
   const [currentRow, setCurrentRow] = useState({ id: Date.now(), testCode: '', testName: '', isEditable: true });
   const testCodeRef = useRef(null);
   const testNameRef = useRef(null);
-  const [labNo, setLabNo] = useState(1);
+  const [labNo, setLabNo] = useState(null);
+
 
   useEffect(() => {
-    // Increment lab number logic
-    const incrementLabNo = () => {
-      const currentLabNo = parseInt(localStorage.getItem('labNo')) || 1;
-      setLabNo(currentLabNo);
-      localStorage.setItem('labNo', currentLabNo + 1);
-    };
+    // Set up an interval to update the date and time every minute
+    const intervalId = setInterval(() => {
+      setCurrentDateTimeForInput(getCurrentDateTimeForInput());
+    }, 60000); // Update every minute
 
-    incrementLabNo();
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
-  const getCurrentDateTime = () => {
-    const current = new Date();
-    const year = current.getFullYear();
-    const month = String(current.getMonth() + 1).padStart(2, '0');
-    const day = String(current.getDate()).padStart(2, '0');
-    const hours = String(current.getHours()).padStart(2, '0');
-    const minutes = String(current.getMinutes()).padStart(2, '0');
-    const seconds = String(current.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
+   // Fetch current Lab No when the component mounts
+   useEffect(() => {
+    const fetchLabNo = async () => {
+      try {
+        const response = await axios.get('http://172.16.16.10:8060/api/LabNoMax', {
+          params: {
+            yrId: 2425,
+            CmId: 2
+          }
+         
+        });
+        console.log(response.data.LabNo)
+        const currentLabNo = response.data.LabNo; // Assuming response contains the Lab No
+        setLabNo(currentLabNo);
+      } catch (error) {
+        console.error('Error fetching Lab No:', error);
+      }
+    };
+
+    fetchLabNo();
+  }, []);
+
+
+  // const getCurrentDateTime = () => {
+  //   const current = new Date();
+  //   const year = current.getFullYear();
+  //   const month = String(current.getMonth() + 1).padStart(2, '0');
+  //   const day = String(current.getDate()).padStart(2, '0');
+  //   const hours = String(current.getHours()).padStart(2, '0');
+  //   const minutes = String(current.getMinutes()).padStart(2, '0');
+  //   const seconds = String(current.getSeconds()).padStart(2, '0');
+
+  //   return `${year}-${month}-${day}T${hours}:${minutes}`;
+  // };
 
   // Initialize state with the current date and time
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentDateTime());
@@ -113,7 +175,7 @@ function Maintable() {
       <Typography
         variant="body1"
         sx={{
-          fontWeight: 'normal',
+          fontWeight: 'bold',
         }}
       >
        {currentDateTime}
@@ -121,11 +183,11 @@ function Maintable() {
     </Box>
 {/* <TextField
       label="Date/Time"
-      variant="standard"  // Changed variant to 'standard'
+      variant="standard"  
       size="small"
       type="datetime-local"
       InputLabelProps={{ shrink: true }}
-      value={currentDateTime}  // Set the current date and time as the default value
+      value={currentDateTime}  
       fullWidth
     /> */}
 {/* <TextField
@@ -145,12 +207,12 @@ function Maintable() {
       sx={{
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between', // Aligns content to the right
+        justifyContent: 'space-between', 
         alignItems: 'center',
         width:300,
         mt:2,
         ml:1
-       // Margin bottom for spacing
+      
       }}
     >
       <Typography
@@ -164,70 +226,23 @@ function Maintable() {
       <Typography
         variant="body1"
         sx={{
-          fontWeight: 'normal',
-        }}
-      >
-       2888880001
-      </Typography>
-    </Box>
-{/* <TextField
-      label="Date/Time"
-      variant="standard"  // Changed variant to 'standard'
-      size="small"
-      type="datetime-local"
-      InputLabelProps={{ shrink: true }}
-      value={currentDateTime}  // Set the current date and time as the default value
-      fullWidth
-    /> */}
-{/* <TextField
-        label="Date/Time"
-        variant="outlined"
-        size="small"
-        type="datetime-local"
-        InputLabelProps={{ shrink: true }}
-        defaultValue={getCurrentDateTime()} // Set the current date and time as the default value
-      /> */}
-</Grid>
-
-{/* <Grid item>
-<Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end', 
-        alignItems: 'center',
-        
-        
-      }}
-    >
-      <Typography
-        variant="body1"
-        sx={{
           fontWeight: 'bold',
-          mr: 1, 
-          mt:2
-          
         }}
       >
-        Lab No:
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          fontWeight: 'normal',
-        }}
-      >
-        2
+      {labNo !== null ? labNo.toString() : 'Loading...'}
       </Typography>
     </Box>
-  
-</Grid> */}
+
 
 </Grid>
 
 
-    <Card sx={{ height: '101%', overflow: 'hidden' ,
-      width:1000,marginTop:-9,marginLeft:-24}} className='secondcard'>
+
+</Grid>
+
+
+    <Card className='secondcard' sx={{ height: '680px', overflow: 'hidden' ,
+      width:1000,marginTop:-9,marginLeft:-24}} >
       <CardContent>
       
 
@@ -241,7 +256,7 @@ function Maintable() {
               sx={{ 
              
                 height: 40,
-                '& input': { padding: '8px',fontSize:'0.95remrem' }
+                '& input': { padding: '8px',fontSize:'0.95rem' }
               }}
             />
           </Grid>
@@ -319,6 +334,102 @@ function Maintable() {
           </Grid>
         </Grid>
 
+        {/* <TableContainer
+      component={Paper}
+      sx={{
+        height: 'auto',
+        overflowX: 'auto',
+        marginTop: 2,
+        '@media (max-width: 600px)': {
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#888',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#555',
+          },
+        },
+      }}
+    >
+      <Table sx={{ minWidth: 650, tableLayout: 'auto' }}>
+        <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
+          <TableRow>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Sl No</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Test Code</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Test Name</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Price</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Discount</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Total</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, index) => (
+            <TableRow key={row.id}>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{index + 1}</TableCell>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.testCode}</TableCell>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.testName}</TableCell>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.price || ''}</TableCell>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.discount || ''}</TableCell>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.total || ''}</TableCell>
+              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>
+                <IconButton onClick={() => handleRemoveRow(row.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{rows.length + 1}</TableCell>
+            <TableCell sx={{ padding: '4px 8px' }}>
+              <TextField
+                name="testCode"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={currentRow.testCode}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                inputRef={testCodeRef}
+                InputProps={{
+                  sx: {
+                    '& fieldset': { border: 'none' },
+                    input: { padding: '0px', fontSize: '0.95rem', height: 20 },
+                  },
+                }}
+              />
+            </TableCell>
+            <TableCell sx={{ padding: '4px 8px' }}>
+              <TextField
+                id={`testName-${currentRow.id}`}
+                name="testName"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={currentRow.testName}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                inputRef={testNameRef}
+                InputProps={{
+                  sx: {
+                    '& fieldset': { border: 'none' },
+                    input: { padding: '0px', fontSize: '0.95rem', height: 40 },
+                  },
+                }}
+              />
+            </TableCell>
+            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
+            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
+            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
+            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer> */}
+
         <TableContainer
   component={Paper}
   sx={{
@@ -335,13 +446,13 @@ function Maintable() {
   <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
     <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
       <TableRow sx={{ border: '2px solid #d6d1d1', height: '32px' }}>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '6%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1 '}}>Sl No</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Test Code</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '35%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Test Name</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Price</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Discount</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Total</TableCell>
-        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '5%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}></TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '6%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1 ',fontWeight:'bold'}}>Sl No</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1',fontWeight:'bold'}}>Test Code</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '35%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1',fontWeight:'bold' }}>Test Name</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1',fontWeight:'bold' }}>Price</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1',fontWeight:'bold' }}>Discount</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1',fontWeight:'bold' }}>Total</TableCell>
+        <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '5%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1',fontWeight:'bold' }}></TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
@@ -407,141 +518,6 @@ function Maintable() {
     </TableBody>
   </Table>
 </TableContainer>
-
-{/* <TableContainer
-  component={Paper}
-  sx={{
-    height: 240,
-    overflowY: 'scroll',
-    '&::-webkit-scrollbar': {
-      width: '0px',
-      background: 'transparent',
-    },
-    scrollbarWidth: 'none',
-    marginTop: 2,
-  }}
->
-  <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
-    <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
-      <TableRow sx={{ border: '2px solid #d6d1d1', height: '28px' }}>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '6%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1 '}}>Sl No</TableCell>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '10%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Test Code</TableCell>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '35%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Test Name</TableCell>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '7%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Price</TableCell>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '12%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Discount</TableCell>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '12%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}>Total</TableCell>
-        <TableCell sx={{ fontSize: '0.85rem', padding: '2px 4px', width: '5%', border: '1px solid #d6d1d1', backgroundColor:'#d6d1d1' }}></TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {rows.map((row, index) => (
-        <TableRow key={row.id} sx={{ height: '28px' }}>
-          <TableCell sx={{ fontSize: '0.85rem', width: '6%', padding: '2px 4px' }}>{index + 1}</TableCell>
-          <TableCell sx={{ fontSize: '0.85rem', width: '10%', padding: '2px 4px' }}>{row.testCode}</TableCell>
-          <TableCell sx={{ fontSize: '0.85rem', width: '35%', padding: '2px 4px' }}>{row.testName}</TableCell>
-          <TableCell sx={{ fontSize: '0.85rem', width: '7%', padding: '2px 4px' }}>{row.price || ''}</TableCell>
-          <TableCell sx={{ fontSize: '0.85rem', width: '12%', padding: '2px 4px' }}>{row.discount || ''}</TableCell>
-          <TableCell sx={{ fontSize: '0.85rem', width: '12%', padding: '2px 4px' }}>{row.total || ''}</TableCell>
-          <TableCell sx={{ fontSize: '0.85rem', width: '5%', padding: '2px 4px' }}>
-            <IconButton size="small" sx={{ padding: '2px' }} onClick={() => handleRemoveRow(row.id)}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      ))}
-      <TableRow sx={{ height: '28px' }}>
-        <TableCell sx={{ fontSize: '0.85rem', width: '6%', padding: '2px 4px' }}>{rows.length + 1}</TableCell>
-        <TableCell sx={{ width: '10%', padding: '2px 4px' }}>
-          <TextField
-            name="testCode"
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={currentRow.testCode}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            inputRef={testCodeRef}
-            InputProps={{
-              sx: {
-                '& fieldset': { border: 'none' },
-                input: { padding: '0px', fontSize: '0.85rem', height: 18 },
-              },
-            }}
-          />
-        </TableCell>
-        <TableCell sx={{ width: '35%', padding: '2px 4px' }}>
-          <TextField
-            id={`testName-${currentRow.id}`}
-            name="testName"
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={currentRow.testName}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            inputRef={testNameRef}
-            InputProps={{
-              sx: {
-                '& fieldset': { border: 'none' },
-                input: { padding: '0px', fontSize: '0.85rem', height: 18 },
-              },
-            }}
-          />
-        </TableCell>
-        <TableCell sx={{ width: '7%', padding: '2px 4px' }}></TableCell>
-        <TableCell sx={{ width: '12%', padding: '2px 4px' }}></TableCell>
-        <TableCell sx={{ width: '12%', padding: '2px 4px' }}></TableCell>
-        <TableCell sx={{ width: '5%', padding: '2px 4px' }}></TableCell>
-      </TableRow>
-    </TableBody>
-  </Table>
-</TableContainer> */}
-
-
-        {/* Total Box */}
-        {/* <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
-  <Grid item container xs={12} sm={8} spacing={1} alignItems="center">
-   
-    <Grid item xs={12} sm={7}>
-      <TextField
-        label="Date/Time"
-        variant="outlined"
-        size="small"
-        type="datetime-local"
-        InputLabelProps={{ shrink: true }}
-      />
-    </Grid>
-    <Grid item xs={12} sm={5}>
-      <TextField
-        label="Field 2"
-        variant="outlined"
-        size="small"
-        InputProps={{
-          sx: {
-            '& input': { padding: '6px', fontSize: '1rem' },
-          }
-        }}
-      />
-    </Grid>
-  </Grid>
-
- 
-  <Grid item xs={12} sm={2}>
-    <TextField
-      label="Total"
-      variant="outlined"
-      size="small"
-      value={calculateTotal()}
-      InputProps={{
-        readOnly: true,
-        sx: {
-          '& input': { textAlign: 'right', padding: '6px', fontSize: '1rem' },
-        }
-      }}
-    />
-  </Grid>
-</Grid> */}
-
 <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
      
       <Grid item xs={12} sm={3}>
@@ -550,7 +526,7 @@ function Maintable() {
           label="Sample On"
           type="datetime-local"
           variant="outlined"
-          value={currentDateTime} 
+         value={currentDateTimeForInput}
           size="small"
           fullWidth
           InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
@@ -561,7 +537,7 @@ function Maintable() {
           id="reportTime"
           label="Report Time"
           type="datetime-local"
-          value={currentDateTime} 
+          value={currentDateTimeForInput} 
           variant="outlined"
           size="small"
           fullWidth
@@ -608,7 +584,7 @@ function Maintable() {
           <Typography variant="body1">Report Requested Through</Typography>
         </Grid>
         <Grid item xs>
-          <FormGroup row>
+          <FormGroup row sx={{ml:4}}>
             <FormControlLabel
               control={<Checkbox name="personally" sx={{
                 color: 'grey', // Unchecked color
@@ -666,25 +642,25 @@ function Maintable() {
       {/* Left Column */}
       <Grid item xs={6}>
         <Grid container spacing={2}>
-          <Grid item>
+          <Grid item sx={{ml:31}}>
             <TextField
-              label="Additional Info"
+              label="Other Report Request"
               variant="outlined"
               size="small"
               fullWidth
             />
           </Grid>
 
-          <Grid item >
+          {/* <Grid item >
             <FormControlLabel
               control={<Checkbox name="urgent" sx={{
-                color: 'grey', // Unchecked color
+                color: 'grey',
                 '&.Mui-checked': {
-                  color: '#bd2937', // Checked color
+                  color: '#bd2937', 
                 },}}  />}
               label="Urgent"
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12}>
             <TextField
@@ -695,6 +671,16 @@ function Maintable() {
               rows={3}
               size="small"
               fullWidth
+            />
+          </Grid>
+          <Grid item >
+            <FormControlLabel
+              control={<Checkbox name="urgent" sx={{
+                color: 'grey',
+                '&.Mui-checked': {
+                  color: '#bd2937', 
+                },}}  />}
+              label="Urgent"
             />
           </Grid>
 
@@ -723,13 +709,7 @@ function Maintable() {
           </Grid>
           
        
-          {/* <Button
-            variant="contained"
-            className="button"
-            sx={{ textTransform: 'none' }}
-          >
-            Add Document
-          </Button> */}
+         
         </Grid>
       </Grid>
 
@@ -737,16 +717,20 @@ function Maintable() {
       <Grid item xs={6}>
         <Grid container spacing={2} direction="column" alignItems="center">
           <Grid item>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', mt: 2,color:'#bd2937' }}>
-              Net Amount: 0.00
-            </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', ml: 40,mt:4 }}>
+    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#bd2937',ml:8,fontSize:16  }}>
+      Net Amount
+    </Typography>
+    <Typography
+      variant="h5"
+      sx={{ fontWeight: 'bold', color: '#bd2937', mt: 1,fontSize:40,ml:9 }}
+    >
+      0.00
+    </Typography>
+  </Box>
           </Grid>
 
-          {/* <Grid item>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', mt: 2,color:'#bd2937' }}>
-              Curr. Balance: 0.00
-            </Typography>
-          </Grid> */}
+      
           <Grid container spacing={2}>
         <Grid item xs={12}>
           <div className="responsive-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px', marginRight: '-25px' }}>
@@ -754,8 +738,8 @@ function Maintable() {
             <Button
               variant="contained"
               className="button"
-              sx={{ textTransform: 'none', marginRight: 7,marginTop:4,fontSize:20 }}
-             
+              sx={{ textTransform: 'none', marginRight: 3,marginTop:3,fontSize:16 }}
+              onClick={() => setVisible(!visible)}
             >
              Payment
             </Button>
@@ -770,72 +754,28 @@ function Maintable() {
       </Grid>
     
     </Grid>
-
- 
-      
-      
-
-     
-    {/* <Grid container alignItems="center" spacing={2} sx={{ mt: -2.5 }}>
-     
-      <Grid item xs={4}>
-        <TextField
-          label="Additional Info"
-          variant="outlined"
-          size="small"
-          fullWidth
-        />
-      </Grid>
-      <Grid item>
-        <FormControlLabel
-          control={<Checkbox name="urgent" />}
-          label="Urgent"
-        />
-      </Grid>
-    </Grid> */}
-    {/* <Grid container alignItems="center" spacing={2} sx={{ mt: -1 }}>
-      
-      <Grid item xs={4}>
-        <TextField
-        id='notes'
-          label="Notes"
-          variant="outlined"
-          multiline
-          row={3}
-          size="small"
-          fullWidth
-        />
-      </Grid>
-    </Grid> */}
-    {/* <Grid container alignItems="center" spacing={2} sx={{mt:-1}}>
-     
-     
-     <Grid item>
-       <FormControlLabel
-         control={<Checkbox name="printpreview" />}
-         label="Print Preview"
-       />
-     </Grid>
-     <Grid item>
-       <FormControlLabel
-         control={<Checkbox name="billformattwo" />}
-         label="Bill Format Two"
-       />
-     </Grid>
-   </Grid> */}
-      {/* <Grid item xs>
-       <TextField
-         label="User Info"
-         variant="outlined"
-         size="small"
-         fullWidth
-         InputProps={{
-          readOnly: true,
-       }}
-       />
-     </Grid> */}
-            
-      </CardContent>
+    {/* <CButton color="primary" onClick={() => setVisible(!visible)}>Vertically centered modal</CButton> */}
+    <CModal
+      alignment="center"
+      visible={visible}
+      onClose={() => setVisible(false)}
+      aria-labelledby="VerticallyCenteredExample"
+    >
+      <CModalHeader>
+        <CModalTitle id="VerticallyCenteredExample">Modal title</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
+        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+      </CModalBody>
+      <CModalFooter>
+        {/* <CButton color="secondary" onClick={() => setVisible(false)}>
+          Close
+        </CButton>
+        <CButton color="primary">Save changes</CButton> */}
+      </CModalFooter>
+    </CModal>
+   </CardContent>
     </Card>
     </>
   );

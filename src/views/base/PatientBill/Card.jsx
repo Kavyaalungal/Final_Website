@@ -118,7 +118,7 @@ import React, { useRef, useState } from 'react';
 import { Card, CardContent, Typography, Button, Table, TableBody, TextField,TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Modal, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-
+import './Card.css';
 // Modal style
 const modalStyle = {
   position: 'absolute',
@@ -190,12 +190,13 @@ function ImageCard() {
     <Card
       sx={{
         width: '130%',  // Adjust to fit the container
-        height: '640px',
+        height: '680px',
         p: 2,
         overflowY: 'auto',
         marginTop: -3,
         marginLeft: 15,
       }}
+      className='thirdcard'
     >
       <CardContent
         sx={{
@@ -256,9 +257,9 @@ function ImageCard() {
       <Table>
         <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
           <TableRow sx={{ border: '2px solid #d6d1d1', height: '32px' }}>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Sl #</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Doc. Name</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Action</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '2px 4px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1',fontWeight:'bold' }}>Sl #</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '2px 4px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1',fontWeight:'bold' }}>Doc. Name</TableCell>
+            <TableCell sx={{ fontSize: '0.95rem', padding: '2px 4px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1',fontWeight:'bold' }}>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

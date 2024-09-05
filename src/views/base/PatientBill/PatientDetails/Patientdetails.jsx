@@ -31,7 +31,7 @@ function Patientdetails() {
         width: "100%",
         maxWidth: "auto",
         maxHeight: 700,
-        height: 620,
+        height: 680,
         p: 2,
         overflowY: "auto",
         marginLeft: -25,
@@ -268,11 +268,40 @@ function Patientdetails() {
       </CardContent>
     </Card>
      <Grid item xs>
-     <TextField id="standard-basic" 
-     label="User Info" variant="standard" sx={{marginLeft:-25,marginTop:5,width:250}}
+     <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        width:300,
+        mt:1,
+        ml:-25
+      
+      }}
+    >
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+        }}
+      >
+        User Info: 
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+        }}
+      >
+    
+      </Typography>
+    </Box>
+     {/* <TextField id="standard-basic" 
+     label="User Info" variant="standard" sx={{marginLeft:-25,marginTop:-2,width:250}}
      InputProps={{
       readOnly:true
-     }}/>
+     }}/> */}
        {/* <TextField
          label="User Info"
          variant="outlined"
