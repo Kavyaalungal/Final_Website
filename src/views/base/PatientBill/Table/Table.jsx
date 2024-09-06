@@ -7,6 +7,7 @@ import { CheckBox } from '@mui/icons-material';
 import {   FormControlLabel, FormGroup, Checkbox, Typography ,Button} from '@mui/material';
 import axios from 'axios';
 import { CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react';
+import CashPayment from './CashPayment';
 
 
 
@@ -334,101 +335,6 @@ function Maintable() {
           </Grid>
         </Grid>
 
-        {/* <TableContainer
-      component={Paper}
-      sx={{
-        height: 'auto',
-        overflowX: 'auto',
-        marginTop: 2,
-        '@media (max-width: 600px)': {
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#888',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#555',
-          },
-        },
-      }}
-    >
-      <Table sx={{ minWidth: 650, tableLayout: 'auto' }}>
-        <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
-          <TableRow>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Sl No</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Test Code</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Test Name</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Price</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Discount</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}>Total</TableCell>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1' }}></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow key={row.id}>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{index + 1}</TableCell>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.testCode}</TableCell>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.testName}</TableCell>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.price || ''}</TableCell>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.discount || ''}</TableCell>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{row.total || ''}</TableCell>
-              <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>
-                <IconButton onClick={() => handleRemoveRow(row.id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-          <TableRow>
-            <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px' }}>{rows.length + 1}</TableCell>
-            <TableCell sx={{ padding: '4px 8px' }}>
-              <TextField
-                name="testCode"
-                variant="outlined"
-                size="small"
-                fullWidth
-                value={currentRow.testCode}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                inputRef={testCodeRef}
-                InputProps={{
-                  sx: {
-                    '& fieldset': { border: 'none' },
-                    input: { padding: '0px', fontSize: '0.95rem', height: 20 },
-                  },
-                }}
-              />
-            </TableCell>
-            <TableCell sx={{ padding: '4px 8px' }}>
-              <TextField
-                id={`testName-${currentRow.id}`}
-                name="testName"
-                variant="outlined"
-                size="small"
-                fullWidth
-                value={currentRow.testName}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                inputRef={testNameRef}
-                InputProps={{
-                  sx: {
-                    '& fieldset': { border: 'none' },
-                    input: { padding: '0px', fontSize: '0.95rem', height: 40 },
-                  },
-                }}
-              />
-            </TableCell>
-            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
-            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
-            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
-            <TableCell sx={{ padding: '4px 8px' }}></TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer> */}
 
         <TableContainer
   component={Paper}
@@ -715,47 +621,70 @@ function Maintable() {
 
       {/* Right Column */}
       <Grid item xs={6}>
-        <Grid container spacing={2} direction="column" alignItems="center">
-          <Grid item>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', ml: 40,mt:4 }}>
-    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#bd2937',ml:8,fontSize:16  }}>
+      <Grid container spacing={2} direction="column" alignItems="center">
+  {/* Grid for Net Amount Label */}
+  <Grid item xs={12} sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', pr: 5 }}>
+    <Typography
+      variant="h6"
+      sx={{
+        fontWeight: 'bold',
+        color: '#bd2937',
+        fontSize: 16,
+        marginRight:-4
+      }}
+    >
       Net Amount
     </Typography>
+  </Grid>
+
+  {/* Grid for Net Amount Value */}
+  <Grid item xs={12} sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', pr: 5 }}>
     <Typography
       variant="h5"
-      sx={{ fontWeight: 'bold', color: '#bd2937', mt: 1,fontSize:40,ml:9 }}
+      sx={{
+        fontWeight: 'bold',
+        color: '#bd2937',
+        fontSize: 40,
+        textAlign: 'right',
+        minWidth: '100px',
+        marginRight:-4 // Ensure enough space for larger values
+      }}
     >
-      0.00
+      2500.00 {/* This is where your dynamic value would go */}
     </Typography>
-  </Box>
-          </Grid>
+  </Grid>
+</Grid>
 
-      
-          <Grid container spacing={2}>
+
+
+        <Grid container spacing={2}>
         <Grid item xs={12}>
           <div className="responsive-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px', marginRight: '-25px' }}>
            
-            <Button
+          <Button
               variant="contained"
-              className="button"
-              sx={{ textTransform: 'none', marginRight: 3,marginTop:3,fontSize:16 }}
-              onClick={() => setVisible(!visible)}
+              // className="button"
+              sx={{ textTransform: 'none', marginRight: 3,backgroundColor: '#bb4d58',marginTop:3,padding:'8px 18px',
+                fontSize:'1rem', // Default background color
+                '&:hover': {
+                  backgroundColor: '#bd2937', // Background color on hover
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                },  }}
+                onClick={() => setVisible(true)}
             >
-             Payment
+              Payment
             </Button>
            
-          
+            <CashPayment visible={visible} setVisible={setVisible} />
           </div>
          
         </Grid>
       </Grid>
-        </Grid>
-
       </Grid>
     
     </Grid>
     {/* <CButton color="primary" onClick={() => setVisible(!visible)}>Vertically centered modal</CButton> */}
-    <CModal
+    {/* <CModal
       alignment="center"
       visible={visible}
       onClose={() => setVisible(false)}
@@ -769,12 +698,9 @@ function Maintable() {
         egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
       </CModalBody>
       <CModalFooter>
-        {/* <CButton color="secondary" onClick={() => setVisible(false)}>
-          Close
-        </CButton>
-        <CButton color="primary">Save changes</CButton> */}
+       
       </CModalFooter>
-    </CModal>
+    </CModal> */}
    </CardContent>
     </Card>
     </>

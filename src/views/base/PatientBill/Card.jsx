@@ -210,8 +210,12 @@ function ImageCard() {
         <div className="responsive-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '-2px' }}>
           <Button
             variant="contained"
-            className="button"
-            sx={{ textTransform: 'none' }}
+            // className="button"
+            sx={{ textTransform: 'none',backgroundColor: '#bb4d58',padding:'6px 18px',fontSize:'1rem', // Default background color
+              '&:hover': {
+                backgroundColor: '#bd2937', // Background color on hover
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+              }, }}
           >
             Add Document
           </Button>
@@ -262,7 +266,7 @@ function ImageCard() {
             <TableCell sx={{ fontSize: '0.95rem', padding: '2px 4px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1',fontWeight:'bold' }}>Action</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        {/* <TableBody>
           {rows.map((row, rowIndex) => (
             <TableRow key={rowIndex} sx={{ height: '32px' }}>
               <TableCell sx={{ padding: '4px 8px' }}>
@@ -301,7 +305,7 @@ function ImageCard() {
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
+        </TableBody> */}
       </Table>
     </TableContainer>
         

@@ -201,29 +201,42 @@ function Buttons({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <div className="responsive-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px', marginRight: '-25px' }}>
+      
             <Button
               variant="contained"
-              className="button"
-              sx={{ textTransform: 'none', marginRight: 1 }}
-              onClick={async () => {
-                await handleNewPatient();
-                // Additional logic if needed after generating a new patient ID
-              }}
+              // className="button"
+              sx={{ textTransform: 'none', marginRight: 1,backgroundColor: '#bb4d58', // Default background color
+                '&:hover': {
+                  backgroundColor: '#bd2937', // Background color on hover
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                },  }}
+                onClick={async () => {
+                  await handleNewPatient();
+                  // Additional logic if needed after generating a new patient ID
+                }}
             >
               New
             </Button>
             <Button
               variant="contained"
-              className="button"
-              sx={{ textTransform: 'none', marginRight: 1 }}
+              // className="button"
+              sx={{ textTransform: 'none', marginRight: 1,backgroundColor: '#bb4d58', // Default background color
+                '&:hover': {
+                  backgroundColor: '#bd2937', // Background color on hover
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                },  }}
               onClick={updatePatient}
             >
               Update
             </Button>
             <Button
               variant="contained"
-              className="button"
-              sx={{ textTransform: 'none', marginRight: 1 }}
+              // className="button"
+              sx={{ textTransform: 'none', marginRight: 1,backgroundColor: '#bb4d58', // Default background color
+                '&:hover': {
+                  backgroundColor: '#bd2937', // Background color on hover
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                },  }}
               onClick={async () => {
                 await saveNewPatient();
                 // Additional logic if needed after saving the patient
@@ -234,8 +247,12 @@ function Buttons({
             <Button
               onClick={handleButtonClick}
               variant="contained"
-              className="button"
-              sx={{ textTransform: 'none' }}
+              // className="button"
+              sx={{ textTransform: 'none',backgroundColor: '#bb4d58', // Default background color
+                '&:hover': {
+                  backgroundColor: '#bd2937', // Background color on hover
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                },  }}
             >
               Proceed to bill
             </Button>
