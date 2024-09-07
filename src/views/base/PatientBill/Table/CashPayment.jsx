@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter, CButton } from '@coreui/react';
 import './CashPayment.css';
 import { TextField, Grid,MenuItem,Typography,Box,Button } from '@mui/material';
+import WalletIcon from '../assets/wallet.svg';
+import UpiIcon from '../assets/Upi.svg';
+import Corporateicon from '../assets/corporate-icon.svg'
+
+import { CreditCard as CreditCardIcon } from '@mui/icons-material';
+
 const CashPayment = ({ visible, setVisible }) => {
 
     const [netAmount, setNetAmount] = useState('2500.00');
@@ -27,7 +33,7 @@ const CashPayment = ({ visible, setVisible }) => {
       <CModalHeader className='modalheader' >
         <CModalTitle id="VerticallyCenteredExample" className='modaltitle'>Payment</CModalTitle>
       </CModalHeader>
-      <CModalBody >
+      <CModalBody className='custombody' >
       <Grid container spacing={1.5}>
           {/* First row - Full-width TextField */}
          
@@ -63,7 +69,7 @@ const CashPayment = ({ visible, setVisible }) => {
          
 
           {/* Second row - Discount Field */}
-          <Grid item xs={3} sm={3} >
+          <Grid item xs={12} sm={3} >
           <TextField
       select
    
@@ -99,7 +105,7 @@ const CashPayment = ({ visible, setVisible }) => {
     </TextField>
       </Grid>
 
-        <Grid item xs={9} sm={9} >
+        <Grid item xs={12} sm={9} >
         <TextField
           id='discount'
       label="Discount"
@@ -183,16 +189,45 @@ const CashPayment = ({ visible, setVisible }) => {
         },
       }}
     >
-      <MenuItem value="Cash">Cash</MenuItem>
-      <MenuItem value="Debit/Credit">Debit/Credit</MenuItem>
-      <MenuItem value="Credit">Credit</MenuItem>
-      <MenuItem value="BHIM/UPI Online Payment">BHIM/UPI Online Payment</MenuItem>
+      {/* <MenuItem value="none"></MenuItem> */}
+      <MenuItem value="Cash"><img src={WalletIcon} style={{ width: 25,marginRight:5  }} alt="Wallet Icon" />
+      Cash</MenuItem>
+      <MenuItem value="Debit/Credit"><CreditCardIcon sx={{mr:1}}/>Debit/Credit</MenuItem>
+      <MenuItem value="Credit"> <img src={Corporateicon} style={{width: 23,marginRight:7}}/> Credit </MenuItem>
+      <MenuItem value="BHIM/UPI Online Payment"><img src={UpiIcon} style={{ width: 25, marginRight: 5 }} alt="UPI Icon" />
+      BHIM/UPI Online Payment</MenuItem>
     </TextField>
         </Grid>
         {(paymentMethod === 'Debit/Credit' || paymentMethod === 'BHIM/UPI Online Payment' ) && (
         <Grid item xs={12}>
           <TextField
             label="Bank Name"
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputLabelProps={{
+              style: {
+                fontSize: '0.95rem',
+                top: '-3px',
+                left: '1px'
+              },
+            }}
+            sx={{
+              '& .MuiInputBase-input': {
+                padding: '6px',
+                fontSize: '0.95rem',
+              },
+              '& .MuiOutlinedInput-root': {
+                height: '30px',
+              },
+            }}
+          />
+        </Grid>
+      )}
+      {(paymentMethod === 'Credit') && (
+          <Grid item xs={12}>
+          <TextField
+            label="Corporate"
             variant="outlined"
             size="small"
             fullWidth

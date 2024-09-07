@@ -17,7 +17,8 @@ import { usePatient } from './PatientContext';
 function Register({patientDetails,setPatientDetails,handleGenderChange, closeModal ,resetForm,fetchNewPatientId,
   searchCriteria,errors,setErrors,isEditMode,searchValue,suggestions,renderOption,setIsEditMode,calculateAge,
   handleTitleChange,fetchSuggestions,handlePatientIdChange,handleSelectPatient,handleSearchValueChange,handleNewPatient,
-  saveNewPatient,updatePatient,handleSearchCriteriaChange,handleDateOfBirthChange,handleAgeChange}) {
+  saveNewPatient,updatePatient,handleSearchCriteriaChange,handleDateOfBirthChange,handleAgeChange,saveOrUpdatePatient,isSaving,
+  newPatientId,handleSaveOrUpdate,patientCode}) {
   console.log("Parent component closeModal:", closeModal); 
 
   // useEffect(() => {
@@ -436,7 +437,10 @@ function Register({patientDetails,setPatientDetails,handleGenderChange, closeMod
 
     <Grid item xs={12} >
       
-      <Buttons  resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient} closeModal={closeModal}/>
+      <Buttons  resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode}
+       handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient}
+        closeModal={closeModal} newPatientId={newPatientId} saveOrUpdatePatient={saveOrUpdatePatient}
+        isSaving={isSaving} handleSaveOrUpdate={handleSaveOrUpdate} patientCode={patientCode}/>
      
   
     </Grid>

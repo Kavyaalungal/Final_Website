@@ -46,6 +46,7 @@ export default function BasicTabs({ closeModal }) {
    // declaring state variables needed
   const [value, setValue] = React.useState(0);
   const { patientDetails, setPatientDetails } = usePatient();
+  const patientCode = patientDetails?.Patient_Code;
   const [isEditMode, setIsEditMode] = React.useState(false);// Default to false for new patients
   const [newPatientId, setNewPatientId] = React.useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -132,6 +133,7 @@ export default function BasicTabs({ closeModal }) {
       YearId: 2425,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
       BranchId: 2,
       PatCode: newValue.Patient_Code,
+      editFlag:true
     });
     console.log('Response from fetchPatientDetails:', response); // Log API response for debugging
 
@@ -577,15 +579,58 @@ export default function BasicTabs({ closeModal }) {
   };
   
   const handleSaveOrUpdate = async () => {
-    console.log(`isEditMode: ${isEditMode}`); // Log current mode
-    if (isEditMode) {
-      console.log('Calling updatePatient()');
-      await updatePatient();
-    } else {
-      console.log('Calling saveNewPatient()');
-      await saveNewPatient();
+    if (isSaving) return; // Prevent multiple operations
+  
+    // Determine if it's a new patient or an existing one
+    const isNewPatient = !patientDetails.Patient_Code;
+  
+    console.log("Is new patient:", isNewPatient); // Debug log
+  
+    setIsSaving(true);
+  
+    const payload = {
+      Patient_Code: patientDetails.Patient_Code, // Always include Patient_Code
+      // Patient_Code: isNewPatient ? newPatientId : patientDetails.Patient_Code, 
+      Patient_Title: patientDetails.Patient_Title?.trim() || '',
+      Patient_Name: patientDetails.Patient_Name?.trim() || '',
+      Patient_Ismale: patientDetails.Patient_Ismale,
+      Patient_Dob: patientDetails.Patient_Dob, // Ensure date format is correct
+      Patient_Ageyy: patientDetails.Patient_Ageyy,
+      Patient_Agemm: patientDetails.Patient_Agemm,
+      Patient_Agedd: patientDetails.Patient_Agedd,
+      Patient_Email: patientDetails.Patient_Email?.trim() || '',
+      Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
+      Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
+      Patient_Address: patientDetails.Patient_Address?.trim() || '',
+      Patient_Note: patientDetails.Patient_Note?.trim() || '',
+      Patient_YrId: 2425,
+      Patient_CpyId: 2,
+      EditFlag: isNewPatient ? 0 : 1 // 0 for save, 1 for update
+    };
+  
+    console.log("Payload:", payload); // Debug log
+  
+    try {
+      const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
+      if (response.data.status && response.data.status.length > 0) {
+        const responseStatus = response.data.status[0];
+        if (responseStatus.status === 'Success') {
+          toast.success(`Patient details ${isNewPatient ? 'saved' : 'updated'} successfully`);
+          resetForm();
+        } else {
+          toast.error(`Failed to ${isNewPatient ? 'save' : 'update'} patient details: ${responseStatus.Message}`);
+        }
+      } else {
+        toast.error('Invalid response format from server');
+      }
+    } catch (error) {
+      console.error(`Error ${isNewPatient ? 'saving' : 'updating'} patient details:`, error);
+      toast.error(`Error ${isNewPatient ? 'saving' : 'updating'} patient details`);
+    } finally {
+      setIsSaving(false); // Reset saving status
     }
   };
+  
   
 
 
@@ -669,6 +714,9 @@ export default function BasicTabs({ closeModal }) {
              handleDateOfBirthChange={handleDateOfBirthChange}
              handleAgeChange={handleAgeChange}
              handleGenderChange={handleGenderChange}
+             handleSaveOrUpdate={handleSaveOrUpdate}
+             isSaving={isSaving}
+             patientCode={patientCode}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

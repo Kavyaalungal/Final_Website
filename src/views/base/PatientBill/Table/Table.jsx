@@ -244,7 +244,7 @@ function Maintable() {
 
     <Card className='secondcard' sx={{ height: '680px', overflow: 'hidden' ,
       width:1000,marginTop:-9,marginLeft:-24}} >
-      <CardContent>
+      <CardContent sx={{marginTop:-1}}>
       
 
         <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -621,7 +621,7 @@ function Maintable() {
 
       {/* Right Column */}
       <Grid item xs={6}>
-      <Grid container spacing={2} direction="column" alignItems="center">
+      <Grid container  direction="column" alignItems="center">
   {/* Grid for Net Amount Label */}
   <Grid item xs={12} sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', pr: 5 }}>
     <Typography
@@ -630,7 +630,8 @@ function Maintable() {
         fontWeight: 'bold',
         color: '#bd2937',
         fontSize: 16,
-        marginRight:-4
+        marginRight:-4,
+        marginTop:3
       }}
     >
       Net Amount
@@ -647,7 +648,8 @@ function Maintable() {
         fontSize: 40,
         textAlign: 'right',
         minWidth: '100px',
-        marginRight:-4 // Ensure enough space for larger values
+        marginRight:-4,
+        // Ensure enough space for larger values
       }}
     >
       2500.00 {/* This is where your dynamic value would go */}
@@ -664,7 +666,7 @@ function Maintable() {
           <Button
               variant="contained"
               // className="button"
-              sx={{ textTransform: 'none', marginRight: 3,backgroundColor: '#bb4d58',marginTop:3,padding:'8px 18px',
+              sx={{ textTransform: 'none', marginRight: 3,backgroundColor: '#bb4d58',marginTop:6,padding:'8px 18px',
                 fontSize:'1rem', // Default background color
                 '&:hover': {
                   backgroundColor: '#bd2937', // Background color on hover

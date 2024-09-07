@@ -166,6 +166,7 @@ import './Buttons.css';
 
 function Buttons({
   handleSaveOrUpdate,
+  
   resetForm,
   closeModal,
   fetchNewPatientId,
@@ -173,7 +174,10 @@ function Buttons({
   handleNewPatient,
   saveNewPatient,
   updatePatient,
-  patientDetails 
+  patientDetails,
+  isSaving, 
+  saveOrUpdatePatient,newPatientId,
+  patientCode
 }) {
   const navigate = useNavigate();
 
@@ -210,13 +214,20 @@ function Buttons({
                   backgroundColor: '#bd2937', // Background color on hover
                   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
                 },  }}
-                onClick={async () => {
-                  await handleNewPatient();
-                  // Additional logic if needed after generating a new patient ID
-                }}
+                onClick={handleNewPatient}
+        disabled={isSaving}
             >
               New
             </Button>
+            {/* <Button
+      variant="contained"
+      color="primary"
+      onClick={handleSaveOrUpdate}
+      disabled={isSaving} 
+    >
+      {patientCode ? 'Update Patient' : 'Save Patient'}
+    </Button> */}
+
             <Button
               variant="contained"
               // className="button"

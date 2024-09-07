@@ -47,6 +47,7 @@ const App = () => {
       >
         <Routes>
           <Route exact path="/login" name="Login Page" element={<Login />} />
+          {/* <Route exact path="/" name="Dashboard" element={<DefaultLayout />} /> */}
           <Route path="*" name="Home" element={isAuthenticated ? <DefaultLayout /> : <Navigate to="/login" />} />
           {/* <Route path="/proceedtobill" element={< PatientMain/>} /> */}
         </Routes>
