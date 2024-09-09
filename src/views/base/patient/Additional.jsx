@@ -115,17 +115,22 @@ function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,i
             InputLabelProps={{ style: { fontSize: '1rem' } }}
           />
         </Grid>
-
         <Grid item xs={12} sm={4} md={4}>
           <TextField
-            id="village"
-            label="Village"
+          select
+            id="localbodytype"
+            label="Local Body Type"
             variant="outlined"
             size="small"
             fullWidth
             InputLabelProps={{ style: { fontSize: '1rem' } }}
-          />
+          >
+            <MenuItem>Panchayath</MenuItem>
+            <MenuItem>Muncipality</MenuItem>
+            <MenuItem>Corporation</MenuItem>
+          </TextField>
         </Grid>
+        
 
         <Grid item xs={12} sm={4} md={4}>
           <TextField
@@ -138,17 +143,17 @@ function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,i
           />
         </Grid>
 
+       
         <Grid item xs={12} sm={4} md={4}>
           <TextField
-            id="localbodytype"
-            label="Local Body Type"
+            id="village"
+            label="Village"
             variant="outlined"
             size="small"
             fullWidth
             InputLabelProps={{ style: { fontSize: '1rem' } }}
           />
         </Grid>
-
         <Grid item xs={12} sm={4} md={4}>
           <TextField
             select

@@ -62,7 +62,7 @@
 
 // export default React.memo(AppSidebar)
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   CCloseButton,
@@ -80,12 +80,29 @@ import logo from '../assets/images/icon infoware logo white (3).svg';
 import iconlogo from '../assets/images/icon-logo.png';
 import NavigationWithModals from './NavigationWithModals'; // Import the modal handling component
 import './AppSidebar.css';
+import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
+import { ChevronRight, ExpandMore } from '@mui/icons-material';
+import AppMenu from './AppMenu';
 // import { ReactComponent as Logo } from '../assets/images/icon logo white.svg'; 
 const AppSidebar = () => {
   const dispatch = useDispatch();
   const unfoldable = useSelector((state) => state.sidebarUnfoldable);
   const sidebarShow = useSelector((state) => state.sidebarShow);
 
+
+
+ // Responsive adjustments using MUI's useMediaQuery
+ const theme = useTheme();
+ const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Adjust for small screens
+
+ 
+
+  useEffect(() => {
+    document.addEventListener('scroll', () => {
+      headerRef.current &&
+        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
+    })
+  }, [])
   return (
     <CSidebar
       className="border-end"
@@ -109,13 +126,31 @@ const AppSidebar = () => {
           onClick={() => dispatch({ type: 'set', sidebarShow: false })}
         />
       </CSidebarHeader>
-      <NavigationWithModals /> {/* Use the modal handling component here */}
+      {/* <NavigationWithModals /> Use the modal handling component here */}
       {/* Uncomment the following block if you need the footer */}
       {/* <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler
           onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
         />
       </CSidebarFooter> */}
+       <div>
+      {/* Render NavigationWithModals only if not on mobile */}
+      {!isMobile && <NavigationWithModals />}
+
+       {isMobile && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            fontSize: '0.75rem',
+            padding: 2,
+          }}
+        >
+          <AppMenu/>
+        </Box>
+      )}
+      </div>
     </CSidebar>
   );
 };

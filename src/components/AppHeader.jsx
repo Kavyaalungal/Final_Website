@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -25,24 +25,29 @@ import {
   cilSun,
 } from '@coreui/icons'
 import './AppHeader.css';
+import AppMenu from './AppMenu';
+import { AppBar, Toolbar, Button, Box, Menu, MenuItem, useMediaQuery, useTheme ,} from '@mui/material';
 
 // import { AppBreadcrumb } from './index'
 //  import { AppHeaderDropdown } from './header/Index'
 
 const AppHeader = () => {
   const headerRef = useRef()
-  // const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
-
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
-
+  // const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+  const [username, setUsername] = useState('');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if it's mobile view
   useEffect(() => {
-    document.addEventListener('scroll', () => {
-      headerRef.current &&
-        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
-    })
-  }, [])
-
+    const storedUsername = localStorage.getItem('loggedInUsername');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+  // if (isMobile) {
+  //   return null; // Return nothing for desktop mode
+  // }
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
@@ -52,7 +57,12 @@ const AppHeader = () => {
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
-        <CHeaderNav className="d-none d-md-flex">
+        {/* <CHeaderNav className="d-none d-md-flex"> */}
+    {/* <AppMenu/> */}
+    {!isMobile && (
+      <AppMenu/>
+    )}
+
         {/* <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
     <ul className="navbar-nav">
@@ -143,7 +153,7 @@ const AppHeader = () => {
           <CNavItem>
             <CNavLink href="#">Settings</CNavLink>
           </CNavItem> */}
-        </CHeaderNav>
+        {/* </CHeaderNav> */}
         <CHeaderNav className="ms-auto">
           {/* <CNavItem>
             <CNavLink href="#">
@@ -210,6 +220,13 @@ const AppHeader = () => {
           </li> */}
           {/* <AppHeaderDropdown /> */}
         </CHeaderNav>
+        <CHeaderNav>
+      {username && (
+        <div style={{ marginLeft: 'auto', paddingRight: '1rem' }}>
+          Welcome, {username}!
+        </div>
+      )}
+    </CHeaderNav>
       </CContainer>
       {/* <CContainer className="px-4" fluid> */}
         {/* <AppBreadcrumb /> */}
@@ -219,3 +236,92 @@ const AppHeader = () => {
 }
 
 export default AppHeader
+// import { useEffect, useRef, useState } from 'react';
+// import { AppBar, Toolbar, Button, Box, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
+// import { ChevronRight, ExpandMore } from '@mui/icons-material';
+// import { useDispatch, useSelector } from 'react-redux';
+// const AppHeader = () => {
+//   const headerRef = useRef();
+//   const dispatch = useDispatch();
+//   const sidebarShow = useSelector((state) => state.sidebarShow);
+
+//   const [anchorElFrontOffice, setAnchorElFrontOffice] = useState(null);
+//   const [anchorElMasterSettings, setAnchorElMasterSettings] = useState(null);
+//   const [anchorElTechnical, setAnchorElTechnical] = useState(null);
+
+//   const handleClickFrontOffice = (event) => setAnchorElFrontOffice(event.currentTarget);
+//   const handleClickMasterSettings = (event) => setAnchorElMasterSettings(event.currentTarget);
+//   const handleClickTechnical = (event) => setAnchorElTechnical(event.currentTarget);
+//   const handleClose = () => {
+//     setAnchorElFrontOffice(null);
+//     setAnchorElMasterSettings(null);
+//     setAnchorElTechnical(null);
+//   };
+
+//   const theme = useTheme();
+//   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+//   useEffect(() => {
+//     document.addEventListener('scroll', () => {
+//       headerRef.current &&
+//         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0);
+//     });
+//   }, []);
+
+//   return (
+//     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
+//       <CContainer className="border-bottom px-4" fluid>
+//         <CHeaderToggler
+//           onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
+//           style={{ marginInlineStart: '-14px' }}
+//         >
+//           <CIcon icon={cilMenu} size="lg" />
+//         </CHeaderToggler>
+
+//         {/* Material-UI Navbar Integration */}
+//         <AppBar position="static">
+//           <Toolbar sx={{ backgroundColor: '#bd2937' }}>
+//             <Box
+//               sx={{
+//                 display: 'flex',
+//                 justifyContent: isMobile ? 'center' : 'flex-start',
+//                 width: 'auto',
+//                 gap: 3,
+//                 fontSize: '0.75rem',
+//                 flexDirection: isMobile ? 'column' : 'row',
+//               }}
+//             >
+//               <Button color="inherit" onClick={handleClickFrontOffice} sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+//                 Frontoffice <ExpandMore sx={{ width: '20px' }} />
+//               </Button>
+//               <Button color="inherit" onClick={handleClickMasterSettings} sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+//                 Mastersettings <ExpandMore sx={{ width: '20px' }} />
+//               </Button>
+//               <Button color="inherit" onClick={handleClickTechnical} sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+//                 Technical <ExpandMore sx={{ width: '20px' }} />
+//               </Button>
+//             </Box>
+//           </Toolbar>
+//         </AppBar>
+
+//         {/* FrontOffice Menu */}
+//         <Menu anchorEl={anchorElFrontOffice} open={Boolean(anchorElFrontOffice)} onClose={handleClose}>
+//           <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>Patient Registration</MenuItem>
+//           <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>Edit Demographic Details</MenuItem>
+//           {/* Add more menu items as needed */}
+//         </Menu>
+
+//         {/* Additional dropdowns for MasterSettings and Technical */}
+//         <Menu anchorEl={anchorElMasterSettings} open={Boolean(anchorElMasterSettings)} onClose={handleClose}>
+//           <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>Settings Option 1</MenuItem>
+//         </Menu>
+//         <Menu anchorEl={anchorElTechnical} open={Boolean(anchorElTechnical)} onClose={handleClose}>
+//           <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>Technical Option 1</MenuItem>
+//         </Menu>
+
+//       </CContainer>
+//     </CHeader>
+//   );
+// };
+
+// export default AppHeader;
