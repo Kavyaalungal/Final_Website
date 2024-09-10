@@ -279,6 +279,7 @@ function Patientdetails() {
         ml:-25
       
       }}
+      className='userinfo'
     >
       <Typography
         variant="body1"

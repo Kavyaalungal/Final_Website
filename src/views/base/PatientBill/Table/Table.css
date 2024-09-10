@@ -38,3 +38,9 @@
   .button1{
     background-color: #bd2937 !important;
   }
+  @media(max-width:364px){
+    .second{
+      width: 40%;
+      margin-left: 300px;
+    }
+  }

@@ -11,19 +11,19 @@ import ImageCard from "../Card"
 function PatientMain() {
     return (
         <>
-         {/* <CustomBreadcrumbs current="Lab Invoice" /> */}
+        
          <Box 
   sx={{ 
     position: 'relative',
     width: '100%', 
-    maxWidth: '1200px', // Initially, the max-width is set
-    margin: '0 auto',   // Center-align at full zoom
+    maxWidth: '1200px',
+    margin: '0 auto',  
     transition: 'all 0.3s ease-in-out',
     zoom:'0.9',
 
     '@media (max-width: 1200px)': {
-      maxWidth: '1100px', // Reduce width at lower resolutions
-      marginLeft: '-2%',  // Slightly move left
+      maxWidth: '1100px', 
+      marginLeft: '-2%', 
     },
 
     '@media (max-width: 992px)': {

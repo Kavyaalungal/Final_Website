@@ -6,3 +6,24 @@
       transform: translateX(100%); /* Move the card to the right */
     }
   }
+
+  @media (max-width: 1385px) {
+    /* .userinfo{
+      margin-top: 300px;
+    } */
+
+    /* .firstcard {
+      margin-left: -396px; 
+      margin-right: 0;
+      position: relative; 
+      transform: translateX(100%); 
+    } */
+  }
+
+  @media (max-width:320px){
+    .firstcard{
+      margin-left: -310px;
+      width: 390px;
+      height: 500px;
+    }
+  }

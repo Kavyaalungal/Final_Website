@@ -86,17 +86,7 @@ function Maintable() {
   }, []);
 
 
-  // const getCurrentDateTime = () => {
-  //   const current = new Date();
-  //   const year = current.getFullYear();
-  //   const month = String(current.getMonth() + 1).padStart(2, '0');
-  //   const day = String(current.getDate()).padStart(2, '0');
-  //   const hours = String(current.getHours()).padStart(2, '0');
-  //   const minutes = String(current.getMinutes()).padStart(2, '0');
-  //   const seconds = String(current.getSeconds()).padStart(2, '0');
-
-  //   return `${year}-${month}-${day}T${hours}:${minutes}`;
-  // };
+ 
 
   // Initialize state with the current date and time
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentDateTime());
@@ -182,23 +172,7 @@ function Maintable() {
        {currentDateTime}
       </Typography>
     </Box>
-{/* <TextField
-      label="Date/Time"
-      variant="standard"  
-      size="small"
-      type="datetime-local"
-      InputLabelProps={{ shrink: true }}
-      value={currentDateTime}  
-      fullWidth
-    /> */}
-{/* <TextField
-        label="Date/Time"
-        variant="outlined"
-        size="small"
-        type="datetime-local"
-        InputLabelProps={{ shrink: true }}
-        defaultValue={getCurrentDateTime()} // Set the current date and time as the default value
-      /> */}
+
 </Grid>
 <Grid 
   item 
@@ -240,6 +214,84 @@ function Maintable() {
 
 
 </Grid>
+{/* <Grid 
+  container 
+  justifyContent="flex-end" 
+  spacing={2}
+  sx={{ mb: 1, position: 'relative', top: '-63px' }}
+>
+  <Grid 
+    item 
+    xs={12} sm={6} // Full width on small screens, 6/12 on larger screens
+    sx={{ position: 'relative', width: { xs: '100%', sm: '220px' }, top: '2px' }}
+  >
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: { xs: '100%', sm: 300 },
+        mt: 2,
+      }}
+    >
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+          fontSize: { xs: '0.9rem', sm: '1rem' },  // Smaller font size on small screens
+        }}
+      >
+        Date/Time:
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+          fontSize: { xs: '0.9rem', sm: '1rem' },
+        }}
+      >
+        {currentDateTime}
+      </Typography>
+    </Box>
+  </Grid>
+
+  <Grid 
+    item 
+    xs={12} sm={6} // Full width on small screens, 6/12 on larger screens
+    sx={{ position: 'relative', width: { xs: '100%', sm: '220px' }, top: '2px' }}
+  >
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: { xs: '100%', sm: 300 },
+        mt: 2,
+      }}
+    >
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+          fontSize: { xs: '0.9rem', sm: '1rem' },  // Smaller font size on small screens
+        }}
+      >
+        Lab No:
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 'bold',
+          fontSize: { xs: '0.9rem', sm: '1rem' },
+        }}
+      >
+        {labNo !== null ? labNo.toString() : 'Loading...'}
+      </Typography>
+    </Box>
+  </Grid>
+</Grid> */}
 
 
     <Card className='secondcard' sx={{ height: '680px', overflow: 'hidden' ,

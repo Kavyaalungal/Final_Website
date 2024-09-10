@@ -18,7 +18,7 @@ function AppMenu() {
 
 
  // State for submenus
- const [anchorElFrontOfficeSub, setAnchorElFrontOfficeSub] = useState(null);
+ const [anchorElReportsSub1, setAnchorElReportsSub1] = useState(null);
  const [anchorElMasterSettingsSub, setAnchorElMasterSettingsSub] = useState(null);
  const [anchorElTechnicalSub, setAnchorElTechnicalSub] = useState(null);
 
@@ -57,8 +57,8 @@ const handleClickHelp = (event) => {
 
 
  // Handlers to open submenus on click
- const handleClickFrontOfficeSub = (event) => {
-     setAnchorElFrontOfficeSub(event.currentTarget);
+ const handleClickReportsSub1 = (event) => {
+     setAnchorElReportsSub1(event.currentTarget);
  };
 
  const handleClickMasterSettingsSub = (event) => {
@@ -74,12 +74,19 @@ const handleClickHelp = (event) => {
  // Handlers to close menus
  const handleClose = () => {
      setAnchorElFrontOffice(null);
-     setAnchorElMasterSettings(null);
+     setAnchorElSampleFlow(null)
      setAnchorElTechnical(null);
+     setAnchorElAccount(null);
+     setAnchorElMasterSettings(null);
+     setAnchorElReports(null)
+     setAnchorElMarketing(null);
+     setAnchorElAdministrator(null);
+     setAnchorElHelp(null);
+     setAnchorElReportsSub1(null);
      setAnchorElFrontOfficeSub(null);
      setAnchorElMasterSettingsSub(null);
      setAnchorElTechnicalSub(null);
-     setAnchorElSampleFlow(null)
+    
  };
 
  // Responsive adjustments using MUI's useMediaQuery
@@ -110,7 +117,8 @@ const handleClickHelp = (event) => {
         width: 'auto',
         gap: 1,
         fontSize: '0.75rem',
-        flexDirection: isMobile ? 'column' : 'row', // Stack buttons vertically on mobile
+        flexDirection: isMobile ? 'column' : 'row', 
+        // Stack buttons vertically on mobile
     }}
 >
     {/* <Button
@@ -326,10 +334,22 @@ const handleClickHelp = (event) => {
   open={Boolean(anchorElTechnical)}
   onClose={handleClose}
   PaperProps={{
-      style: {
-          height: 'auto',
-          width: '27ch',
-      },
+    style: {
+        height: 'auto',
+        width: '35ch',
+        // maxHeight: '400px', // Limit height to avoid overflowing
+        overflowY: 'scroll',  // Enable scrolling
+        scrollbarWidth: 'none', // Hide scrollbar for Firefox
+        msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
+    },
+}}
+sx={{
+  '&& .MuiMenu-paper': {
+    '&::-webkit-scrollbar': {
+      display: 'none', // Hide scrollbar for Chrome, Safari, and Edge
+    },
+  },
+
   }}
   onMouseLeave={handleClose} // Hide on mouse leave
 >
@@ -343,6 +363,12 @@ const handleClickHelp = (event) => {
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
         TAT out Explanation
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Result Register
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Test Wise Register
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
     ECHO Report
@@ -381,29 +407,594 @@ const handleClickHelp = (event) => {
         Batch wise Authorization
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
-        Remove Authorization
+        Batch wise Second Level Authorization
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
-        Remove Authorization
+        Email/Whatsapp Queue
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
-        Remove Authorization
+        Email Radiology Report
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
-        Remove Authorization
+        Pending Test
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
-        Remove Authorization
+        Pending Bills Test Wise
     </MenuItem>
     <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
-        Remove Authorization
+        Whatsapp Files
     </MenuItem>
 </Menu>
+{/*Accounts Menu */}
 
-
-
-{/* MasterSettings Menu */}
 <Menu
+  anchorEl={anchorElAccount}
+  open={Boolean(anchorElAccount)}
+  onClose={handleClose}
+  PaperProps={{
+      style: {
+          height: 'auto',
+          width: '27ch',
+      },
+  }}
+  onMouseLeave={handleClose} // Hide on mouse leave
+>
+
+
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Account Ledger
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Cash Payments
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Cash Reciepts
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Day book
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Journal
+    </MenuItem>
+    {/* <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Bank Payment
+    </MenuItem> */}
+    {/* <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Bank Reciept
+    </MenuItem> */}
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Cheque issue
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Cheque Reciept
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Cheque Transaction
+    </MenuItem>
+    {/* <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Cash Posting
+    </MenuItem> */}
+    {/* <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Bank Invoice Posting
+    </MenuItem> */}
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    BHIM/UPI Receival(Bill Wise)
+    </MenuItem>
+    {/* <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Bank Invoice  Remove
+    </MenuItem> */}
+   </Menu>
+
+
+   {/*MasterSettings Menu */}
+   <Menu
+  anchorEl={anchorElMasterSettings}
+  open={Boolean(anchorElMasterSettings)}
+  onClose={handleClose}
+  PaperProps={{
+    style: {
+        height: 'auto',
+        width: '27ch',
+        // maxHeight: '400px', // Limit height to avoid overflowing
+        overflowY: 'scroll',  // Enable scrolling
+        scrollbarWidth: 'none', // Hide scrollbar for Firefox
+        msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
+    },
+}}
+sx={{
+  '&& .MuiMenu-paper': {
+    '&::-webkit-scrollbar': {
+      display: 'none', // Hide scrollbar for Chrome, Safari, and Edge
+    },
+  },
+
+  }}
+  onMouseLeave={handleClose} // Hide on mouse leave
+>
+
+
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Doctor's Leave
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Hospital
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Agent
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Patient
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Employee
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Antibiotic
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Look up Entry
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       FeeMaster
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Appointment Session
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Set Group Test
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Set Batch Wise Tests
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Customize1
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Set Customize2
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Customize3
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Customize4
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Culture
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Test Order
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Head Staff group
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Antibiotic Order
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Special Rate
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Discount %
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Result Template
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Contacts
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Monthly Planner
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Event Scheduler
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Doctors Payments
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Assign Study To Doctor
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Branch
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Analyzer
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Corporate
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Analyzer Normal Range
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+      Set Branch wise Normal Range
+    </MenuItem>
+   </Menu>
+
+{/*Reports Menu */}
+<Menu
+  anchorEl={anchorElReports}
+  open={Boolean(anchorElReports)}
+  onClose={handleClose}
+  PaperProps={{
+      style: {
+          height: 'auto',
+          width: '28ch',
+      },
+  }}
+  onMouseLeave={handleClose} // Hide on mouse leave
+>
+
+
+    <MenuItem onClick={handleClickReportsSub1} sx={{ fontSize: '0.75rem' }}>
+        Daily Periodic Collection Statements
+        <ChevronRight sx={{ width: '15px', marginLeft: 1 }} />
+    </MenuItem>
+    
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Credit Collection Statements
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Cash Due/Pending Statements
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Technical Statements
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Doctor/Ref.By Statements
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Test Statements
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Master Values
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Accounts
+    </MenuItem>
+    {/*Reports SubMenu1*/}
+    <Menu
+        anchorEl={anchorElReportsSub1}
+        open={Boolean(anchorElReportsSub1)}
+        onClose={handleClose}
+        PaperProps={{
+            style: {
+                height: 'auto',
+                width: '35ch',
+                // maxHeight: '400px', // Limit height to avoid overflowing
+                overflowY: 'scroll',  // Enable scrolling
+                scrollbarWidth: 'none', // Hide scrollbar for Firefox
+                msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
+            },
+        }}
+        sx={{
+          '&& .MuiMenu-paper': {
+            '&::-webkit-scrollbar': {
+              display: 'none', // Hide scrollbar for Chrome, Safari, and Edge
+            },
+          },
+        }}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+        }}
+    >
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+            Daily Collection Statement
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+            Daily/Monthly Collection Summary
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+            Daily Collection Summary2
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+            Collection Statement Branch Wise
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Collection Summary Branch Wise
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Daily Cash Invoice
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Patient ID Wise Bill Collection
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Monthly Collection Division Summary
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Monthly Collection Summary BranchWise
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+            User Wise Collection
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+             User Wise Collection Summary
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+             Patient Wise Invoices
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+            Division Wise Invoices
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Division Wise Invoices2
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Division Wise Summary
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Division Summary3
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Branch wise Invoices
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Cancelled Invoices
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Doctors Meeting
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Department Wise Invoices
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Division Wise Performance
+        </MenuItem>
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Refund statements
+        </MenuItem>
+    </Menu>
+   </Menu>
+
+{/*Marketing Menu */}
+<Menu
+  anchorEl={anchorElMarketing}
+  open={Boolean(anchorElMarketing)}
+  onClose={handleClose}
+  PaperProps={{
+    style: {
+        height: 'auto',
+        width: '27ch',
+        // maxHeight: '400px', // Limit height to avoid overflowing
+        overflowY: 'scroll',  // Enable scrolling
+        scrollbarWidth: 'none', // Hide scrollbar for Firefox
+        msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
+    },
+}}
+sx={{
+  '&& .MuiMenu-paper': {
+    '&::-webkit-scrollbar': {
+      display: 'none', // Hide scrollbar for Chrome, Safari, and Edge
+    },
+  },
+  }}
+  onMouseLeave={handleClose} // Hide on mouse leave
+>
+
+
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        PRO Hospital wise
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        PRO Specialized wise
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Doctors List (No Business)
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Doctor Wise Monthly Summary
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Monthly Incentive Statements
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Set Dr Incentive
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Set Dr Payments Test Wise
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Monthly Incentive
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Doctor Payments
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Monthly Incentive(DateWise)
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Monthly Doctor Wise Incentive
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Pro Wise Graph
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        PRO Wise Income
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Collection Boy Wise Graph
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Collection Boy Wise Income 
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       OP Wise Graph(no Refered)
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Client Lab Graph
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Client Lab Income
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       PRO Performance Invoice Wise
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       PRO Performance Division Wise
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       PRO Daily Report
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Total Summary Test Wise
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Doctor Comparison
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Doctor Graph
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Doctor Batch Wise Incentive
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Patient Data
+    </MenuItem>
+   </Menu>
+ {/*Administrator Menu*/}
+ <Menu
+  anchorEl={anchorElAdministrator}
+  open={Boolean(anchorElAdministrator)}
+  onClose={handleClose}
+  PaperProps={{
+    style: {
+        height: 'auto',
+        width: '27ch',
+        // maxHeight: '400px', // Limit height to avoid overflowing
+        overflowY: 'scroll',  // Enable scrolling
+        scrollbarWidth: 'none', // Hide scrollbar for Firefox
+        msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
+    },
+}}
+sx={{
+  '&& .MuiMenu-paper': {
+    '&::-webkit-scrollbar': {
+      display: 'none', // Hide scrollbar for Chrome, Safari, and Edge
+    },
+  },
+  }}
+  onMouseLeave={handleClose} // Hide on mouse leave
+>
+
+
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        User Settings
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        User Logins
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Edited Invoice
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    User Track Report
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Edit Discount
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Email Configuration
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Create New Financial Year
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Settings
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Account Settings
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Restore Database
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Remove Barcode Data
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+    Agent Wise Incentive
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Agent Wise Incentive 2
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Convert Invoice
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Merge Accounts 
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Corporate Web Register
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Result Letter Head
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Set Customize2 Default Template
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Opening balance Set
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Integrity Check
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Bill wise Remove
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Whats New
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+       Hospital Wise Collection
+    </MenuItem>
+
+   </Menu>
+
+   <Menu
+  anchorEl={anchorElHelp}
+  open={Boolean(anchorElHelp)}
+  onClose={handleClose}
+  PaperProps={{
+    style: {
+        height: 'auto',
+        width: '22ch',
+        // maxHeight: '400px', // Limit height to avoid overflowing
+        overflowY: 'scroll',  // Enable scrolling
+        scrollbarWidth: 'none', // Hide scrollbar for Firefox
+        msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
+    },
+}}
+sx={{
+  '&& .MuiMenu-paper': {
+    '&::-webkit-scrollbar': {
+      display: 'none', // Hide scrollbar for Chrome, Safari, and Edge
+    },
+  },
+  }}
+  onMouseLeave={handleClose} // Hide on mouse leave
+>
+
+
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        About Us
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem' }}>
+        Help
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+        Settings
+    </MenuItem>
+    <MenuItem onClick={handleClose} sx={{ fontSize: '0.75rem', }}>
+    Barcode
+    </MenuItem>
+</Menu>
+{/* MasterSettings Menu */}
+{/* <Menu
     anchorEl={anchorElMasterSettings}
     open={Boolean(anchorElMasterSettings)}
     onClose={handleClose}
@@ -413,7 +1004,7 @@ const handleClickHelp = (event) => {
             width: '22ch',
         },
     }}
-    onMouseLeave={handleClose} // Hide on mouse leave
+    onMouseLeave={handleClose}
 >
     <MenuItem onClick={handleClickMasterSettingsSub} sx={{ fontSize: '0.75rem' }}>
         MasterSettings Sub
@@ -423,7 +1014,7 @@ const handleClickHelp = (event) => {
         MasterSettings Item 2
     </MenuItem>
 
-    {/* Submenu for MasterSettings */}
+   
     <Menu
         anchorEl={anchorElMasterSettingsSub}
         open={Boolean(anchorElMasterSettingsSub)}
@@ -450,7 +1041,7 @@ const handleClickHelp = (event) => {
             Submenu Item 2
         </MenuItem>
     </Menu>
-</Menu>
+</Menu> */}
 
 {/* Technical Menu */}
 {/* <Menu
