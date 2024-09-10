@@ -18,4 +18,12 @@
       margin-bottom: 20px; /* Remove margin-left */
     }
   }
-  
+  @media (max-width: 320px) {
+    .thirdcard {
+      width: 400px;   /* Full width for small screens */
+      height: 1000px;  /* Adjust height based on content */
+      margin-top: 5px; 
+      margin-left: 75px; 
+      margin-bottom: 20px; /* Remove margin-left */
+    }
+  }

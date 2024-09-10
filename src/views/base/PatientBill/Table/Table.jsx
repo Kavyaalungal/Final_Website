@@ -133,7 +133,7 @@ function Maintable() {
 
   return (
     <>
-   <Grid 
+   {/* <Grid 
   container 
   justifyContent="flex-end" 
   spacing={2} // Add space between the Grid items
@@ -213,17 +213,17 @@ function Maintable() {
 
 
 
-</Grid>
-{/* <Grid 
+</Grid> */}
+<Grid 
   container 
   justifyContent="flex-end" 
   spacing={2}
-  sx={{ mb: 1, position: 'relative', top: '-63px' }}
+  sx={{ mb: 2, position: 'relative', top: '-63px' }}
 >
   <Grid 
     item 
     xs={12} sm={6} // Full width on small screens, 6/12 on larger screens
-    sx={{ position: 'relative', width: { xs: '100%', sm: '220px' }, top: '2px' }}
+    sx={{marginLeft:15,marginTop:3, position: 'relative', width: { xs: '100%', sm: '220px' }, top: '2px' }}
   >
     <Box
       sx={{
@@ -259,7 +259,7 @@ function Maintable() {
   <Grid 
     item 
     xs={12} sm={6} // Full width on small screens, 6/12 on larger screens
-    sx={{ position: 'relative', width: { xs: '100%', sm: '220px' }, top: '2px' }}
+    sx={{ marginLeft:15,position: 'relative', width: { xs: '100%', sm: '220px' }, top: '2px' }}
   >
     <Box
       sx={{
@@ -291,11 +291,17 @@ function Maintable() {
       </Typography>
     </Box>
   </Grid>
-</Grid> */}
+</Grid>
 
 
     <Card className='secondcard' sx={{ height: '680px', overflow: 'hidden' ,
-      width:1000,marginTop:-9,marginLeft:-24}} >
+      width:1000,marginTop:-9,marginLeft:-24,
+      '@media (max-width: 320px)': {
+            // Further reduce font size for very small screens
+        marginLeft: '60px', 
+        width:415 ,
+        height:1500   // Ensure no negative margin at 320px
+      }}} >
       <CardContent sx={{marginTop:-1}}>
       
 
