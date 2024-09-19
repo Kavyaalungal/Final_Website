@@ -26,21 +26,20 @@
       width: 1000px; 
     }
   } */
-  @media (max-width: 430px) {
-    /* For screen widths of 430px and below */
+  /* @media (max-width: 430px) {
     .secondcard {
       width: 900px; 
       margin-left: 1000px;
-      /* margin-top: 0;  */
+     
       height: 100px; 
     }
-  }
+  } */
   .button1{
     background-color: #bd2937 !important;
   }
-  @media(max-width:364px){
+  /* @media(max-width:364px){
     .second{
       width: 40%;
       margin-left: 300px;
     }
-  }
+  } */

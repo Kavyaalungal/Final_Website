@@ -3,8 +3,10 @@ import axios from "axios";
 import { Card, CardContent, Typography, Box, Avatar, Link,Grid,TextField } from "@mui/material";
 import avatar from "../../../../assets/images/female.png";
 import './PatientDetails.css';
+import { usePatient } from "../../patient/PatientContext";
 function Patientdetails() {
-  const [patientData, setPatientData] = useState([]);
+  const { patientDetails } = usePatient();
+  // const [patientData, setPatientData] = useState([]);
 
   useEffect(() => {
     axios
@@ -30,12 +32,22 @@ function Patientdetails() {
       sx={{
         width: "100%",
         maxWidth: "auto",
-        maxHeight: 700,
+        // maxHeight: 700,
         height: 680,
         p: 2,
         overflowY: "auto",
-        marginLeft: -25,
+        marginLeft: -35,
         marginTop: -3,
+        '@media (max-width: 575px)': {
+          fontSize: '1.5rem', 
+          marginLeft: '99px',
+          width:770,    
+        }, 
+        '@media (min-width: 575px)': {
+          fontSize: '1.5rem', 
+          marginLeft: '-120px',
+          // width:770,    
+        }, 
       }}
       className="firstcard"
     >
@@ -54,6 +66,10 @@ function Patientdetails() {
             mt: -2,
             textAlign: "start",
             fontWeight: "Bold",
+            '@media (max-width: 575px)': {
+              fontSize: '1.4rem', 
+               
+            },
           }}
           color="#bd2937"
           variant="h6"
@@ -68,6 +84,10 @@ function Patientdetails() {
             sx={{
               fontSize: { xs: 14, sm: 16, md: 16 },
               color: "#bd2937",
+              '@media (max-width: 575px)': {
+                fontSize: '1.2rem', 
+                 
+              },
               // fontWeight: "bold",
               textDecoration: "none",
               '&:hover': {
@@ -89,15 +109,19 @@ function Patientdetails() {
             mb: 2,
           }}
         >
-          <Avatar
+          {/* <Avatar
             sx={{
               width: { xs: 60, sm: 70, md: 80 },
               height: { xs: 60, sm: 70, md: 80 },
               mb: 3,
+              '@media (max-width: 575px)': {
+                width:100, 
+                height:100  
+              }, 
             }}
             alt="Patient Avatar"
             src={patientData.avatar || avatar}
-          />
+          /> */}
 
           <Box
             sx={{
@@ -113,12 +137,17 @@ function Patientdetails() {
               sx={{
                 fontWeight: "bold",
                 fontSize: { xs: 17, sm: 17, md: 17 },
+                '@media (max-width: 575px)': {
+                  fontSize: '1.5rem', 
+                   
+                }, 
               }}
             >
-              {patientData.Patient_Name || "Patient Name"}
+                          {patientDetails?.Patient_Name || "Patient Name"}
+              {/* {patientData.Patient_Name || "Patient Name"} */}
             </Typography>
 
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
@@ -131,6 +160,10 @@ function Patientdetails() {
                 sx={{
                   fontWeight: "bold",
                   fontSize: { xs: 14, sm: 16, md: 15 },
+                  '@media (max-width: 575px)': {
+                  fontSize: '1rem', 
+                   
+                }, 
                 }}
                 color="black"
               >
@@ -140,16 +173,20 @@ function Patientdetails() {
                 sx={{
                   fontWeight: "bold",
                   fontSize: { xs: 14, sm: 16, md: 15 },
+                  '@media (max-width: 575px)': {
+                    fontSize: '1rem', 
+                     
+                  }, 
                 }}
                 color="black"
               >
                 {patientData.Patient_Ismale || "Gender"}
               </Typography>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
 
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -163,6 +200,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.5rem', 
+                width:770,    
+              }, 
             }}
             color="#b0b0b0"
           >
@@ -174,6 +215,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.2rem', 
+                width:770,    
+              }, 
             }}
             color="#000"
           >
@@ -185,6 +230,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.5rem', 
+                width:770,    
+              }, 
             }}
             color="#b0b0b0"
           >
@@ -196,6 +245,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.2rem', 
+                width:770,    
+              }, 
             }}
             color="#000"
           >
@@ -207,6 +260,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.5rem', 
+                width:770,    
+              }, 
             }}
             color="#b0b0b0"
           >
@@ -217,6 +274,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.2rem', 
+                width:770,    
+              }, 
             }}
             color="#000"
           >
@@ -228,6 +289,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.5rem', 
+                width:770,    
+              }, 
             }}
             color="#b0b0b0"
           >
@@ -238,6 +303,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.2rem', 
+                width:770,    
+              }, 
             }}
             color="#000"
           >
@@ -249,6 +318,10 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.5rem', 
+                width:770,    
+              }, 
             }}
             color="#b0b0b0"
           >
@@ -259,12 +332,16 @@ function Patientdetails() {
               fontSize: { xs: 14, sm: 16, md: 16 },
               wordBreak: "break-word",
               overflowWrap: "break-word",
+              '@media (max-width: 575px)': {
+                fontSize: '1.2rem', 
+                width:770,    
+              }, 
             }}
             color="#000"
           >
             {patientData.branch || "N/A"}
           </Typography>
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
      <Grid item xs>
@@ -276,7 +353,22 @@ function Patientdetails() {
         alignItems: 'center',
         width:300,
         mt:1,
-        ml:-25
+        ml:-25,
+        '@media (max-width: 768px)': {
+         // Adjust font size for smaller screens
+          marginLeft: '87px',
+              // Remove negative margin for smaller screens
+        },
+        '@media (max-width: 820px)': {
+          fontSize: '1.5rem',  // Adjust font size for smaller screens
+          marginLeft: '50px',
+          marginTop:59     // Remove negative margin for smaller screens
+        },
+        '@media (max-width: 1024px)': {
+          fontSize: '1.5rem',  // Adjust font size for smaller screens
+          marginLeft: '-165px',
+          marginTop:110     // Remove negative margin for smaller screens
+        },
       
       }}
       className='userinfo'
@@ -298,20 +390,7 @@ function Patientdetails() {
     
       </Typography>
     </Box>
-     {/* <TextField id="standard-basic" 
-     label="User Info" variant="standard" sx={{marginLeft:-25,marginTop:-2,width:250}}
-     InputProps={{
-      readOnly:true
-     }}/> */}
-       {/* <TextField
-         label="User Info"
-         variant="outlined"
-         size="small"
-         fullWidth
-         InputProps={{
-          readOnly: true,
-       }}
-       /> */}
+
      </Grid> 
      </>
   );

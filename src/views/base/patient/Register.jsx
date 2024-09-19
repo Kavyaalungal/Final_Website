@@ -1,37 +1,40 @@
-import { Autocomplete, Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, TextField,InputAdornment } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { CDatePicker } from '@coreui/react-pro';
+import { Autocomplete, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, TextField,InputAdornment } from '@mui/material'
+import React from 'react'
 import '@coreui/coreui/dist/css/coreui.min.css'
 import '@coreui/coreui-pro/dist/css/coreui.min.css'
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
-import { format, parseISO } from 'date-fns';
 import './Patient.css';
 import './Register.css';
 import Buttons from './Buttons';
 import SearchIcon from '@mui/icons-material/Search';
-import { usePatient } from './PatientContext';
 
-function Register({patientDetails,setPatientDetails,handleGenderChange, closeModal ,resetForm,fetchNewPatientId,
-  searchCriteria,errors,setErrors,isEditMode,searchValue,suggestions,renderOption,setIsEditMode,calculateAge,
-  handleTitleChange,fetchSuggestions,handlePatientIdChange,handleSelectPatient,handleSearchValueChange,handleNewPatient,
-  saveNewPatient,updatePatient,handleSearchCriteriaChange,handleDateOfBirthChange,handleAgeChange,saveOrUpdatePatient,isSaving,
-  newPatientId,handleSaveOrUpdate,patientCode}) {
-  console.log("Parent component closeModal:", closeModal); 
+function Register({patientDetails,
+  setPatientDetails,
+  handleGenderChange, 
+  closeModal,
+  resetForm,
+  fetchNewPatientId,
+  searchCriteria,
+  errors,
+  setErrors,
+  isEditMode,
+  searchValue,
+  suggestions,
+  renderOption,
+  handleTitleChange,
+  handlePatientIdChange,
+  handleSelectPatient,
+  handleSearchValueChange,
+  handleNewPatient,
+  handleSearchCriteriaChange,
+  handleDateOfBirthChange,
+  handleAgeChange,
+  isSaving,
+  newPatientId,
+  handleSaveOrUpdate,
+  flag,
+  handleDOBChange}) {
 
-  // useEffect(() => {
-  //   if (patientDetails.Patient_Dob) {
-  //     const { years, months, days } = calculateAge(patientDetails.Patient_Dob);
-  //     setPatientDetails(prevDetails => ({
-  //       ...prevDetails,
-  //       Patient_Ageyy: years,
-  //       Patient_Agemm: months,
-  //       Patient_Agedd: days
-  //     }));
-  //   }
-  // }, [patientDetails.Patient_Dob]);
 
   
  return (
@@ -250,80 +253,7 @@ function Register({patientDetails,setPatientDetails,handleGenderChange, closeMod
           InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
         />
       </Grid>
-
-        {/* <Grid item xs={12} sm={2} md={2}>
-  <TextField
-    id="yyyy"
-    label="Age YY"
-    variant="outlined"
-    size="small"
-    value={patientDetails ? patientDetails.Patient_Ageyy : ''}
-    onChange={(e) => {
-      setPatientDetails({ ...patientDetails, Patient_Ageyy: e.target.value });
-      setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-    }}
-    fullWidth
-    InputLabelProps={{ style: { fontSize: '1rem' } }}
-    // error={!!errors.Patient_Age}
-    // helperText={errors.Patient_Age}
-  />
-</Grid> */}
-
-        {/* <Grid item xs={12} sm={2} md={2}>
-          <TextField
-            id="mm"
-            label="Age MM"
-            variant="outlined"
-            value={patientDetails ? patientDetails.Patient_Agemm : ''}    
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Agemm: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-            }}
-            size="small"
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            // error={!!errors.Patient_Age}
-            // helperText={errors.Patient_Age}
-          />
-        </Grid> */}
-
-        {/* <Grid item xs={12} sm={2} md={2}>
-          <TextField
-            id="dd"
-            label="Age DD"
-            variant="outlined"
-            value={patientDetails ? patientDetails.Patient_Agedd : ''}                            
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Agedd: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_Age: '' }));
-            }}
-            size="small"
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            // error={!!errors.Patient_Age}
-            // helperText={errors.Patient_Age}
-          />
-        </Grid> */}
-
-        {/* <Grid item xs={12} sm={3} md={3}>
-          <TextField
-            id="dob"
-            label="Date of Birth"
-            type="date"
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
-            onChange={(e) => {
-              const dob = e.target.value;
-              setPatientDetails({ ...patientDetails, Patient_Dob: dob });
-              calculateAge(dob); 
-            }}
-            InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
-          />
-        </Grid> */}
-
-        <Grid item xs={12} sm={3} md={3}>
+ <Grid item xs={12} sm={3} md={3}>
         <FormControl variant="outlined" size="small" fullWidth>
           <InputLabel id="genderLabel">Gender</InputLabel>
           <Select
@@ -414,22 +344,7 @@ function Register({patientDetails,setPatientDetails,handleGenderChange, closeMod
             InputLabelProps={{ style: { fontSize: '1rem' } }}
           />
         </Grid>
-        {/* <Grid item xs={12}>
-          <TextareaAutosize
-            minRows={1}
-            maxRows={6}
-            value={patientDetails ? patientDetails.Patient_Address : ''}    
-            onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
-            style={{
-              width: "100%",
-             
-               padding: 4,
-              fontSize: 16,
-             
-            }}
-            placeholder="Enter your Address"
-          />
-        </Grid> */}
+        
       </Grid>
     </CardContent>
   </Card>
@@ -437,16 +352,17 @@ function Register({patientDetails,setPatientDetails,handleGenderChange, closeMod
 
     <Grid item xs={12} >
       
-      <Buttons  resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode}
-       handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient}
-        closeModal={closeModal} newPatientId={newPatientId} saveOrUpdatePatient={saveOrUpdatePatient}
-        isSaving={isSaving} handleSaveOrUpdate={handleSaveOrUpdate} patientCode={patientCode}/>
-     
-  
-    </Grid>
-   
-    {/* <ToastContainer position="top-center" autoClose={3000} hideProgressBar /> */}
-    </Grid>
+      <Buttons  resetForm={resetForm}
+       fetchNewPatientId={fetchNewPatientId} 
+       isEditMode={isEditMode}
+       handleNewPatient={handleNewPatient}
+        closeModal={closeModal} 
+        newPatientId={newPatientId} 
+        isSaving={isSaving}
+         handleSaveOrUpdate={handleSaveOrUpdate}
+          flag={flag}/>
+     </Grid>
+   </Grid>
    </>
   )
 }

@@ -105,7 +105,7 @@ const AppSidebar = () => {
   }, [])
   return (
     <CSidebar
-      className="border-end"
+      className="border-end sidebar"
       colorScheme="dark"
       position="fixed"
       unfoldable={unfoldable}
@@ -113,6 +113,7 @@ const AppSidebar = () => {
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible });
       }}
+      
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
@@ -126,7 +127,7 @@ const AppSidebar = () => {
           onClick={() => dispatch({ type: 'set', sidebarShow: false })}
         />
       </CSidebarHeader>
-      {/* <NavigationWithModals /> Use the modal handling component here */}
+      {/* <NavigationWithModals />  */}
       {/* Uncomment the following block if you need the footer */}
       {/* <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler

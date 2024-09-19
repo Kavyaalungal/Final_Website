@@ -35,3 +35,16 @@ body {
 .border-bottom {
     border-bottom: var(--bs-border-width) var(--bs-border-style) #7e8691 !important;
 }
+
+/* Media Query for screens wider than 993px to reduce sidebar height */
+@media (min-width: 993px) {
+    .sidebar-dark {
+        height: 125vh; /* Reduced sidebar height for large screens */
+        padding-bottom: 10px; /* Optional: Adjust padding */
+    }
+
+    .sidebar-dark .CSidebarHeader,
+    .sidebar-dark .CSidebarFooter {
+        padding: 10px; /* Adjust padding to fit reduced height */
+    }
+}

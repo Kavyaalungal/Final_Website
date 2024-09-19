@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Additional from './Additional';
 import { usePatient } from './PatientContext';
 import { useState } from 'react';
-import { useEffect } from 'react';
 import axios from 'axios';
 
 function CustomTabPanel(props) {
@@ -44,35 +43,27 @@ function a11yProps(index) {
 
 export default function BasicTabs({ closeModal }) {
    // declaring state variables needed
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const { patientDetails, setPatientDetails } = usePatient();
   const patientCode = patientDetails?.Patient_Code;
-  const [isEditMode, setIsEditMode] = React.useState(false);// Default to false for new patients
-  const [newPatientId, setNewPatientId] = React.useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);// Default to false for new patients
+  const [newPatientId, setNewPatientId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [hasShownToast, setHasShownToast] = useState(false);
-  const [isOptionSelected, setIsOptionSelected] = useState(false);
+  const [flag, setFlag] = useState('Save'); // 'Save' initially
+  const [isNewPatient, setIsNewPatient] = useState(false);
   const [errors, setErrors] = useState({});// state variable for storing the errors 
   const [searchCriteria, setSearchCriteria] = useState('Phone'); // state variable for the searchcrieteria ie, whether it is name,id,email,phone
   const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
   const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
-  useEffect(() => {
-    if (patientDetails) {
-      // If patientDetails exists, switch to edit mode
-      setIsEditMode(true);
-    } else {
-      // If patientDetails is null or undefined, switch to new mode
-      setIsEditMode(false);
-    }
-  }, [patientDetails]);
+ 
   
-
- // function for entering the searchcriteria 
+  // function for entering the searchcriteria 
   const handleSearchCriteriaChange = (event) => {   
     setSearchCriteria(event.target.value); // it sets the value selected according tho the user selection
    setSearchValue('');  // according to the search criteria it  resets the searchvalue and suggestions 
     setSuggestions([]);
   };
+
   // function to enter the value according to searchcriteria
   const handleSearchValueChange = (event, value) => {
     console.log('Search value changed:', value);
@@ -108,6 +99,7 @@ export default function BasicTabs({ closeModal }) {
       toast.error('Error fetching suggestions');  // any error in fetching data is displayed using toast
     }
   };
+
     // function for normailizing the title ie, to convert title to standard form
   const normalizeTitle = (title) => {
     switch (title) {   // differnt cases for that if the title is MR it is set to Mr form like that rest of the following
@@ -123,6 +115,7 @@ export default function BasicTabs({ closeModal }) {
         return title;
    }
  };
+ 
   // for selecting the patient object from the list and populating it to the form
  const handleSelectPatient = async (event, newValue) => { // two parameters the value and event is passed
   if (!newValue) return; // if no value it exits here and stop the function
@@ -162,8 +155,8 @@ export default function BasicTabs({ closeModal }) {
 
       // Update patient details
       setPatientDetails(trimmedPatientDetails);// Update patient details with full details
-      setIsEditMode(false);  // Log updated state
-
+      // setIsEditMode(false);  // Log updated state
+      setFlag('Edit');
     // Update searchValue to show the selected search item value in the TextField only 
       let selectedValue;
       switch (searchCriteria) {
@@ -200,8 +193,12 @@ export default function BasicTabs({ closeModal }) {
      setSuggestions([]);
      setIsEditMode(false);
      setErrors({});
-     setNewPatientId(null);
+    //  setNewPatientId(null);
+     setIsNewPatient(false);
+     setNewPatientId('');
+     setFlag('Save')// Ensure button text is reset // Reset new patient flag if used
   };
+
   // Fetch a new patient ID
   const fetchNewPatientId = async () => {
     try {
@@ -225,54 +222,63 @@ export default function BasicTabs({ closeModal }) {
     }
   };
   
-  const handleNewPatient = async () => {
+
+   // Reset form and fetch new patient ID for creating a new patient
+   const handleNewPatient = async () => {
+    console.log('Before resetting:', isEditMode, patientDetails);
     resetForm();
-    const newPatientId = await fetchNewPatientId();
-    if (newPatientId) {
+    const newId = await fetchNewPatientId();
+    if (newId) {
       setPatientDetails(prevDetails => ({
         ...prevDetails,
-        Patient_Code: newPatientId
+        Patient_Code: newId,
       }));
-      setIsEditMode(false); // Set edit mode for a new patient
+      setFlag('Save')
+      // setIsEditMode(false); // This should correctly set isEditMode to false
+      setButtonText('Save Patient'); // This should correctly set button text
     } else {
       toast.error('Failed to fetch a new patient ID');
     }
+    console.log('After resetting:', isEditMode, patientDetails);
   };
+  
+
+//function for saving a new patient and updating a existing a patient 
+  const handleSaveOrUpdate = async () => {
+    // const { setPatientDetails } = usePatient();
+    if (!validate()) return;
+  
+    const editFlag = flag === 'Edit' ? 1 : 0; // Use the flag to determine whether it's a save or update
+    const payload = {
+      ...patientDetails,
+      EditFlag: editFlag,
+      Patient_YrId: 2425,
+      Patient_CpyId: 2,
+      Patient_Code: flag === 'Edit' ? patientDetails.Patient_Code : newPatientId,
+    };
+  
+    try {
+      const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
+      if (response.data.status && response.data.status[0].status === 'Success') {
+        toast.success(flag === 'Edit' ? 'Patient details updated successfully' : 'Patient details saved successfully');
+        resetForm();
+      } else {
+        toast.error(`Failed to ${flag === 'Edit' ? 'update' : 'save'} patient details: ${response.data.status[0].Message}`);
+      }
+    } catch (error) {
+      toast.error(`Error ${flag === 'Edit' ? 'updating' : 'saving'} patient details`);
+    }
+  };
+
+//function for changing the patient id field 
   const handlePatientIdChange = (e) => {
     setPatientDetails({
       ...patientDetails,
       Patient_Code: e.target.value
     });
   };
- // function to set the gender field according to the title
-  // const handleTitleChange = (e) => {
-  //   const newTitle = e.target.value; // for storing the selected title
-  //   let gender = ''; // initially is null 
-   
-  //    switch (newTitle) { // when the prefix changes gender is set according to it 
-  //      case 'Mr':     // if is selected Mr then gender is set to Male 
-  //        gender = 'Male';
-  //       break;
-  //      case 'Mrs':  // if it selects these fields it is set to female
-  //      case 'Ms':
-  //      case 'Miss':
-  //        gender = 'Female';
-  //        break;
-  //      default:    // if no value is selected it is set to null as initial value 
-  //        gender = '';
-  //    }
-  //      // update the patient details again 
-  //   setPatientDetails((prevDetails) => ({
-  //      ...prevDetails, // spreading the details fetched and updating the title according to the selected one 
-  //     Patient_Title: newTitle,
-  //      Patient_Ismale: gender, // updates the gender according to it 
-  //    }));
-  //    setErrors((prevErrors) => ({   // if any errors occurs in the gender field 
-  //      ...prevErrors,
-  //      Patient_Ismale: '',
-  //    }));
-  //  };
 
+//function for changing the title according to the gender
    const handleTitleChange = (event) => {
     const newTitle = event.target.value;
     // Update title and gender based on selected title
@@ -286,6 +292,7 @@ export default function BasicTabs({ closeModal }) {
     }));
   };
 
+  //function for changing the title according to the gender change
   const handleGenderChange = (event) => {
     const newGender = event.target.value;
     // Update gender and title based on selected gender
@@ -298,41 +305,8 @@ export default function BasicTabs({ closeModal }) {
         '', // Default value when no gender is selected
     }));
   };
-   // function to calculate age in days, months, and years with the dob value 
-  //  const calculateAge = (dob) => { // dob is passed as parameter
-  //   if (!dob) return; // if there is no dob stop the execution here
-   
-  //    const today = new Date();  // takes the current date that is todays date '04-07-2024'
-  //    const birthDate = new Date(dob);  // dob is taken '17-12-2000'
-   
-  //    // Calculate age
-  //    let ageYear = today.getFullYear() - birthDate.getFullYear();  // 2024-2000 = 24
-  //    let ageMonth = today.getMonth() - birthDate.getMonth();  // 7-12 = -5
-  //    let ageDay = today.getDate() - birthDate.getDate();   // 4-17 = -13
-   
-  //    // Adjust negative ageMonth
-  //    if (ageMonth < 0 || (ageMonth === 0 && ageDay < 0)) {   // here month is -5 so it is negative then
-  //      ageYear--;                                          // 1 is decremented from year here it becomes 24-1 = 23
-  //      ageMonth += 12;                                      // 12 is added to month ie, -5 +12 = 7
-  //    }
-   
-  //    // Adjust negative ageDay
-  //    if (ageDay < 0) {
-  //      const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);  // for getting the last day of previous month of the current date here we get '30-06-2024'
-  //      ageDay = tempDate.getDate() + ageDay;   // 30 + -13 = 17
-  //      ageMonth--;                      // one is decremented from month 7 -1 = 6
-  //    }
-   
-  //    // Update state
-   
-  //    setPatientDetails((prevDetails) => ({
-  //      ...prevDetails,
-  //      Patient_Ageyy: ageYear !== 0 ? ageYear.toString() : prevDetails.Patient_Ageyy,
-  //      Patient_Agemm: ageMonth !== 0 ? ageMonth.toString() : prevDetails.Patient_Agemm,
-  //      Patient_Agedd: ageDay !== 0 ? ageDay.toString() : prevDetails.Patient_Agedd,
-  //    }));
-  //  };
 
+//function for  calculating the age according to the dob
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);
     const today = new Date();
@@ -356,7 +330,7 @@ export default function BasicTabs({ closeModal }) {
       days: ageDD
     };
   };
-
+//function for changing the age fields according to the dob changes
   const handleDateOfBirthChange = (e) => {
     const dob = e.target.value;
     setPatientDetails(prevDetails => ({ 
@@ -371,107 +345,93 @@ export default function BasicTabs({ closeModal }) {
       Patient_Agedd: days
     }));
   };
+//updating the dob field according to the age field changes
+const handleDOBChange = (e) => {
+  const dob = e.target.value; // Format YYYY-MM-DD
+  const today = new Date(2024, 8, 19); // 19th September 2024
 
-  const handleAgeChange = (field, value) => {
-    const ageYY = parseInt(patientDetails.Patient_Ageyy, 10) || 0;
-    const ageMM = parseInt(patientDetails.Patient_Agemm, 10) || 0;
-    const ageDD = parseInt(patientDetails.Patient_Agedd, 10) || 0;
-    const today = new Date();
-    
-    // Calculate the Date of Birth based on the age fields
-    const dob = new Date(today.getFullYear() - ageYY, today.getMonth() - ageMM, today.getDate() - ageDD).toISOString().split('T')[0];
-    
+  if (dob) {
+    const dobDate = new Date(dob);
+    let ageYY = today.getFullYear() - dobDate.getFullYear();
+    let ageMM = today.getMonth() - dobDate.getMonth();
+    let ageDD = today.getDate() - dobDate.getDate();
+
+    if (ageDD < 0) {
+      ageMM--;
+      const lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      ageDD += lastDayPrevMonth;
+    }
+
+    if (ageMM < 0) {
+      ageYY--;
+      ageMM += 12;
+    }
+
     setPatientDetails(prevDetails => ({
       ...prevDetails,
-      [`Patient_Age${field}`]: value,
-      Patient_Dob: dob
+      Patient_Dob: dob,
+      Patient_Ageyy: ageYY,
+      Patient_Agemm: ageMM,
+      Patient_Agedd: ageDD
     }));
-  };
+  }
+};
 
-  
-  
-  // Save new patient details
-  const saveNewPatient = async () => {
-    if (isSaving || !newPatientId) return; // Prevent multiple calls and ensure ID is available
-  
-    setIsSaving(true);
-    const payload = {
-          Patient_Code: newPatientId, // Use the new patient ID
-          Patient_Title: patientDetails.Patient_Title.trim(),
-          Patient_Name: patientDetails.Patient_Name.trim(),
-          Patient_Ismale: patientDetails.Patient_Ismale,
-          Patient_Dob: patientDetails.Patient_Dob, // Ensure date format is correct
-          Patient_Ageyy: patientDetails.Patient_Ageyy,
-          Patient_Agemm: patientDetails.Patient_Agemm,
-          Patient_Agedd: patientDetails.Patient_Agedd,
-          Patient_Email: patientDetails.Patient_Email?.trim() || '',
-          Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
-          Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
-          Patient_Address: patientDetails.Patient_Address?.trim() || '',
-          Patient_Note: patientDetails.Patient_Note?.trim() || '',
-          Patient_YrId: 2425, 
-          Patient_CpyId: 2, 
-          EditFlag: 0 // Indicate this is a new record
-        };
-  
-    try {
-      const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
-      if (response.data.status && response.data.status[0].status === 'Success') {
-        toast.success('Patient details saved successfully');
-        resetForm();
-      } else {
-        toast.error(`Failed to save patient details: ${response.data.status[0].Message}`);
-      }
-    } catch (error) {
-      toast.error('Error saving new patient details');
-      console.error('Error saving new patient details:', error);
-    } finally {
-      setIsSaving(false); // Reset saving status
-    }
-  };
-  
- // function to validate some fields before saving back to server
-  // const validate = () => {
-  //   const newErrors = {};    //  object for storing errors
-  //   if (!patientDetails.Patient_Name) {    // if no patient name is there when saving it shows the error ie, making it as a required field 
-  //   newErrors.Patient_Name = 'Name is required';
-  //     toast.warn('Please fill the required fields') // it is shown as a toast message
-  //   }
-  //   // for phone numbervalidation ensuring it contains 10 digits here it checks if phone number is available it test using regular expression
-  //  if(patientDetails.Patient_Phno && !/^\d{10}$/.test(patientDetails.Patient_Phno)){
-  //   newErrors.Patient_Phno = 'please enter a valid phone number';
-  //   toast.error('Please enter a valid phone number')  // displays an error message it it does not contain 10 digits
-  //   }
-  //   if(patientDetails.Patient_mobile && !/^\d{10}$/.test(patientDetails.Patient_mobile)){
-  //    newErrors.Patient_mobile = 'Invalid mobile number';
-  //     toast.error('please enter a valid mobile  number')
-  //   }
-  //   // for email validation if email is there and is not in the correct format mentioned it validates and shows an error 
-  //   if (patientDetails.Patient_Email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(patientDetails.Patient_Email)) { // it checks some characters before the @ without
-  //     newErrors.Patient_Email = 'Invalid email address';      // white space and after @ some characters after that . should there and some characters after that without any whitespace
-  //     toast.error('please enter a valid email address')
-  //   }
-  //  // for validating the age fields are mandatory 
-  //   if (
-  //     patientDetails.Patient_Ageyy === 0 &&
-  //     patientDetails.Patient_Agemm === 0 &&
-  //     patientDetails.Patient_Agedd === 0
-  //   ) {
-  //     newErrors.Patient_Age = 'Age is required';
-  //     toast.warn('Please fill in the age fields');
-  //   } 
-  
-  //  // for making gender field is mandatory
-  //  if (!patientDetails.Patient_Ismale) {
-  //    newErrors.Patient_Ismale = 'Gender is required';
-  //    toast.warn('Please select the gender');
-  //  }
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0; // returns true if there is no error and otherwise it is false
+
+
+const handleAgeChange = (field, value) => {
+  const ageYY = parseInt(patientDetails.Patient_Ageyy, 10) || 0;
+  const ageMM = parseInt(patientDetails.Patient_Agemm, 10) || 0;
+  const ageDD = parseInt(patientDetails.Patient_Agedd, 10) || 0;
+
+  const today = new Date(2024, 8, 19); // 19th September 2024
+
+  let dobYear = today.getFullYear() - ageYY;
+  let dobMonth = today.getMonth();
+  let dobDay = today.getDate();
+
+  dobMonth -= ageMM;
+  dobDay -= ageDD;
+
+  if (dobDay < 1) {
+    dobMonth--;
+    const lastDayPrevMonth = new Date(dobYear, dobMonth + 1, 0).getDate();
+    dobDay += lastDayPrevMonth;
+  }
+
+  if (dobMonth < 0) {
+    dobYear--;
+    dobMonth += 12;
+  }
+
+  const dob = new Date(dobYear, dobMonth, dobDay).toISOString().split('T')[0];
+
+  setPatientDetails(prevDetails => ({
+    ...prevDetails,
+    [`Patient_Age${field}`]: value,
+    Patient_Dob: dob
+  }));
+};
+
+
+
+  // const handleAgeChange = (field, value) => {
+  //   const ageYY = parseInt(patientDetails.Patient_Ageyy, 10) || 0;
+  //   const ageMM = parseInt(patientDetails.Patient_Agemm, 10) || 0;
+  //   const ageDD = parseInt(patientDetails.Patient_Agedd, 10) || 0;
+  //   const today = new Date();
+    
+  //   // Calculate the Date of Birth based on the age fields
+  //   const dob = new Date(today.getFullYear() - ageYY, today.getMonth() - ageMM, today.getDate() - ageDD).toISOString().split('T')[0];
+    
+  //   setPatientDetails(prevDetails => ({
+  //     ...prevDetails,
+  //     [`Patient_Age${field}`]: value,
+  //     Patient_Dob: dob
+  //   }));
   // };
-
-  
-  const validate = () => {
+// function for validation
+ const validate = () => {
     const newErrors = {}; // Object for storing errors
   
     // Check if the patient's name is empty
@@ -527,114 +487,12 @@ export default function BasicTabs({ closeModal }) {
     setErrors(newErrors); // Update state with new errors
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
-  
-  
-  const updatePatient = async () => {
-    // Update patient logic
-    if (!validate()) return;
-  
-    const trimmedDetails = {
-      ...patientDetails,
-      Patient_Name: patientDetails.Patient_Name.trim(),
-      Patient_Email: patientDetails.Patient_Email?.trim() || '',
-      Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
-      // Patient_Title: patientDetails.Patient_Title,
-      // Patient_Ismale: patientDetails.Patient_Ismale,
-      Patient_YrId: patientDetails.Patient_YrId,
-      Patient_CpyId: patientDetails.Patient_CpyId,
-    };
-  
-    const editFlag = 1;
-    console.log('Data to be sent for saving new patient:', {
-      ...trimmedDetails,
-      Patient_CpyId: 2,
-      Patient_YrId: 2425,
-      EditFlag: editFlag,
-    });
-  
-    try {
-      const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', {
-        ...trimmedDetails,
-        Patient_CpyId: 2,
-        Patient_YrId: 2425,
-        EditFlag: editFlag,
-      });
-  
-      if (response.data.status && response.data.status.length > 0) {
-        const responseStatus = response.data.status[0];
-        if (responseStatus.status === 'Success') {
-          toast.success('Patient details updated successfully');
-          setIsEditMode(false);
-          resetForm();
-        } else {
-          toast.error(`Failed to update patient details: ${responseStatus.Message}`);
-        }
-      } else {
-        toast.error('Invalid response format from server');
-      }
-    } catch (error) {
-      console.error('Error updating patient details:', error);
-      toast.error('Error updating patient details');
-    }
-  };
-  
-  const handleSaveOrUpdate = async () => {
-    if (isSaving) return; // Prevent multiple operations
-  
-    // Determine if it's a new patient or an existing one
-    const isNewPatient = !patientDetails.Patient_Code;
-  
-    console.log("Is new patient:", isNewPatient); // Debug log
-  
-    setIsSaving(true);
-  
-    const payload = {
-      Patient_Code: patientDetails.Patient_Code, // Always include Patient_Code
-      // Patient_Code: isNewPatient ? newPatientId : patientDetails.Patient_Code, 
-      Patient_Title: patientDetails.Patient_Title?.trim() || '',
-      Patient_Name: patientDetails.Patient_Name?.trim() || '',
-      Patient_Ismale: patientDetails.Patient_Ismale,
-      Patient_Dob: patientDetails.Patient_Dob, // Ensure date format is correct
-      Patient_Ageyy: patientDetails.Patient_Ageyy,
-      Patient_Agemm: patientDetails.Patient_Agemm,
-      Patient_Agedd: patientDetails.Patient_Agedd,
-      Patient_Email: patientDetails.Patient_Email?.trim() || '',
-      Patient_Phno: patientDetails.Patient_Phno?.trim() || '',
-      Patient_mobile: patientDetails.Patient_mobile?.trim() || '',
-      Patient_Address: patientDetails.Patient_Address?.trim() || '',
-      Patient_Note: patientDetails.Patient_Note?.trim() || '',
-      Patient_YrId: 2425,
-      Patient_CpyId: 2,
-      EditFlag: isNewPatient ? 0 : 1 // 0 for save, 1 for update
-    };
-  
-    console.log("Payload:", payload); // Debug log
-  
-    try {
-      const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
-      if (response.data.status && response.data.status.length > 0) {
-        const responseStatus = response.data.status[0];
-        if (responseStatus.status === 'Success') {
-          toast.success(`Patient details ${isNewPatient ? 'saved' : 'updated'} successfully`);
-          resetForm();
-        } else {
-          toast.error(`Failed to ${isNewPatient ? 'save' : 'update'} patient details: ${responseStatus.Message}`);
-        }
-      } else {
-        toast.error('Invalid response format from server');
-      }
-    } catch (error) {
-      console.error(`Error ${isNewPatient ? 'saving' : 'updating'} patient details:`, error);
-      toast.error(`Error ${isNewPatient ? 'saving' : 'updating'} patient details`);
-    } finally {
-      setIsSaving(false); // Reset saving status
-    }
-  };
-  
-  
+ 
 
 
-  const handleChange = (event, newValue) => {
+
+
+ const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 // function to display the list of options , hightlighing the matched option .....
@@ -695,9 +553,7 @@ export default function BasicTabs({ closeModal }) {
            fetchNewPatientId={fetchNewPatientId}
             isEditMode={isEditMode} 
             handleNewPatient={handleNewPatient}
-             saveNewPatient={saveNewPatient}
-             updatePatient={updatePatient}
-             handleSearchCriteriaChange={handleSearchCriteriaChange}
+           handleSearchCriteriaChange={handleSearchCriteriaChange}
              handleSearchValueChange={handleSearchValueChange}
              fetchSuggestions={fetchSuggestions}
              handleSelectPatient={handleSelectPatient}
@@ -716,11 +572,38 @@ export default function BasicTabs({ closeModal }) {
              handleGenderChange={handleGenderChange}
              handleSaveOrUpdate={handleSaveOrUpdate}
              isSaving={isSaving}
-             patientCode={patientCode}
+             flag={flag}
+             handleDOBChange={handleDOBChange}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Additional setPatientDetails={setPatientDetails} closeModal={closeModal} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient}updatePatient={updatePatient}/>
+        <Additional patientDetails={patientDetails} 
+        setPatientDetails={setPatientDetails}
+         closeModal={closeModal}
+          resetForm={resetForm}
+           fetchNewPatientId={fetchNewPatientId}
+            isEditMode={isEditMode} 
+            handleNewPatient={handleNewPatient}
+           handleSearchCriteriaChange={handleSearchCriteriaChange}
+             handleSearchValueChange={handleSearchValueChange}
+             fetchSuggestions={fetchSuggestions}
+             handleSelectPatient={handleSelectPatient}
+             handlePatientIdChange={handlePatientIdChange}
+             calculateAge={calculateAge}
+             handleTitleChange={handleTitleChange}
+             renderOption={renderOption} 
+             searchCriteria={searchCriteria}
+             searchValue={searchValue}
+             suggestions={suggestions}
+             setIsEditMode={setIsEditMode}
+             errors={errors}
+             setErrors={setErrors}
+             handleDateOfBirthChange={handleDateOfBirthChange}
+             handleAgeChange={handleAgeChange}
+             handleGenderChange={handleGenderChange}
+             handleSaveOrUpdate={handleSaveOrUpdate}
+             isSaving={isSaving}
+             flag={flag}/>
       </CustomTabPanel>
     </Box>
   );

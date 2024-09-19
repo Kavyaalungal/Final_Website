@@ -1,29 +1,21 @@
-/* styles.css */
-/* .thirdcard {
-    width: 130%;
-    height: 640px;
-    padding: 16px;
-    overflow-y: auto;
-    margin-top: -3px;
-    margin-left: 15px;
-  } */
+
   
-  /* Media query for screens 430px or smaller */
-  @media (max-width: 430px) {
+
+  @media (max-width: 375px) {
     .thirdcard {
-      width: 110%;   /* Full width for small screens */
-      height: 1000px;  /* Adjust height based on content */
+      width: 490px;   
+      height: 400px; 
       margin-top: 5px; 
-      margin-left: 75px; 
-      margin-bottom: 20px; /* Remove margin-left */
+      margin-left: 58px; 
+      margin-bottom: 2px; 
     }
   }
-  @media (max-width: 320px) {
+  @media (max-width: 575px) {
     .thirdcard {
-      width: 400px;   /* Full width for small screens */
-      height: 1000px;  /* Adjust height based on content */
+      width: 770px;   
+      height: 300px; 
       margin-top: 5px; 
-      margin-left: 75px; 
-      margin-bottom: 20px; /* Remove margin-left */
+      margin-left: 100px; 
+      margin-bottom: 16px; 
     }
   }

@@ -40,7 +40,7 @@ const AppHeader = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if it's mobile view
   useEffect(() => {
-    const storedUsername = localStorage.getItem('loggedInUsername');
+    const storedUsername = sessionStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     }

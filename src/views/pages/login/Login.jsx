@@ -331,22 +331,19 @@
 // export default Login;
 
 
-import { useState } from 'react';
-import { TextField, Button, Box, Typography, IconButton, InputAdornment } from "@mui/material";
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../../actions/authActions';
+import { useEffect, useState } from 'react';
+import { TextField, Button, Box, Typography, IconButton, InputAdornment, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {  Visibility, VisibilityOff } from '@mui/icons-material';
 import './Login.css';
-import logo from '../../../assets/images/icon infoware logo new.png';
-import bg from '../../../assets/images/liscare website login page.svg';
+import { useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
-function Login() {
-  const dispatch = useDispatch();
+import { useNavigate } from 'react-router-dom';
+import logo from '../../../assets/images/icon infoware logo new.png'
+import bg from '../../../assets/images/liscare-website-login-page-copy.jpg';
+function LoginForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [empKey, setEmpKey] = useState('');
   const [username, setUsername] = useState('');
@@ -354,6 +351,76 @@ function Login() {
   const [empKeyError, setEmpKeyError] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [year, setYear] = useState('');  // selected year
+  const [years, setYears] = useState([]); // fetched years
+  const [Branch, setBranch] = useState('');  // selected
+  const [Branches, setBranches] = useState([]) // fetched 
+  const [BranchIdget,SetBranchIdgets] = useState(null);
+  useEffect(() => {
+    fetch('http://172.16.16.157:8083/api/YearDataget')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);  // Inspect the API response
+        if (data.success && Array.isArray(data.yearDetails)) {
+          const yearDataArray = data.yearDetails.map(detail => ({
+            Yeardata: detail.Yeardata,
+            YearId: detail.YearId
+          }));
+          
+          setYears(yearDataArray);
+          console.log(yearDataArray);
+          
+          if (yearDataArray.length > 0) {
+            const latestYear = yearDataArray[yearDataArray.length - 1];
+            setYear(latestYear.Yeardata); // Set the last year's Yeardata
+            
+            // Store the latest year and its YearId in session storage
+            sessionStorage.setItem('latestYear', latestYear.Yeardata);
+            sessionStorage.setItem('latestYearId', latestYear.YearId.toString()); // Convert YearId to string for storage
+          }
+        } else {
+          console.error('Unexpected data format:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  
+  useEffect(() => {
+    fetch('http://172.16.16.157:8083/api/Branchname_Get')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('API Response:', data); // Log the full response to inspect
+        if (data.Success && Array.isArray(data.brnch_dlts)) {
+          // Map branch details to extract BranchName
+          const branchNames = data.brnch_dlts.map(detail => ({
+            BranchName: detail.BranchName,
+            Branchkey: detail.BranchKey
+          }));
+          
+          // Update state with branch names
+          setBranches(branchNames);
+          console.log('Branch Names:', branchNames);
+        } else {
+          console.error('Unexpected data format:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching branches:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Get the port number from the URL
+    const branchGetId = window.location.port;
+    // Extract the last character (in this case, '3')
+    const branchesId = branchGetId.slice(-1);
+    SetBranchIdgets(branchesId);
+
+    // Store in sessionStorage
+    sessionStorage.setItem('BranchIdNow', branchesId);
+  }, []); 
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -363,103 +430,192 @@ function Login() {
     event.preventDefault();
   };
 
-   // Handle empKey change with validation
-   const handleEmpKeyChange = (event) => {
+  const handleEmpKeyChange = (event) => {
     const value = event.target.value;
     const numericRegex = /^[0-9]*$/;
 
     if (numericRegex.test(value)) {
       setEmpKey(value);
-    } else {
-      toast.error('Invalid Emp Key. Please enter numeric values only.', {
-        position: 'top-center',
-      });
+      setEmpKeyError('');
+    }
+    if(value) {
+      // Disable username and password fields when Emp Key is entered
+      setUsername('');
+      setPassword('');
+    } 
+  };
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+    setUsernameError('');
+    if (event.target.value) {
+      // Disable Emp Key field when username is entered
+      setEmpKey('');
+      // setEmpKeyError('');
     }
   };
 
-  // Handle username change
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+  const handleLoginSuccess = (data) => {
+    // Store user data in session storage
+    sessionStorage.removeItem('username');
+    sessionStorage.setItem('username', data.username);
+    sessionStorage.setItem('userId', data.Empid);
+  
+    // Store selected year and branch in session storage if available
+    sessionStorage.setItem('selectedYear', year);
+    sessionStorage.setItem('selectedYrID', sessionStorage.getItem('selectedYrID') || '');
+    sessionStorage.setItem('selectedBranch', Branch);
+    sessionStorage.setItem('selectedBranchKey', sessionStorage.getItem('selectedBranchKey') || '');
+  
+    // Navigate to dashboard
+    dispatch({ type: 'login' });
+    navigate('/');
+    toast.success('LOGIN SUCCESS', { autoClose: 1000, position: 'top-center' });
   };
-
-  // Handle password change
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  // Handle login submission
+  
   const handleLogin = () => {
     if (empKey) {
-      dispatch({ type: 'login' });
-      console.log('Login using EmpKey:', empKey);
-      toast.success('Login successful using Emp Key!');
-      // Navigate to the dashboard after successful login
-      navigate('/'); // Replace with your dashboard route
+      const url = `http://172.16.16.157:8083/api/UserLogin?Empkey=${empKey}`;
+      console.log('Request URL:', url);
+  
+      fetch(url)
+        .then(response => {
+          console.log('Response Status:', response.status); // Log status code
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('API Response:', data); // Log the API response
+          if (data.Success) {
+            console.log('Login successful with EmpKey:', empKey, data.username);
+            handleLoginSuccess(data);
+          } else {
+            setEmpKeyError('Invalid EmpKey. Please try again.');
+            toast.error('invalid emp key')
+          }
+        })
+        .catch(error => {
+          console.error('Error during login:', error);
+          setEmpKeyError('Failed to login. Please try again later.');
+        });
     } else if (username && password) {
-      console.log('Login using Username:', username, 'and Password:', password);
-      // Dispatch login action (if needed)
-      dispatch(login({ username, password }));
-      toast.success('Login successful using Username and Password!');
-      // Navigate to the dashboard after successful login
-      navigate('/'); // Replace with your dashboard route
+      const url = `http://172.16.16.10:8060/api/UserLogin?username=${username}&password=${password}`;
+      console.log('Request URL:', url);
+  
+      fetch(url)
+        .then(response => {
+          console.log('Response Status:', response.status); // Log status code
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('API Response:', data); // Log the API response
+          if (data.Success) {
+            console.log('Login successful with Username and Password:', username, data);
+            handleLoginSuccess(data);
+          } else {
+            toast.error('Invalid Username or password');
+          }
+        })
+        .catch(error => {
+          console.error('Error during login:', error);
+          toast.error('Invalid Username and Password', { autoClose: 2000, position: 'top-center' });
+        });
     } else {
-      // Error handling for missing fields
       if (!empKey && (!username || !password)) {
-        toast.error('EmpKey or Username and Password are required.');
+        if (!username) setUsernameError('Username is required');
+        if (!password) setPasswordError('Password is required');
+        if (!empKey) setEmpKeyError('EmpKey is required');
+      }
+    }
+  };
+  
+
+  const handleUsernameSubmit = () => {
+    if (username) {
+      setUsernameError('');
+      document.getElementById('password-input').focus(); // Focus on the password field
+    } else {
+      setUsernameError('Username is required');
+    }
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    setPasswordError('');
+  };
+
+  const handleKeyPress = (event, field) => {
+    if (event.key === 'Enter') {
+      if (field === 'empKey' && empKey) {
+        handleLogin();
+      } else if (field === 'username') {
+        handleUsernameSubmit();
+      } else if (field === 'password' && password) {
+        handleLogin();
+      } else {
+        setPasswordError('Password is required');
       }
     }
   };
 
-  // Handle form submit with "Enter" key
-  // const handleKeyPress = (event, field) => {
-  //   if (event.key === 'Enter') {
-  //     if (field === 'empKey' && empKey) {
-  //       handleLogin();
-  //     } else if (field === 'username' && username) {
-  //       handleLogin();
-  //     } else if (field === 'password' && password) {
-  //       handleLogin();
-  //     } else {
-  //       toast.error('Password is required');
-  //     }
-  //   }
-  // };
+  const handleYearchange = (e) => {
+    const selectedYear = e.target.value;
+    const selectedYearDetail = years.find((yr) => yr.Yeardata === selectedYear);
+    const selectedYearId = selectedYearDetail?.YearId;
+    setYear(selectedYear);
+    sessionStorage.setItem('selectedYear', selectedYear);
+    sessionStorage.setItem('selectedYrID', selectedYearId?.toString() || '');
+  };
+
+  const handleBranchChange = (e) => {
+    const selectedBranch = e.target.value;
+    const selectedBranchDetail = Branches.find((br) => br.BranchName === selectedBranch);
+    const selectedBranchKey = selectedBranchDetail?.Branchkey;
+    setBranch(selectedBranch);
+    sessionStorage.setItem('selectedBranch', selectedBranch);
+    sessionStorage.setItem('selectedBranchKey', selectedBranchKey?.toString() || '');
+  };
+
   return (
     <Box
-      sx={{
-        height: "132vh",
-        width: "125vw",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        backgroundColor: "#f0f4f8",
-        backgroundSize: 'cover',
-        backgroundRepeat: "no-repeat",
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        margin:0,
-        padding:0,
-        // padding: '20px',
-        backgroundImage: `url(${bg})`
-      }}
+    sx={{
+      height: "125vh",
+      width: "125vw",
+      position: "fixed",
+      top: 0,
+      left: 0,
+      backgroundSize: 'cover', // Fills the entire background but may crop the image
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center center', // Centers the image
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      margin: 0,
+      padding: 0,
+     backgroundImage: `url(${bg})`
+    }}
     >
       {/* Login Form Box */}
       <Box
         sx={{
-          width: { xs: "350px", sm: "350px", md: "380px" },
-           height:'380px',
-          padding: { xs: "15px", sm: "15px", md: "20px" },
+          width: { xs: "300px", sm: "300px", md: "400px" },
+          height:{xs:'380px',sm:'380px',md:'380px'}, // Responsive width
+          padding: { xs: "10px", sm: "15px", md: "20px" }, // Responsive padding
           backgroundColor: "rgba(255, 255, 255, 1)",
           boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.3)",
           borderRadius: '15px',
           transform: "translateY(-10%) scale(0.7)",
-          marginRight: { xs: 5, sm: 5,md:5 },
+          marginRight: { xs: 2, sm: 2 },
           marginTop: { xs: 3, sm: 5 }
         }}
       >
-        <Box display={'flex'} gap={2}>
+        <Box display={'flex'} gap={2} >
           <Typography mb={1.5} variant="h5" gutterBottom className="ColorCommon">
             Welcome
           </Typography>
@@ -475,8 +631,50 @@ function Login() {
           noValidate
           autoComplete="off"
         >
-          <TextField label="FinYear" size="small" variant="outlined" value="2024-2025" InputProps={{ readOnly: true }} />
-          <TextField label="Branch" size="small" variant="outlined" value="Main Branch" InputProps={{ readOnly: true }} />
+          <FormControl fullWidth size="small">
+            <InputLabel id="year-label">Year</InputLabel>
+            <Select
+              labelId="year-label"
+              id="year"
+              value={year}
+              onChange={handleYearchange}
+              label="Year"
+              sx={{ fontSize: '1rem' }}
+            >
+              {years.length > 0 ? (
+                years.map((yr) => (
+                  <MenuItem key={yr.Yeardata} value={yr.Yeardata} sx={{ fontSize: '0.95rem' }}>
+                    {yr.Yeardata}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>No years available</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth size="small">
+            <InputLabel id="branch-label">Branch</InputLabel>
+            <Select
+              labelId="branch-label"
+              id="branch"
+              value={Branch}
+              onChange={handleBranchChange}
+              label="Branch"
+              sx={{ fontSize: '1rem' }}
+            >
+              {Branches.length > 0 ? (
+                Branches.map((branch) => (
+                  <MenuItem key={branch.BranchName} value={branch.BranchName} sx={{ fontSize: '0.75rem' }}>
+                    {branch.BranchName}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>No branches available</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+
           <TextField
             label="Emp Key"
             size="small"
@@ -485,56 +683,53 @@ function Login() {
             onChange={handleEmpKeyChange}
             error={!!empKeyError}
             helperText={empKeyError}
-            onKeyPress={(e) => handleKeyPress(e, 'empKey')}
+            onKeyDown={(e) => handleKeyPress(e, 'empKey')}
           />
           <TextField
-            id="username-input"
             label="Username"
             size="small"
             variant="outlined"
             value={username}
             onChange={handleUsernameChange}
-            onKeyPress={(e) => handleKeyPress(e, 'username')}
             error={!!usernameError}
             helperText={usernameError}
+            onKeyDown={(e) => handleKeyPress(e, 'username')}
+            sx={{ marginBottom: '0px' }}
+            autoComplete='username'
           />
           <TextField
             id="password-input"
             label="Password"
+            type={showPassword ? 'text' : 'password'}
             size="small"
-            type={showPassword ? "text" : "password"}
             variant="outlined"
             value={password}
+            onChange={handlePasswordChange}
             error={!!passwordError}
             helperText={passwordError}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={(e) => handleKeyPress(e, 'password')}
+            onKeyDown={(e) => handleKeyPress(e, 'password')}
+            autoComplete='current-password'
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
+                    aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
           />
           <Box sx={{ display: "flex", justifyContent: 'flex-end', gap: 1 }}>
-           
-             <Button
+            <Button
+              size="small"
               variant="contained"
-              // className="button"
-              sx={{ textTransform: 'none', marginRight: 1,backgroundColor: '#bb4d58',
-                fontSize:'1rem', // Default background color
-                '&:hover': {
-                  backgroundColor: '#bd2937', // Background color on hover
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
-                },  }}
-                onClick={handleLogin}
+              sx={{ backgroundColor: '#bd2937', color: 'white' }}
+              onClick={handleLogin}
             >
               Login
             </Button>
@@ -545,26 +740,29 @@ function Login() {
       {/* Logo Box */}
       <Box
         sx={{
-          width: { xs: "90%", sm: "80%", md: "250px" },
+          width: { xs: "250px", sm: "250px", md: "250px" },
           height: '0px',
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           mb: 0,
           transform: 'scale(0.8)',
-         marginRight: {xs:4,sm:4,md:4},
-          marginTop: 6
+          marginRight: { xs: 4, sm: 4, md: 4 },
+          marginTop: 6 // Margin bottom to space out from the form
         }}
+
       >
-        <img src={logo} alt="Logo" style={{ maxWidth: '90%', height: 'auto', marginLeft: -10 ,marginTop:200 }} />
+        <a href='https://iconinfoware.com/' target='_blank' rel='noopener noreferrer'>
+          <img src={logo} alt="Logo" style={{ maxWidth: '90%', height: 'auto', marginLeft: -10, marginTop: 280 }} />
+        </a>
       </Box>
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+      <ToastContainer  autoClose={3000} hideProgressBar />
     </Box>
+    
   );
 }
 
-export default Login;
-
+export default LoginForm;
 
 
 // import { useEffect, useState } from 'react';

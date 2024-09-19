@@ -7,7 +7,7 @@ import './scss/style.scss'
 
 
 
-axios.defaults.baseURL='http://172.16.16.10:8060'
+// axios.defaults.baseURL='http://172.16.16.10:8060'
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 

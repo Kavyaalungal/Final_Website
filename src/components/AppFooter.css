@@ -2,11 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  bottom: 0;
   width: 100%;
   background-color: #f8f9fa;
-  padding: 10px 20px; 
+  padding: 10px 20px;
+  position: relative; 
+  bottom: 0;
   z-index: 1000;
 }
 
@@ -19,4 +19,27 @@
   justify-content: flex-end;
   align-items: center;
   margin-right: 250px; 
+}
+
+/* Footer styles for small screens */
+@media (max-width: 575px) {
+  .footer {
+    padding: 5px 5px; /* Reduce padding */
+    flex-direction: column; /* Stack content vertically */
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+  }
+
+  .left-content,
+  .right-content {
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: left;
+  }
+
+  .right-content a {
+    display: block; /* Ensure link wraps properly */
+  }
 }

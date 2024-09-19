@@ -215,7 +215,18 @@ function ImageCard() {
               '&:hover': {
                 backgroundColor: '#bd2937', // Background color on hover
                 boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
-              }, }}
+              },
+              '@media (max-width:575px)': {
+                margin: '10px auto', // Center the button and reduce space
+                fontSize: '1rem', // Smaller font size
+                padding: '4px 16px', // Less padding to reduce width
+                display: 'block', // Ensure it's block-level for better control
+                maxWidth: '150px',
+                marginLeft:'500px',
+                marginTop:-33// Optionally, limit the max width
+              },
+    
+             }}
           >
             Add Document
           </Button>

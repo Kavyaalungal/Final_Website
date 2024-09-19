@@ -40,17 +40,23 @@ function Header() {
         top: -22,
         fontSize: '1.5rem',
         fontWeight: 'bold',
-        marginLeft: '-198px',  // Initial margin for larger screens
-        '@media (max-width: 576px)': {
-          fontSize: '1.2rem',  // Adjust font size for smaller screens
-          marginLeft: '0',     // Remove negative margin for smaller screens
+        marginLeft: '-198px', 
+        '@media (max-width: 375px)': {
+          fontSize: '1.5rem', 
+          marginLeft: '50px',    
         },
-        '@media (max-width: 320px)': {
-          fontSize: '1rem',    // Further reduce font size for very small screens
-          marginLeft: '60px',     // Ensure no negative margin at 320px
-        }
+        '@media (max-width: 575px)': {
+          fontSize: '1.5rem', 
+          marginLeft: '94px',    
+        },
+        '@media (min-width: 993px)': {
+          fontSize: '1.5rem', 
+          marginLeft: '-124px',    
+        },
+
+   
       }} 
-      className='lab'
+     
     >
       Lab Invoice
     </Typography>

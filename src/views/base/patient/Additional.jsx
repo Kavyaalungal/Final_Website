@@ -1,18 +1,19 @@
-import { Autocomplete, Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { CDatePicker } from '@coreui/react-pro';
+import {  Card, CardContent,  Grid, MenuItem, TextField } from '@mui/material'
+import React, {  useState } from 'react'
+
 import '@coreui/coreui/dist/css/coreui.min.css'
 import '@coreui/coreui-pro/dist/css/coreui.min.css'
 import { ToastContainer, toast } from 'react-toastify';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
-import { format, parseISO } from 'date-fns';
 import './Patient.css'
 import './Register.css';
 import Buttons from './Buttons';
 
-function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,isEditMode,handleNewPatient,saveNewPatient,updatePatient}) {
+function Additional({patientDetails,setPatientDetails,handleGenderChange, closeModal ,resetForm,fetchNewPatientId,
+  searchCriteria,errors,setErrors,isEditMode,searchValue,suggestions,renderOption,setIsEditMode,calculateAge,
+  handleTitleChange,fetchSuggestions,handlePatientIdChange,handleSelectPatient,handleSearchValueChange,handleNewPatient,
+  handleSearchCriteriaChange,handleDateOfBirthChange,handleAgeChange,isSaving,
+  newPatientId,handleSaveOrUpdate,flag}) {
   const [selectedId, setSelectedId] = useState('');
   const [idFile, setIdFile] = useState(null);
 
@@ -219,9 +220,12 @@ function Additional({handleSaveOrUpdate,resetForm,closeModal,fetchNewPatientId,i
 </Grid>
 
     <Grid item xs={12} >
-    <Buttons handleSaveOrUpdate={handleSaveOrUpdate} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient} closeModal={closeModal}/>
+    <Buttons  resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode}
+       handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient}
+        closeModal={closeModal} newPatientId={newPatientId} saveOrUpdatePatient={saveOrUpdatePatient}
+        isSaving={isSaving} handleSaveOrUpdate={handleSaveOrUpdate} patientCode={patientCode} handleNewPatientButtonClick={handleNewPatientButtonClick}
+        handleSave={handleSave} buttonText={buttonText} flag={flag}/>
      
-  
     </Grid>
     {/* <Grid item xs={12}>
     <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient height1'>
