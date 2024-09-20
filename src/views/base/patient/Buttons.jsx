@@ -106,35 +106,79 @@ function Buttons({
 }) {
   const navigate = useNavigate();
 
+  // const handleProceedToBill = async () => {
+  //   console.log("Proceed Button Clicked");
+    
+  //   try {
+  //     // Log start of saving/updating process
+  //     console.log("saving or updating started");
+      
+  //     // Trigger the save or update function and wait for it to complete
+  //     await handleSaveOrUpdate();
+      
+  //     // If save/update is successful, log the success
+  //     console.log("Patient data saved/updated successfully.");
+      
+  //     // Proceed with closing the modal
+  //     if (typeof closeModal === 'function') {
+  //       console.log('Calling closeModal');
+  //       closeModal(); // Close the modal
+  //     } else {
+  //       console.error("closeModal is not a function");
+  //     }
+      
+  //     // Delay navigation to ensure the modal closes and the save/update is complete
+  //     setTimeout(() => {
+  //       navigate('/proceedtobill', {
+  //         replace: true,
+  //         state: { patientDetails } // Pass the patient details to the billing page
+  //       });
+  //     }, 300); // Adjust the delay if necessary
+      
+  //   } catch (error) {
+  //     // Log any errors that occur during the process
+  //     console.error("Error saving/updating patient data:", error);
+  //     toast.error("Failed to save or update patient data.");
+  //   }
+  // };
+  
   const handleProceedToBill = async () => {
     console.log("Proceed Button Clicked");
-    
+  
     try {
       // Log start of saving/updating process
-      console.log("saving or updating started");
+      console.log("Saving or updating started");
       
-      // Trigger the save or update function and wait for it to complete
-      await handleSaveOrUpdate();
+      // Trigger the save or update function and capture the returned Patient_Code
+      const patientCode = await handleSaveOrUpdate();
       
-      // If save/update is successful, log the success
-      console.log("Patient data saved/updated successfully.");
-      
-      // Proceed with closing the modal
-      if (typeof closeModal === 'function') {
-        console.log('Calling closeModal');
-        closeModal(); // Close the modal
+      // Log the patientCode to verify it's returned
+      console.log("Returned Patient_Code:", patientCode);
+  
+      // If save/update is successful and Patient_Code is returned
+      if (patientCode) {
+        console.log("Patient data saved/updated successfully. Patient_Code:", patientCode);
+        
+        // Proceed with closing the modal
+        if (typeof closeModal === 'function') {
+          console.log('Calling closeModal');
+          closeModal(); // Close the modal
+        } else {
+          console.error("closeModal is not a function");
+        }
+  
+        // Delay navigation to ensure the modal closes and the save/update is complete
+        setTimeout(() => {
+          console.log("Navigating to /proceedtobill with Patient_Code:", patientCode);
+          navigate('/proceedtobill/', {
+            replace: true,
+            state: { patientCode} // Pass the Patient_Code to the billing page
+          });
+        }, 300); // Adjust the delay if necessary
       } else {
-        console.error("closeModal is not a function");
+        console.error("No Patient_Code returned from handleSaveOrUpdate.");
+        toast.error("Failed to retrieve Patient_Code.");
       }
-      
-      // Delay navigation to ensure the modal closes and the save/update is complete
-      setTimeout(() => {
-        navigate('/proceedtobill', {
-          replace: true,
-          state: { patientDetails } // Pass the patient details to the billing page
-        });
-      }, 300); // Adjust the delay if necessary
-      
     } catch (error) {
       // Log any errors that occur during the process
       console.error("Error saving/updating patient data:", error);

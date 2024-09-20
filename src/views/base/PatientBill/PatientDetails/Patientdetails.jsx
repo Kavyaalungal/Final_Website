@@ -2,348 +2,317 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, Box, Avatar, Link,Grid,TextField } from "@mui/material";
 import avatar from "../../../../assets/images/female.png";
+import commonDefault from '../../../../assets/images/common.png';
+import male from '../../../../assets/images/male1.png';
+import female from '../../../../assets/images/female.png';
 import './PatientDetails.css';
+import { useLocation } from 'react-router-dom';
 import { usePatient } from "../../patient/PatientContext";
 function Patientdetails() {
-  const { patientDetails } = usePatient();
-  // const [patientData, setPatientData] = useState([]);
+  const location = useLocation();
+  const { patientCode } = location.state || {}; // Ensure this is set correctly
+ const [patientData, setPatientData] = useState(null);
+  const [error, setError] = useState('');
+ const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    axios
-      .post("http://172.16.16.10:8060/api/PatientMstr/PatientSearchMaster", {
-        YearId: 2425,
-        BranchId: 2,
-        SrchItem: "Name",
-        SrchVal: "An",
-      })
-      .then((response) => {
-        if (response.data && response.data.patientList) {
-          setPatientData(response.data.patientList[0]);
-        }
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the patient data!", error);
-      });
-  }, []);
-
+ useEffect(() => {
+      console.log("Current Patient Code:", patientCode); // Log patientCode
+  
+      const fetchPatientData = async () => {
+        if (!patientCode) {
+          setError("No Patient_Code provided.");
+           setLoading(false);
+         return;
+         }
+  
+         try {
+           const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
+             YearId: 2425,
+             BranchId: 2,
+             PatCode: patientCode,
+             editFlag: true
+           });
+  
+           console.log("Response from API:", response.data); // Check this log
+  
+           if (response.data && response.data.patDetails) {
+             setPatientData(response.data.patDetails);
+           } else {
+             setError("No patient data found.");
+           }
+         } catch (err) {
+           console.error("Failed to fetch patient data:", err);
+           setError("Failed to fetch patient data.");
+         } finally {
+           setLoading(false);
+         }
+       };
+  
+       fetchPatientData();
+     }, [patientCode]);
+  
   return (
     <>
-    <Card
-      sx={{
-        width: "100%",
-        maxWidth: "auto",
-        // maxHeight: 700,
-        height: 680,
-        p: 2,
-        overflowY: "auto",
-        marginLeft: -35,
-        marginTop: -3,
-        '@media (max-width: 575px)': {
-          fontSize: '1.5rem', 
-          marginLeft: '99px',
-          width:770,    
-        }, 
-        '@media (min-width: 575px)': {
-          fontSize: '1.5rem', 
-          marginLeft: '-120px',
-          // width:770,    
-        }, 
-      }}
-      className="firstcard"
-    >
-      <CardContent
+<div>
+
+     {loading && <p>Loading patient data...</p>}
+       {error && <p>{error}</p>}
+       {patientData ? (
+        <Card
         sx={{
-          height: "100%",
-          overflowY: "hidden",
+          width: "100%",
+          maxWidth: "auto",
+          maxHeight: 700,
+          height: 680,
+          p: 2,
+          overflowY: "auto",
+          marginLeft: -25,
+          marginTop: -3,
         }}
+        className="firstcard"
       >
-
-
-<Typography
+        <CardContent
           sx={{
-            fontSize: { xs: 16, sm: 18, md: 16 },
-            mb: 1,
-            mt: -2,
-            textAlign: "start",
-            fontWeight: "Bold",
-            '@media (max-width: 575px)': {
-              fontSize: '1.4rem', 
-               
-            },
+            height: "100%",
+            overflowY: "hidden",
           }}
-          color="#bd2937"
-          variant="h6"
         >
-          Patient Details
-        </Typography>
-        {/* Hyperlink at the top of the card */}
-        <Box sx={{ mb: 2
-, textAlign: "right" ,mt:-2}}>
-          <Link
-            href="#"
+  
+  
+  <Typography
             sx={{
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              color: "#bd2937",
-              '@media (max-width: 575px)': {
-                fontSize: '1.2rem', 
-                 
-              },
-              // fontWeight: "bold",
-              textDecoration: "none",
-              '&:hover': {
-                textDecoration: "underline",
-              },
+              fontSize: { xs: 16, sm: 18, md: 16 },
+              mb: 1,
+              mt: -2,
+              textAlign: "start",
+              fontWeight: "Bold",
+            }}
+            color="#bd2937"
+            variant="h6"
+          >
+            Patient Details
+          </Typography>
+          {/* Hyperlink at the top of the card */}
+          <Box sx={{ mb: 2
+  , textAlign: "right" ,mt:-2}}>
+            <Link
+              href="#"
+              sx={{
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                color: "#bd2937",
+                // fontWeight: "bold",
+                textDecoration: "none",
+                '&:hover': {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Edit
+            </Link>
+          </Box>
+  
+      
+  
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mb: 2,
             }}
           >
-            Edit
-          </Link>
-        </Box>
-
-    
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          {/* <Avatar
-            sx={{
-              width: { xs: 60, sm: 70, md: 80 },
-              height: { xs: 60, sm: 70, md: 80 },
-              mb: 3,
-              '@media (max-width: 575px)': {
-                width:100, 
-                height:100  
-              }, 
-            }}
-            alt="Patient Avatar"
-            src={patientData.avatar || avatar}
-          /> */}
-
+            <Avatar
+              sx={{
+                width: { xs: 60, sm: 70, md: 80 },
+                height: { xs: 60, sm: 70, md: 80 },
+                mb: 3,
+              }}
+              alt="Patient Avatar"
+              src={
+                patientData.Patient_Ismale === "Male"
+                  ? male
+                  : patientData.Patient_Ismale === "Female"
+                  ? female
+                  : commonDefault
+              }
+            />
+  
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                ml: -8,
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: { xs: 17, sm: 17, md: 17 },
+                }}
+              >
+                {patientData.Patient_Name || "Patient Name"}
+              </Typography>
+  
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  gap: 1,
+                  mt: -1,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: { xs: 14, sm: 16, md: 15 },
+                  }}
+                  color="black"
+                >
+                  {patientData.Patient_Ageyy || "Age"}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: { xs: 14, sm: 16, md: 15 },
+                  }}
+                  color="black"
+                >
+                  {patientData.Patient_Ismale || "Gender"}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+  
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              ml: -8,
+              mt: 2,
             }}
           >
             <Typography
-              variant="h6"
-              component="div"
               sx={{
-                fontWeight: "bold",
-                fontSize: { xs: 17, sm: 17, md: 17 },
-                '@media (max-width: 575px)': {
-                  fontSize: '1.5rem', 
-                   
-                }, 
+                mb: 1.5,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
               }}
+              color="#b0b0b0"
             >
-                          {patientDetails?.Patient_Name || "Patient Name"}
-              {/* {patientData.Patient_Name || "Patient Name"} */}
+              Contact No
             </Typography>
-
-            {/* <Box
+            <Typography
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                gap: 1,
-                mt: -1,
+                mt: -2,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
               }}
+              color="#000"
             >
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: 14, sm: 16, md: 15 },
-                  '@media (max-width: 575px)': {
-                  fontSize: '1rem', 
-                   
-                }, 
-                }}
-                color="black"
-              >
-                {patientData.Patient_Ageyy || "Age"}
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: 14, sm: 16, md: 15 },
-                  '@media (max-width: 575px)': {
-                    fontSize: '1rem', 
-                     
-                  }, 
-                }}
-                color="black"
-              >
-                {patientData.Patient_Ismale || "Gender"}
-              </Typography>
-            </Box> */}
+              {patientData.Patient_mobile || "N/A"}
+            </Typography>
+            <Typography
+              sx={{
+                mt: 1,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#b0b0b0"
+            >
+              Email
+            </Typography>
+            <Typography
+              sx={{
+                mt: 0,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#000"
+            >
+              {patientData.Patient_Email || "N/A"}
+            </Typography>
+            <Typography
+              sx={{
+                mt: 1,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#b0b0b0"
+            >
+              PatientID
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#000"
+            >
+              {patientData.Patient_Code || "N/A"}
+            </Typography>
+            <Typography
+              sx={{
+                mt: 1,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#b0b0b0"
+            >
+              Address
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#000"
+            >
+              {patientData.Patient_Address || "N/A"}
+            </Typography>
+            <Typography
+              sx={{
+                mt: 1,
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#b0b0b0"
+            >
+              Branch
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16, md: 16 },
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+              color="#000"
+            >
+              {patientData.branch || "N/A"}
+            </Typography>
           </Box>
-        </Box>
+        </CardContent>
+      </Card>
+      ) : (
+        <p>No patient data available.</p>
+      )}
+   
 
-        {/* <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            mt: 2,
-          }}
-        >
-          <Typography
-            sx={{
-              mb: 1.5,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.5rem', 
-                width:770,    
-              }, 
-            }}
-            color="#b0b0b0"
-          >
-            Contact No
-          </Typography>
-          <Typography
-            sx={{
-              mt: -2,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.2rem', 
-                width:770,    
-              }, 
-            }}
-            color="#000"
-          >
-            {patientData.Patient_mobile || "N/A"}
-          </Typography>
-          <Typography
-            sx={{
-              mt: 1,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.5rem', 
-                width:770,    
-              }, 
-            }}
-            color="#b0b0b0"
-          >
-            Email
-          </Typography>
-          <Typography
-            sx={{
-              mt: 0,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.2rem', 
-                width:770,    
-              }, 
-            }}
-            color="#000"
-          >
-            {patientData.Patient_Email || "N/A"}
-          </Typography>
-          <Typography
-            sx={{
-              mt: 1,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.5rem', 
-                width:770,    
-              }, 
-            }}
-            color="#b0b0b0"
-          >
-            PatientID
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.2rem', 
-                width:770,    
-              }, 
-            }}
-            color="#000"
-          >
-            {patientData.patientID || "N/A"}
-          </Typography>
-          <Typography
-            sx={{
-              mt: 1,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.5rem', 
-                width:770,    
-              }, 
-            }}
-            color="#b0b0b0"
-          >
-            Address
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.2rem', 
-                width:770,    
-              }, 
-            }}
-            color="#000"
-          >
-            {patientData.Patient_Address || "N/A"}
-          </Typography>
-          <Typography
-            sx={{
-              mt: 1,
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.5rem', 
-                width:770,    
-              }, 
-            }}
-            color="#b0b0b0"
-          >
-            Branch
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16, md: 16 },
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              '@media (max-width: 575px)': {
-                fontSize: '1.2rem', 
-                width:770,    
-              }, 
-            }}
-            color="#000"
-          >
-            {patientData.branch || "N/A"}
-          </Typography>
-        </Box> */}
-      </CardContent>
-    </Card>
+
+
+   
      <Grid item xs>
      <Box
       sx={{
@@ -392,8 +361,208 @@ function Patientdetails() {
     </Box>
 
      </Grid> 
+      </div>
+
      </>
   );
 }
 
 export default Patientdetails;
+
+
+
+
+
+
+
+
+
+
+// import { useEffect } from 'react';
+// import { useLocation } from 'react-router-dom';
+
+// function ProceedToBill() {
+//   const location = useLocation();
+//   const { patientCode } = location.state || {};
+
+//   useEffect(() => {
+//     if (patientCode) {
+//       console.log("Patient Code received:", patientCode);
+//       // Fetch data or perform other actions using patientCode
+//     } else {
+//       console.error("No Patient_Code found in state.");
+//     }
+//   }, [patientCode]);
+
+//   return (
+//     <div style={{ marginLeft:-20}}>
+//       {/* <h1>Proceed to Bill</h1> */}
+//       {patientCode ? (
+//         <p>Patient Code: {patientCode}</p>
+//       ) : (
+//         <p>No Patient Code provided.</p>
+//       )}
+//       {/* Other components or logic to display billing information */}
+//     </div>
+//   );
+// }
+
+// export default ProceedToBill;
+
+
+
+
+
+
+
+
+
+// import { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { useLocation } from 'react-router-dom';
+// import { Card, CardContent, Typography, Box, Avatar, Link,Grid,TextField } from "@mui/material";
+// import commonDefault from '../../../../assets/images/common.png';
+// import male from '../../../../assets/images/male1.png';
+// import female from '../../../../assets/images/female.png';
+// const ProceedToBill = () => {
+//   const location = useLocation();
+//   const { patientCode } = location.state || {}; // Ensure this is set correctly
+//   const [patientData, setPatientData] = useState(null);
+//   const [error, setError] = useState('');
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     console.log("Current Patient Code:", patientCode); // Log patientCode
+
+//     const fetchPatientData = async () => {
+//       if (!patientCode) {
+//         setError("No Patient_Code provided.");
+//         setLoading(false);
+//         return;
+//       }
+
+//       try {
+//         const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
+//           YearId: 2425,
+//           BranchId: 2,
+//           PatCode: patientCode,
+//           editFlag: true
+//         });
+
+//         console.log("Response from API:", response.data); // Check this log
+
+//         if (response.data && response.data.patDetails) {
+//           setPatientData(response.data.patDetails);
+//         } else {
+//           setError("No patient data found.");
+//         }
+//       } catch (err) {
+//         console.error("Failed to fetch patient data:", err);
+//         setError("Failed to fetch patient data.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchPatientData();
+//   }, [patientCode]);
+
+//   return (
+//     <div>
+//       {/* <h1>Proceed to Bill</h1> */}
+//       {loading && <p>Loading patient data...</p>}
+//       {error && <p>{error}</p>}
+//       {patientData ? (
+//         <div style={{marginLeft:-100}}>
+//           <h2>Patient Details:</h2>
+// <Box
+// sx={{
+//   display: "flex",
+//   flexDirection: "column",
+//   alignItems: "center",
+//   mb: 2,
+// }}
+// >
+// <Avatar
+//   sx={{
+//     width: { xs: 60, sm: 70, md: 80 },
+//     height: { xs: 60, sm: 70, md: 80 },
+//     mb: 3,
+//   }}
+//   alt="Patient Avatar"
+//   src={
+//     patientData.Patient_Ismale === "Male"
+//       ? male
+//       : patientData.Patient_Ismale === "Female"
+//       ? female
+//       : commonDefault
+//   }
+// />
+
+// <Box
+//   sx={{
+//     display: "flex",
+//     flexDirection: "column",
+//     alignItems: "flex-start",
+//     ml: -8,
+//   }}
+// >
+//   <Typography
+//     variant="h6"
+//     component="div"
+//     sx={{
+//       fontWeight: "bold",
+//       fontSize: { xs: 17, sm: 17, md: 17 },
+//     }}
+//   >
+//     {patientData.Patient_Name || "Patient Name"}
+//   </Typography>
+
+//   <Box
+//     sx={{
+//       display: "flex",
+//       flexDirection: "row",
+//       justifyContent: "flex-start",
+//       gap: 1,
+//       mt: -1,
+//     }}
+//   >
+//     <Typography
+//       sx={{
+//         fontWeight: "bold",
+//         fontSize: { xs: 14, sm: 16, md: 15 },
+//       }}
+//       color="black"
+//     >
+//       {patientData.Patient_Ageyy || "Age"}
+//     </Typography>
+//     <Typography
+//       sx={{
+//         fontWeight: "bold",
+//         fontSize: { xs: 14, sm: 16, md: 15 },
+//       }}
+//       color="black"
+//     >
+//       {patientData.Patient_Ismale || "Gender"}
+//     </Typography>
+//   </Box>
+// </Box>
+// </Box>
+//           <p><strong>Title:</strong> {patientData.Patient_Title}</p>
+//           <p><strong>Name:</strong> {patientData.Patient_Name}</p>
+//           <p><strong>Age:</strong> {patientData.Patient_Ageyy} years {patientData.Patient_Agemm} months {patientData.Patient_Agedd} days</p>
+//            <p><strong>Date of Birth:</strong> {new Date(patientData.Patient_Dob).toLocaleDateString()}</p>
+//            <p><strong>Gender:</strong> {patientData.Patient_Ismale}</p>
+//            <p><strong>Phone Number:</strong> {patientData.Patient_Phno}</p>
+//            <p><strong>Email:</strong> {patientData.Patient_Email}</p>
+//           <p><strong>Address:</strong> {patientData.Patient_Address || "N/A"}</p>
+//         </div>
+//        ) : (
+//          <p>No patient data available.</p>
+//        )}
+//      </div>
+//    );
+//  };
+// export default ProceedToBill;
+
+

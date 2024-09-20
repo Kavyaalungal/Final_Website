@@ -75,7 +75,7 @@ export default function BasicTabs({ closeModal }) {
   const fetchSuggestions = async (value) => { // search value is passed as parameter 
     console.log('Fetching suggestions with value:', value);
     try {
-      const response = await axios.post('http://172.16.16.10:8060/api/PatientMstr/PatientSearchMaster', { // request is send to backend 
+      const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientSearchMaster', { // request is send to backend 
         YearId: 2425,   // with parameters yearid, branchid, searchitem, and the value
         BranchId: 2,
         SrchItem: searchCriteria,
@@ -122,7 +122,7 @@ export default function BasicTabs({ closeModal }) {
 
   try {
     console.log('Selected Patient:', newValue); // Log selected patient for debugging
-    const response = await axios.post('http://172.16.16.10:8060/api/PatientMstr/PatientDetailsMaster', { //request sends to backend for taking the patient details
+    const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', { //request sends to backend for taking the patient details
       YearId: 2425,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
       BranchId: 2,
       PatCode: newValue.Patient_Code,
@@ -202,7 +202,7 @@ export default function BasicTabs({ closeModal }) {
   // Fetch a new patient ID
   const fetchNewPatientId = async () => {
     try {
-      const response = await axios.get('http://172.16.16.10:8060/api/MaxOpdNoPatReg', {
+      const response = await axios.get('http://172.16.16.157:8083/api/MaxOpdNoPatReg', {
         params: {
           yrId: 2425,
           CmId: 2
@@ -244,31 +244,37 @@ export default function BasicTabs({ closeModal }) {
   
 
 //function for saving a new patient and updating a existing a patient 
-  const handleSaveOrUpdate = async () => {
-    // const { setPatientDetails } = usePatient();
-    if (!validate()) return;
-  
-    const editFlag = flag === 'Edit' ? 1 : 0; // Use the flag to determine whether it's a save or update
-    const payload = {
-      ...patientDetails,
-      EditFlag: editFlag,
-      Patient_YrId: 2425,
-      Patient_CpyId: 2,
-      Patient_Code: flag === 'Edit' ? patientDetails.Patient_Code : newPatientId,
-    };
-  
-    try {
-      const response = await axios.post('http://172.16.16.10:8060/api/PatientSaveUpdate', payload);
-      if (response.data.status && response.data.status[0].status === 'Success') {
-        toast.success(flag === 'Edit' ? 'Patient details updated successfully' : 'Patient details saved successfully');
-        resetForm();
-      } else {
-        toast.error(`Failed to ${flag === 'Edit' ? 'update' : 'save'} patient details: ${response.data.status[0].Message}`);
-      }
-    } catch (error) {
-      toast.error(`Error ${flag === 'Edit' ? 'updating' : 'saving'} patient details`);
-    }
+const handleSaveOrUpdate = async () => {
+  if (!validate()) return;
+
+  const editFlag = flag === 'Edit' ? 1 : 0;
+  const payload = {
+    ...patientDetails,
+    EditFlag: editFlag,
+    Patient_YrId: 2425,
+    Patient_CpyId: 2,
+    Patient_Code: flag === 'Edit' ? patientDetails.Patient_Code : newPatientId,
   };
+
+  try {
+    const response = await axios.post('http://172.16.16.157:8083/api/PatientSaveUpdate', payload);
+    
+    if (response.data.status && response.data.status[0].status === 'Success') {
+      toast.success(flag === 'Edit' ? 'Patient details updated successfully' : 'Patient details saved successfully');
+      
+      resetForm();
+      
+      // Return the Patient_Code after a successful save/update
+      return payload.Patient_Code;
+
+    } else {
+      toast.error(`Failed to ${flag === 'Edit' ? 'update' : 'save'} patient details: ${response.data.status[0].Message}`);
+    }
+  } catch (error) {
+    toast.error(`Error ${flag === 'Edit' ? 'updating' : 'saving'} patient details`);
+  }
+};
+
 
 //function for changing the patient id field 
   const handlePatientIdChange = (e) => {

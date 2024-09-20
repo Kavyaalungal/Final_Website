@@ -49,9 +49,9 @@ function Header() {
           fontSize: '1.5rem', 
           marginLeft: '94px',    
         },
-        '@media (min-width: 993px)': {
+        '@media (max-width: 993px)': {
           fontSize: '1.5rem', 
-          marginLeft: '-124px',    
+          marginLeft: '-12px',    
         },
 
    

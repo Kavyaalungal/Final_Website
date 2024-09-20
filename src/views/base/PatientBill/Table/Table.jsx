@@ -1056,7 +1056,7 @@ function Maintable() {
                },
       }}
     >
-      Net Amount
+      Total Amount
     </Typography>
   </Grid>
 
