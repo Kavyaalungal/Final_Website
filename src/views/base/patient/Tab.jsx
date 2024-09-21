@@ -45,7 +45,7 @@ export default function BasicTabs({ closeModal }) {
    // declaring state variables needed
   const [value, setValue] = useState(0);
   const { patientDetails, setPatientDetails } = usePatient();
-  const patientCode = patientDetails?.Patient_Code;
+   const patientCode = patientDetails?.Patient_Code;
   const [isEditMode, setIsEditMode] = useState(false);// Default to false for new patients
   const [newPatientId, setNewPatientId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
