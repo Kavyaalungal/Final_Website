@@ -40,15 +40,16 @@
     background-color: transparent;
     color: #ffffff;
     padding: .5rem 1rem;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align items to the left */
     border-radius: 4px;
     transition: background-color 0.3s ease, color 0.3s ease;
     height: 45px;
-    font-size: 30px;
+    font-size: 20px;
     display: flex;
     align-items: center; 
     box-sizing: border-box; 
   }
+  
   
 .dropdown-arrow {
   font-size: 5rem;

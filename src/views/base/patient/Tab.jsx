@@ -56,7 +56,26 @@ export default function BasicTabs({ closeModal }) {
   const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
   const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
  
+
+       // Retrieve YearId and BranchId from sessionStorage
+       const yearId = sessionStorage.getItem('latestYearId');
+       const branchId = sessionStorage.getItem('selectedBranchKey');
+     
+      //  // Ensure the values exist in sessionStorage
+      //  if (!yearId || !branchId) {
+      //    throw new Error('YearId or BranchId not found in sessionStorage');
+      //  }
   
+//
+//  useEffect(() => {
+//     const storedUsername = sessionStorage.getItem('username');
+//     if (storedUsername) {
+//       setUsername(storedUsername);
+//     }
+//   }, []);
+
+
+
   // function for entering the searchcriteria 
   const handleSearchCriteriaChange = (event) => {   
     setSearchCriteria(event.target.value); // it sets the value selected according tho the user selection
@@ -74,6 +93,7 @@ export default function BasicTabs({ closeModal }) {
    // function for fetching the suggetions according to the search criteria
   const fetchSuggestions = async (value) => { // search value is passed as parameter 
     console.log('Fetching suggestions with value:', value);
+
     try {
       const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientSearchMaster', { // request is send to backend 
         YearId: 2425,   // with parameters yearid, branchid, searchitem, and the value

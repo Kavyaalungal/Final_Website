@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
+import Cancel from './views/base/Cancelinvoice/MainModel/Mainmode'
+import InvoiceView from './views/base/Invoice/InvoiceView'
 
 
 
@@ -47,6 +49,7 @@ const App = () => {
       >
         <Routes>
           <Route exact path="/login" name="Login Page" element={<Login />} />
+          {/* <Route path="/invoice" element={<InvoiceView />} /> */}
           {/* <Route exact path="/" name="Dashboard" element={<DefaultLayout />} /> */}
           <Route path="*" name="Home" element={isAuthenticated ? <DefaultLayout /> : <Navigate to="/login" />} />
           {/* <Route path="/proceedtobill" element={< PatientMain/>} /> */}

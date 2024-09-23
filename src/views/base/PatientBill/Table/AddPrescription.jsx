@@ -218,7 +218,7 @@ return (
         
         <Card
         sx={{
-          width: "90%",
+          width: "75%",
           maxWidth: "auto",
           maxHeight: 700,
           height: 520,
@@ -253,7 +253,7 @@ return (
           </Typography>
        
           <Box sx={{ mb: 2
-  , textAlign: "right" ,mt:-2}}>
+  , textAlign: "right" }}>
             <Link
               href="#"
               sx={{
@@ -310,6 +310,7 @@ return (
                 sx={{
                   fontWeight: "bold",
                   fontSize: { xs: 16, sm: 16, md: 16 },
+                  marginLeft:-2
                 }}
               >
                 {patientData.Patient_Name || "Patient Name"}
@@ -322,6 +323,7 @@ return (
                   justifyContent: "flex-start",
                   gap: 1,
                   mt: -1,
+                  marginLeft:-2
                 }}
               >
                 <Typography
@@ -375,7 +377,7 @@ return (
               }}
               color="#000"
             >
-              {patientData.Patient_mobile || "N/A"}
+               {patientData.Patient_mobile || patientData.Patient_Phno || "N/A"}
             </Typography>
             <Typography
               sx={{

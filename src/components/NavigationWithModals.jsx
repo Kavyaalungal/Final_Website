@@ -151,6 +151,7 @@ import Pending from '../views/base/PendingCollection/Main/Main';
 import { useNavigate } from 'react-router-dom';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+import { Link } from 'react-router-dom';
 
 const NavigationWithModals = () => {
   const [modal, setModal] = useState(false);
@@ -187,10 +188,16 @@ const NavigationWithModals = () => {
           </CNavLink>
         </CNavItem>
         <CNavItem className="custom-nav-item">
+      <CNavLink className="custom-nav-link" onClick={() => navigate('/invoice')}>
+        <CIcon icon={cilBackspace} className="me-2" />  Invoice View
+      </CNavLink>
+    </CNavItem>
+
+        {/* <CNavItem className="custom-nav-item">
           <CNavLink className="custom-nav-link" onClick={() => toggleModal('Cancel Invoice', <Cancel />, 'lg')}>
             <CIcon icon={cilBackspace} className="me-2" /> Cancel Invoice
           </CNavLink>
-        </CNavItem>
+        </CNavItem> */}
         <CNavItem className='custom-nav-item'>
           <CNavLink className='custom-nav-link' onClick={() => toggleModal('Pending Collection', <Pending />)}>
             <CIcon icon={cilSpreadsheet} className='me-2' /> Pending Collection

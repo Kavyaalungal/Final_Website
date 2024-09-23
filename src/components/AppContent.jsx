@@ -41,6 +41,7 @@ import './AppContent.css' // Add this import for your custom CSS
 // routes config
 import routes from '../Routes'
 import PatientMain from '../views/base/PatientBill/Main/PatientMain'
+import InvoiceView from '../views/base/Invoice/InvoiceView'
 
 const AppContent = () => {
   return (
@@ -62,6 +63,7 @@ const AppContent = () => {
           })}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
           <Route path="/proceedtobill" element={<PatientMain />} />
+          <Route path="/invoice" element={<InvoiceView />} />
         </Routes>
       </Suspense>
     </CContainer>
