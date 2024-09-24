@@ -41,7 +41,7 @@ import './AppContent.css' // Add this import for your custom CSS
 // routes config
 import routes from '../Routes'
 import PatientMain from '../views/base/PatientBill/Main/PatientMain'
-import InvoiceView from '../views/base/Invoice/InvoiceView'
+import InvoiceView from '../views/base/LabInvoice/LabInvoiceView'
 
 const AppContent = () => {
   return (

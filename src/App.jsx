@@ -5,7 +5,7 @@ import axios from 'axios'
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
 import Cancel from './views/base/Cancelinvoice/MainModel/Mainmode'
-import InvoiceView from './views/base/Invoice/InvoiceView'
+import InvoiceView from './views/base/LabInvoice/LabInvoiceView'
 
 
 

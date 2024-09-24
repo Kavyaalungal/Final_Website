@@ -22,10 +22,10 @@
 }
 
 /* Footer styles for small screens */
-@media (max-width: 575px) {
+/* @media (max-width: 575px) {
   .footer {
-    padding: 5px 5px; /* Reduce padding */
-    flex-direction: column; /* Stack content vertically */
+    padding: 5px 5px;
+    flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     font-size: 1.2rem;
@@ -40,6 +40,6 @@
   }
 
   .right-content a {
-    display: block; /* Ensure link wraps properly */
+    display: block;
   }
-}
+} */

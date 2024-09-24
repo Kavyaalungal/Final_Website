@@ -14,6 +14,8 @@ function Patientdetails() {
  const [patientData, setPatientData] = useState(null);
   const [error, setError] = useState('');
  const [loading, setLoading] = useState(true);
+ const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
+ const branchId = sessionStorage.getItem('selectedBranchKey');
 
  useEffect(() => {
       console.log("Current Patient Code:", patientCode); // Log patientCode
@@ -27,8 +29,8 @@ function Patientdetails() {
   
          try {
            const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-             YearId: 2425,
-             BranchId: 2,
+             YearId: YearId,
+             BranchId: branchId,
              PatCode: patientCode,
              editFlag: true
            });
@@ -154,7 +156,7 @@ function Patientdetails() {
                 sx={{
                   fontWeight: "bold",
                   fontSize: { xs: 16, sm: 16, md: 16 },
-                  marginLeft:-8
+                  marginLeft:-2
                 }}
               >
                 {patientData.Patient_Name || "Patient Name"}
@@ -167,7 +169,7 @@ function Patientdetails() {
                   justifyContent: "flex-start",
                   gap: 1,
                   
-                  marginLeft:-8
+                  marginLeft:-2
                 }}
               >
                 <Typography

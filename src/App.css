@@ -27,7 +27,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     -ms-overflow-style: none;  
 } */
 /* Media Query for screens wider than 993px to reduce sidebar height */
-@media (min-width: 993px) {
+/* @media (min-width: 993px) {
 html, body {
     height: 100%;
     margin: 0;
@@ -36,4 +36,4 @@ html, body {
     overflow-y: scroll; 
     font-family: Arial, sans-serif;
 }
-}
+} */

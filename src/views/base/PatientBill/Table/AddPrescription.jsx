@@ -106,6 +106,9 @@ function AddPrescription() {
   purchase: null,
   pharmacy: null,
 }); 
+const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
+const branchId = sessionStorage.getItem('selectedBranchKey');
+
  // Handle radio button change
  const handleRadioChange = (event) => {
    const selectedValue = event.target.value;
@@ -179,8 +182,8 @@ const handleRemoveImage = () => {
 
      try {
        const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-         YearId: 2425,
-         BranchId: 2,
+         YearId: YearId,
+         BranchId: branchId,
          PatCode: patientCode,
          editFlag: true
        });
@@ -301,7 +304,7 @@ return (
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
-                ml: -8,
+                ml: -2,
               }}
             >
               <Typography
@@ -482,7 +485,7 @@ return (
       height: 520,
       p: 2,
       overflowY: "auto",
-      marginLeft: -4,
+      marginLeft: -9,
       marginTop: -1,
     }}
     className="firstcard"

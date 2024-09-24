@@ -58,7 +58,8 @@ export default function BasicTabs({ closeModal }) {
  
 
        // Retrieve YearId and BranchId from sessionStorage
-       const yearId = sessionStorage.getItem('latestYearId');
+  
+      const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
        const branchId = sessionStorage.getItem('selectedBranchKey');
      
       //  // Ensure the values exist in sessionStorage
@@ -96,8 +97,8 @@ export default function BasicTabs({ closeModal }) {
 
     try {
       const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientSearchMaster', { // request is send to backend 
-        YearId: 2425,   // with parameters yearid, branchid, searchitem, and the value
-        BranchId: 2,
+        YearId: YearId,   // with parameters yearid, branchid, searchitem, and the value
+        BranchId: branchId,
         SrchItem: searchCriteria,
         srchVal:value
         // SrchVal: value.toLowerCase(),
@@ -143,8 +144,8 @@ export default function BasicTabs({ closeModal }) {
   try {
     console.log('Selected Patient:', newValue); // Log selected patient for debugging
     const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', { //request sends to backend for taking the patient details
-      YearId: 2425,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
-      BranchId: 2,
+      YearId: YearId,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
+      BranchId: branchId,
       PatCode: newValue.Patient_Code,
       editFlag:true
     });
@@ -224,8 +225,8 @@ export default function BasicTabs({ closeModal }) {
     try {
       const response = await axios.get('http://172.16.16.157:8083/api/MaxOpdNoPatReg', {
         params: {
-          yrId: 2425,
-          CmId: 2
+          yrId: YearId,
+          CmId: branchId
         }
       });
       if (response.data.success) {
@@ -271,8 +272,8 @@ const handleSaveOrUpdate = async () => {
   const payload = {
     ...patientDetails,
     EditFlag: editFlag,
-    Patient_YrId: 2425,
-    Patient_CpyId: 2,
+    Patient_YrId: YearId,
+    Patient_CpyId: branchId,
     Patient_Code: flag === 'Edit' ? patientDetails.Patient_Code : newPatientId,
   };
 
@@ -600,6 +601,8 @@ const handleAgeChange = (field, value) => {
              isSaving={isSaving}
              flag={flag}
              handleDOBChange={handleDOBChange}
+             YearId={YearId}
+             branchId={branchId}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -629,7 +632,9 @@ const handleAgeChange = (field, value) => {
              handleGenderChange={handleGenderChange}
              handleSaveOrUpdate={handleSaveOrUpdate}
              isSaving={isSaving}
-             flag={flag}/>
+             flag={flag}
+             YearId={YearId}
+             branchId={branchId}/>
       </CustomTabPanel>
     </Box>
   );
