@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -13,25 +13,62 @@ import {
   Grid,
    Card, CardContent, FormControl,  InputLabel, MenuItem, Select, TextField,InputAdornment
 } from '@mui/material';
-import { CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react';
-
+import { CModal, CModalBody, CModalHeader, CModalTitle, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react';
+import { Link } from 'react-router-dom';
+import Register from '../patient/Register';
 
 
 const InvoiceView = () => {
-  // Sample data for the table
-  // const rows = Array.from({ length: 10 }, (_, index) => ({
-  //   id: index + 1,
-  //   col1: `Data 1-${index + 1}`,
-  //   col2: `Data 2-${index + 1}`,
-  //   col3: `Data 3-${index + 1}`,
-  //   col4: `Data 4-${index + 1}`,
-  //   col5: `Data 5-${index + 1}`,
-  //   col6: `Data 6-${index + 1}`,
-  //   col7: `Data 7-${index + 1}`,
-  //   col8: `Data 8-${index + 1}`,
-  //   col9: `Data 9-${index + 1}`,
-  //   col10: `Data 10-${index + 1}`,
-  // }));
+
+  const [modal, setModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState('Patient Registration');
+  const [modalSize, setModalSize] = useState('lg');
+
+  const toggleModal = () => {
+    setModal(!modal);
+  };
+
+
+  const data = [
+    { slNo: 1, labNo: '001', date: '2024-09-01', patientId: 'P123', name: 'John ', phone: '1234567890', refBy: 'Dr. Smith', releasingtime: '2024-09-01', branch: 'Main', corporate: 'ABC Corp', status: 'Result Issued' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'On Processing' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Time Over' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Urgent Report' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Cancelled Invoice' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Result Updated' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Half verified' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'TAT Reminder' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Result Issue Remainder' },
+    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Partially Second Level' },// Add more data as needed...
+  ];
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case 'Result Issued':
+        return { backgroundColor: '#8FF18C', color: 'black' };
+      case 'On Processing':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Time Over':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Urgent Report':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Cancelled Invoice':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Result Updated':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Half verified':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+        case 'TAT Reminder':
+          return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Result Issue Remainder':
+        return { backgroundColor: '#1C91FF', color: 'white' };
+      case 'Partially Second Level':
+        return { backgroundColor: '#1C91FF ', color: 'white' };
+      default:
+        return { backgroundColor: 'black', color: 'white' };
+    }
+  };
+  
+
 
   return (
     <div>
@@ -67,9 +104,7 @@ const InvoiceView = () => {
     >
       Lab Invoice View
     </Typography>
-      {/* <Typography variant="h2" gutterBottom sx={{color:'#bd2937',fontWeight:'bold',marginLeft:-20,marginTop:-2, fontSize: '1.5rem'}}>
-       Lab Invoice View
-      </Typography> */}
+     
       <Grid container spacing={2}>
     <Grid item xs={12}>
     <Card
@@ -94,14 +129,8 @@ const InvoiceView = () => {
       fullWidth
       InputLabelProps={{ style: { fontSize: '16px' } }}
     >
-      <MenuItem value="Result Issued">Result Issued</MenuItem>
-      <MenuItem value="Patient ID">On Processing</MenuItem>
-      <MenuItem value="Name">Time Over</MenuItem>
-      <MenuItem value="Email">Urgent Report</MenuItem>
-      <MenuItem value="LabNo">LabNo</MenuItem>
-      <MenuItem value="LabNo">IPOP</MenuItem>
-      <MenuItem value="LabNo">Sample Id</MenuItem>
-      <MenuItem value="LabNo">Corporate</MenuItem>
+       <MenuItem value="All">--All--</MenuItem>
+   
     </TextField>
     </Grid>
     <Grid item xs={6} >
@@ -114,14 +143,16 @@ const InvoiceView = () => {
       fullWidth
       InputLabelProps={{ style: { fontSize: '16px' } }}
     >
-      <MenuItem value="Phone">Phone</MenuItem>
-      <MenuItem value="Patient ID">Patient ID</MenuItem>
-      <MenuItem value="Name">Name</MenuItem>
-      <MenuItem value="Email">Email</MenuItem>
-      <MenuItem value="LabNo">LabNo</MenuItem>
-      <MenuItem value="LabNo">IPOP</MenuItem>
-      <MenuItem value="LabNo">Sample Id</MenuItem>
-      <MenuItem value="LabNo">Corporate</MenuItem>
+      <MenuItem value="All">--All--</MenuItem>
+      <MenuItem value="Result Issued">Result Issued</MenuItem>
+      <MenuItem value="On Processing">On Processing</MenuItem>
+      <MenuItem value="Time Over">Time Over</MenuItem>
+      <MenuItem value="Urgent Report">Urgent Report</MenuItem>
+      <MenuItem value="Cancelled Invoice">Cancelled Invoice</MenuItem>
+      <MenuItem value="Result Updated">Result Updated</MenuItem>
+      <MenuItem value="Half verified">Half verified</MenuItem>
+      <MenuItem value="Not Completed">Not Completed</MenuItem>
+      <MenuItem value="Time Over Reminder">Time Over Reminder</MenuItem>
     </TextField>
     </Grid>
   {/* Search By Dropdown */}
@@ -191,10 +222,10 @@ const InvoiceView = () => {
               sx={{
                 textTransform: 'none',
                 marginRight: 1,
-                backgroundColor: '#bb4d58', // Default background color
+                backgroundColor: '#bb4d58', 
                 '&:hover': {
-                  backgroundColor: '#bd2937', // Background color on hover
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                  backgroundColor: '#bd2937', 
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', 
                 },
               }}
               variant="contained"
@@ -204,25 +235,6 @@ const InvoiceView = () => {
               New
             </Button>
             <Button
-              sx={{
-                textTransform: 'none',
-                marginRight: 1,
-                backgroundColor: '#bb4d58', // Default background color
-                '&:hover': {
-                  backgroundColor: '#bd2937', // Background color on hover
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
-                },
-              }}
-              variant="contained"
-              color="success"
-             
-            >
-              Refresh
-            </Button>
-  </Grid>
-  
-  {/* <Grid item xs={12} sm={2} md={2} lg={2}>
-  <Button
               sx={{
                 textTransform: 'none',
                 marginRight: 1,
@@ -238,363 +250,191 @@ const InvoiceView = () => {
             >
               Refresh
             </Button>
-  </Grid> */}
+  </Grid>
+  
+  
 </Grid>
 
   </CardContent>
 </Card>
 
     </Grid>
-    {/* <Grid item xs={12}>
-  <Card 
+  
+
+   </Grid>
+   <Grid container spacing={0}>
+   <Grid item xs={12}>
+  <Card
     sx={{
-      marginLeft: { xs: -2, sm: -3.5 }, 
-      width: { xs: 370 ,md:725},
-      height: {xs:'auto',sm:345},
-    }} 
-    className='customwidth customheight'
+      height: 'auto', 
+      marginLeft: { xs: -2, sm: -20 }, 
+      width: { xs: '100%', md: 1400 },
+      marginTop: { xs: 0, sm: 1 },
+      padding: 0,
+    }}
+    className='customwidth'
   >
     <CardContent>
-      <Grid container spacing={2}>
-      <Grid item xs={12} sm={4} md={4}>
-  <TextField
-    id="patientid"
-    label="Patient ID"
-    variant="outlined"
-    value={patientDetails ? patientDetails.Patient_Code : ''}
-    onChange={handlePatientIdChange}
-    size="small"
-    fullWidth
-    InputLabelProps={{ style: { fontSize: '1rem' } }}
-     InputProps={{
-                 readOnly: true,
-              }}
-  />
-</Grid>
- <Grid item xs={12} sm={4} md={4}>
-          <TextField
-            id="abhaid"
-            label="ABHA ID"
-            variant="outlined"
-            size="small"
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          
-          />
-        </Grid>
-        <Grid item xs={12} sm={4} md={4}>
-          <TextField
-            id="memberid"
-            label="Member ID"
-            variant="outlined"
-            
-            size="small"
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            InputProps={{
-              readOnly: true,
-           }}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={3} md={2}>
-        <TextField
-          select
-          label="Prefix"
-          variant="outlined"
-          value={patientDetails ? patientDetails.Patient_Title : ''}
-          onChange={handleTitleChange}
-          size="small"
-          fullWidth
-          InputLabelProps={{ style: { fontSize: '16px' } }}
-        >
-          <MenuItem value=""><em>None</em></MenuItem>
-          <MenuItem value="Mr">Mr</MenuItem>
-          <MenuItem value="Mrs">Mrs</MenuItem>
-          <MenuItem value="Miss">Miss</MenuItem>
-        </TextField>
-      </Grid>
-
-        <Grid item xs={12} sm={9} md={10}>
-          <TextField
-            id="name"
-            label="Name"
-            variant="outlined"
-            value={patientDetails ? patientDetails.Patient_Name : ''}                     
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Name: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_Name: '' }));
-            }}
-            size="small"
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            error={!!errors.Patient_Name}
-          />
-        </Grid>
-        <Grid item xs={12} sm={2} md={2}>
-        <TextField
-          id="yyyy"
-          label="Age YY"
-          variant="outlined"
-          size="small"
-          value={patientDetails ? patientDetails.Patient_Ageyy : ''}
-          onChange={(e) => handleAgeChange('yy', e.target.value)}
-          fullWidth
-          InputLabelProps={{ style: { fontSize: '1rem' } }}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={2} md={2}>
-        <TextField
-          id="mm"
-          label="Age MM"
-          variant="outlined"
-          size="small"
-          value={patientDetails ? patientDetails.Patient_Agemm : ''}   
-          onChange={(e) => handleAgeChange('mm', e.target.value)}
-          fullWidth
-          InputLabelProps={{ style: { fontSize: '1rem' } }}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={2} md={2}>
-        <TextField
-          id="dd"
-          label="Age DD"
-          variant="outlined"
-          size="small"
-          value={patientDetails ? patientDetails.Patient_Agedd : ''}   
-          onChange={(e) => handleAgeChange('dd', e.target.value)}
-          fullWidth
-          InputLabelProps={{ style: { fontSize: '1rem' } }}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={3} md={3}>
-        <TextField
-          id="dob"
-          label="Date of Birth"
-          type="date"
-          variant="outlined"
-          size="small"
-          fullWidth
-           value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
-          onChange={handleDateOfBirthChange}
-          InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
-        />
-      </Grid>
- <Grid item xs={12} sm={3} md={3}>
-        <FormControl variant="outlined" size="small" fullWidth>
-          <InputLabel id="genderLabel">Gender</InputLabel>
-          <Select
-            labelId="genderLabel"
-            id="gender"
-            label="Gender"
-            value={patientDetails ? patientDetails.Patient_Ismale : ''}
-            onChange={handleGenderChange}
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            error={!!errors.Patient_Ismale}
-          >
-            <MenuItem value=""><em>None</em></MenuItem>
-            <MenuItem value="Male">Male</MenuItem>
-            <MenuItem value="Female">Female</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </Select>
-          {errors.Patient_Ismale && (
-            <Typography variant="caption" color="error">
-              {errors.Patient_Ismale}
-            </Typography>
-          )}
-        </FormControl>
-      </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            id="phone1"
-            label="Phone1"
-            variant="outlined"
-            value={patientDetails ? patientDetails.Patient_Phno : ''}    
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Phno: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_Phno: '' }));
-            }}
-            size="small"
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
+   
+        <CTable 
+          striped 
+          style={{ width: '100%', tableLayout: 'fixed', padding: 0, margin: 0 }}> 
+          <CTableHead>
+            <CTableRow>
+              <CTableHeaderCell scope="col" style={{ width: '4%', backgroundColor: '#d6d1d1' }}>SlNo</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Lab No</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Date</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Patient ID</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '18%', backgroundColor: '#d6d1d1' }}>Name</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1' }}>Releasing Time</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '10%', backgroundColor: '#d6d1d1' }}>Phone</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1' }}>Ref.By</CTableHeaderCell>
            
-          />
-        </Grid>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Branch</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Corporate</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '13%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
+          <CTableBody>
+            {data.map((item, index) => (
+              <CTableRow key={index}>
+                <CTableDataCell>{item.slNo}</CTableDataCell>
+                <CTableDataCell>
+                  <Link to={`/proceedtobill/${item.labNo}`} style={{ textDecoration: 'none' }}>
+                    {item.labNo}
+                  </Link>
+                </CTableDataCell>
+                <CTableDataCell>{item.date}</CTableDataCell>
+                <CTableDataCell>
+                  <Link to={`/patient/${item.patientId}`} style={{ textDecoration: 'none' }}>
+                    {item.patientId}
+                  </Link>
+                </CTableDataCell>
+                <CTableDataCell>{item.name}</CTableDataCell>
+                <CTableDataCell>{item.releasingtime}</CTableDataCell>
+                <CTableDataCell>{item.phone}</CTableDataCell>
+                <CTableDataCell>{item.refBy}</CTableDataCell>
+              
+                <CTableDataCell>{item.branch}</CTableDataCell>
+                <CTableDataCell>{item.corporate}</CTableDataCell>
+                {/* <CTableDataCell style={{
+    backgroundColor: getStatusStyles(item.status).backgroundColor,
+    color: getStatusStyles(item.status).color,
+    padding: '4px 8px',
+    borderRadius: '4px',
+    display: 'inline-block',
+    textAlign: 'center', // Center the text
+    fontSize: '0.9em',
+    lineHeight: '1.5',
+    height: '40px', // Set a height (adjust as necessary)
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    cursor: 'pointer',
+    verticalAlign: 'middle', // Ensures vertical centering
+}}
+onMouseEnter={(e) => {
+    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+    e.currentTarget.style.transform = 'scale(1.05)';
+}}
+onMouseLeave={(e) => {
+    e.currentTarget.style.boxShadow = 'none';
+    e.currentTarget.style.transform = 'scale(1)';
+}}>
+    {item.status}
+</CTableDataCell> */}
+ <CTableDataCell style={{
+    backgroundColor: getStatusStyles(item.status).backgroundColor,
+    color: getStatusStyles(item.status).color,
+    padding: '4px 4px',
+    borderRadius: '4px',
+    display: 'flex',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    textAlign: 'center',
+    fontSize: '0.9rem',
+    lineHeight: '1.5',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    cursor: 'pointer',
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+    e.currentTarget.style.transform = 'scale(1.05)';
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.boxShadow = 'none';
+    e.currentTarget.style.transform = 'scale(1)';
+  }}>
+    {item.status}
+</CTableDataCell>
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            id="phone2"
-            label="Phone2"
-            variant="outlined"
-            size="small"
-            value={patientDetails ? patientDetails.Patient_mobile : ''}    
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_mobile: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_mobile: '' }));
-            }}
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-         
-          />
-        </Grid>
+{/* <CTableDataCell style={{
+    backgroundColor: getStatusStyles(item.status).backgroundColor,
+    color: getStatusStyles(item.status).color,
+    padding: '2px 4px',  // Reduced padding
+    borderRadius: '4px',
+    display: 'flex',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    textAlign: 'center',
+    fontSize: '0.9rem',
+    lineHeight: '1.5',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    cursor: 'pointer',
+    width: '100px',  // Set fixed width, adjust as needed
+    minWidth: '80px'  // Ensure the cell doesn't shrink too much
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+    e.currentTarget.style.transform = 'scale(1.05)';
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.boxShadow = 'none';
+    e.currentTarget.style.transform = 'scale(1)';
+  }}>
+    {item.status}
+</CTableDataCell> */}
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            id="email"
-            label="Email"
-            variant="outlined"
-            size="small"
-            value={patientDetails ? patientDetails.Patient_Email : ''}    
-            onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Email: e.target.value });
-              setErrors((prevErrors) => ({ ...prevErrors, Patient_Email: '' }));
-            }}
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-            
-          />
-        </Grid>
-        <Grid item xs={12} >
-          <TextField
-            id="address"
-            label="Address"
-            variant="outlined"
-            multiline
-            rows={3}
-            size="small"
-            value={patientDetails ? patientDetails.Patient_Address : ''}    
-            onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
-            fullWidth
-            InputLabelProps={{ style: { fontSize: '1rem' } }}
-          />
-        </Grid>
-        
-      </Grid>
+{/* <CTableDataCell style={{
+                  backgroundColor: getStatusStyles(item.status).backgroundColor,
+                  color: getStatusStyles(item.status).color,
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  display: 'inline-block',
+                  textAlign: 'center',
+                  fontSize: '0.9em',
+                  lineHeight: '1.5',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}>
+                  {item.status}
+                </CTableDataCell> */}
+              </CTableRow>
+            ))}
+          </CTableBody>
+        </CTable>
+     
     </CardContent>
   </Card>
-</Grid> */}
+  </Grid>
+</Grid>
 
-    <Grid item xs={12} >
-{/*       
-      <Buttons  resetForm={resetForm}
-       fetchNewPatientId={fetchNewPatientId} 
-       isEditMode={isEditMode}
-       handleNewPatient={handleNewPatient}
-        closeModal={closeModal} 
-        newPatientId={newPatientId} 
-        isSaving={isSaving}
-         handleSaveOrUpdate={handleSaveOrUpdate}
-          flag={flag}/> */}
-     </Grid>
-   </Grid>
-   <Grid item xs={12} >
-    <Card
-  sx={{
-    height: 'auto',
-    marginLeft: { xs: -2, sm: -20 }, 
-    width: { xs: 370,md:1400 }, 
-    marginTop: { xs: 0, sm: -1 },
-  }}
-  className='customwidth'
->
-  <CardContent>
-    <Grid container spacing={2}>
-    <CTable striped>
-  <CTableHead>
-    <CTableRow>
-      <CTableHeaderCell scope="col" style={{ width: '5%' }}>Sl No</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '10%' }}>Lab No</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '12%' }}>Date</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '12%' }}>Patient ID</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '20%' }}>Name</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '10%' }}>Phone</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '15%' }}>Ref.By</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '8%' }}>Tests</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '7%' }}>Branch</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '8%' }}>Corporate</CTableHeaderCell>
-      <CTableHeaderCell scope="col" style={{ width: '5%' }}>Status</CTableHeaderCell>
-    </CTableRow>
-  </CTableHead>
-  <CTableBody>
-    <CTableRow>
-      <CTableDataCell>1</CTableDataCell>
-      <CTableDataCell>12345</CTableDataCell>
-      <CTableDataCell>2024-09-25</CTableDataCell>
-      <CTableDataCell>Ram</CTableDataCell>
-      <CTableDataCell>9876543210</CTableDataCell>
-      <CTableDataCell>Dr. Smith</CTableDataCell>
-      <CTableDataCell>Test A</CTableDataCell>
-      <CTableDataCell>Branch 1</CTableDataCell>
-      <CTableDataCell>Corp 1</CTableDataCell>
-      <CTableDataCell>Standard</CTableDataCell>
-    </CTableRow>
-    <CTableRow>
-      <CTableDataCell>2</CTableDataCell>
-      <CTableDataCell>67891</CTableDataCell>
-      <CTableDataCell>2024-09-25</CTableDataCell>
-      <CTableDataCell>Appu</CTableDataCell>
-      <CTableDataCell>9876543210</CTableDataCell>
-      <CTableDataCell>Dr. Ummar</CTableDataCell>
-      <CTableDataCell>Test A</CTableDataCell>
-      <CTableDataCell>Branch 1</CTableDataCell>
-      <CTableDataCell>Corp 1</CTableDataCell>
-      <CTableDataCell>Standard</CTableDataCell>
-    </CTableRow>
-    {/* Repeat rows as needed */}
-  </CTableBody>
-</CTable>
 
-    </Grid>
-  </CardContent>
-</Card>
- 
-     </Grid>
-      {/* <Grid container spacing={2} style={{ marginBottom: '20px' }}>
-        <Grid item>
-          <Checkbox />
-        </Grid>
-        <Grid item>
-          <Checkbox />
-        </Grid>
-        <Grid item>
-          <Checkbox />
-        </Grid>
-        <Grid item>
-          <Checkbox />
-        </Grid>
-        <Grid item>
-          <Checkbox />
-        </Grid>
-      </Grid> */}
 
-      {/* <Grid container spacing={2}>
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Button 1
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="secondary">
-            Button 2
-          </Button>
-        </Grid>
-      </Grid> */}
-{/* <Card
+     
+
+ {/* <Card
   sx={{
     height: {xs:140,sm:75},
     marginLeft: { xs: -2, sm: -20 }, 
     width: { xs: 370,md:1400 }, 
-    marginTop: { xs: 0, sm: -1 },
+    marginTop: { xs: 0, sm: 1 },
   }}
   className='customwidth'
 >
@@ -623,8 +463,8 @@ const InvoiceView = () => {
       </TableContainer>
     </Grid>
   </CardContent>
-</Card> */}
-    
+</Card>  */}
+     
     </div>
   );
 };

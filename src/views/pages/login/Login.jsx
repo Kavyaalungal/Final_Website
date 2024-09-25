@@ -442,6 +442,10 @@ function LoginForm() {
       // Disable username and password fields when Emp Key is entered
       setUsername('');
       setPassword('');
+      setUsername('');
+      setPassword('');
+      setUsernameError('');
+      setPasswordError('');
     } 
   };
 
@@ -451,7 +455,7 @@ function LoginForm() {
     if (event.target.value) {
       // Disable Emp Key field when username is entered
       setEmpKey('');
-      // setEmpKeyError('');
+      setEmpKeyError('');
     }
   };
 
@@ -474,6 +478,51 @@ function LoginForm() {
   };
   
   const handleLogin = () => {
+    // if (!Branch) {
+    //   toast.error('Please select a branch',);
+    //   return; 
+    // }
+
+    let isValid = true;
+
+    // Check if the branch and year are selected
+    if (!Branch) {
+      toast.error('Branch is required');
+      isValid = false;
+    }
+    if (!year) {
+      toast.error('Year is required');
+      isValid = false;
+    }
+    
+    // Check if either empKey is provided OR both username and password are provided
+    if (!empKey && (!username || !password)) {
+      if (!empKey) {
+        setEmpKeyError('EmpKey is required ');
+        // toast.error('EmpKey is required if Username and Password are not provided');
+      }
+      if (!username) {
+        setUsernameError('Username is required');
+        // toast.error('Username is required if EmpKey is not provided');
+      }
+      if (!password) {
+        setPasswordError('Password is required ');
+        // toast.error('Password is required if EmpKey is not provided');
+      }
+      isValid = false;
+    } else {
+      // Clear any previous errors if validation passes
+      setEmpKeyError('');
+      setUsernameError('');
+      setPasswordError('');
+    }
+    
+    if (!isValid) return;
+    
+    // Proceed with login logic
+    
+
+    
     if (empKey) {
       const url = `http://172.16.16.157:8083/api/UserLogin?Empkey=${empKey}`;
       console.log('Request URL:', url);
@@ -525,13 +574,8 @@ function LoginForm() {
           console.error('Error during login:', error);
           toast.error('Invalid Username and Password', { autoClose: 2000, position: 'top-center' });
         });
-    } else {
-      if (!empKey && (!username || !password)) {
-        if (!username) setUsernameError('Username is required');
-        if (!password) setPasswordError('Password is required');
-        if (!empKey) setEmpKeyError('EmpKey is required');
-      }
     }
+
   };
   
 
@@ -547,6 +591,7 @@ function LoginForm() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
     setPasswordError('');
+    setEmpKeyError('');
   };
 
   const handleKeyPress = (event, field) => {
@@ -605,12 +650,13 @@ function LoginForm() {
       <Box
         sx={{
           width: { xs: "300px", sm: "300px", md: "400px" },
-          height:{xs:'380px',sm:'380px',md:'380px'}, // Responsive width
+          height:'auto',
+          // height:{xs:'380px',sm:'380px',md:'380px'}, // Responsive width
           padding: { xs: "10px", sm: "15px", md: "20px" }, // Responsive padding
           backgroundColor: "rgba(255, 255, 255, 1)",
           boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.3)",
           borderRadius: '15px',
-          transform: "translateY(-10%) scale(0.7)",
+          transform: "translateY(-8%) scale(0.9)",
           marginRight: { xs: 2, sm: 2 },
           marginTop: { xs: 3, sm: 5 }
         }}
@@ -676,37 +722,37 @@ function LoginForm() {
           </FormControl>
 
           <TextField
-            label="Emp Key"
+            label={empKeyError || 'Empkey'}
             size="small"
             variant="outlined"
             value={empKey}
             onChange={handleEmpKeyChange}
             error={!!empKeyError}
-            helperText={empKeyError}
+            // helperText={empKeyError}
             onKeyDown={(e) => handleKeyPress(e, 'empKey')}
           />
           <TextField
-            label="Username"
+            label={usernameError || 'Username'}
             size="small"
             variant="outlined"
             value={username}
             onChange={handleUsernameChange}
-            error={!!usernameError}
-            helperText={usernameError}
+             error={!!usernameError}
+            // helperText={usernameError}
             onKeyDown={(e) => handleKeyPress(e, 'username')}
             sx={{ marginBottom: '0px' }}
             autoComplete='username'
           />
           <TextField
             id="password-input"
-            label="Password"
+            label={passwordError || 'Password'}
             type={showPassword ? 'text' : 'password'}
             size="small"
             variant="outlined"
             value={password}
             onChange={handlePasswordChange}
             error={!!passwordError}
-            helperText={passwordError}
+            // helperText={passwordError}
             onKeyDown={(e) => handleKeyPress(e, 'password')}
             autoComplete='current-password'
             InputProps={{
@@ -728,7 +774,11 @@ function LoginForm() {
             <Button
               size="small"
               variant="contained"
-              sx={{ backgroundColor: '#bd2937', color: 'white' }}
+              sx={{  backgroundColor: '#bb4d58', // Default background color
+                '&:hover': {
+                  backgroundColor: '#bd2937', // Background color on hover
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
+                }, }}
               onClick={handleLogin}
             >
               Login
@@ -737,25 +787,28 @@ function LoginForm() {
         </Box>
       </Box>
 
-      {/* Logo Box */}
       <Box
-        sx={{
-          width: { xs: "250px", sm: "250px", md: "250px" },
-          height: '0px',
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          mb: 0,
-          transform: 'scale(0.8)',
-          marginRight: { xs: 4, sm: 4, md: 4 },
-          marginTop: 6 // Margin bottom to space out from the form
-        }}
+  sx={{
+    position: 'fixed',
+    bottom: 10, 
+    right: 10, 
+    zIndex: 1000, 
+    transform: 'scale(0.8)', 
+  }}
+>
+  <a href="https://iconinfoware.com/" target="_blank" rel="noopener noreferrer">
+    <img 
+      src={logo} 
+      alt="Logo" 
+      style={{ 
+        maxWidth: '18%', 
+        height: 'auto',
+        marginLeft:1500
+      }} 
+    />
+  </a>
+</Box>
 
-      >
-        <a href='https://iconinfoware.com/' target='_blank' rel='noopener noreferrer'>
-          <img src={logo} alt="Logo" style={{ maxWidth: '90%', height: 'auto', marginLeft: -10, marginTop: 280 }} />
-        </a>
-      </Box>
       <ToastContainer  autoClose={3000} hideProgressBar />
     </Box>
     

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CModal, CModalHeader, CModalTitle, CModalBody } from '@coreui/react';
 import './CashPayment.css';
 import { TextField, Grid, MenuItem, Typography, Button, Autocomplete } from '@mui/material';
@@ -12,6 +12,8 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Patient from './../../patient/Patient';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CashPayment = ({ visible,
     setVisible,
@@ -47,36 +49,74 @@ const CashPayment = ({ visible,
     const [filteredDisc, setFilteredDisc] = useState([]);
     const [discountReason, setDiscountReason] = useState('')
     const [Discreasonid, setDiscRId] = useState('')
-    const [discountAmount, setDiscountAmount] = useState(0);
+    const [discountAmount, setDiscountAmount] = useState();
 
-
-    const BranchId = sessionStorage.getItem('selectedBranch')
+    //input from the session storage
+    const BranchId = sessionStorage.getItem('selectedBranchKey')
     const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
+
+    //to make the textcursor in input field after the initial value
+    const inputRef = useRef(null); //useref for the input 
+
+    const handleFocus = () => {
+        setTimeout(() => {
+            const input = inputRef.current;
+            if (input) {
+                const length = input.value.length;
+                input.setSelectionRange(length, length);
+            }
+        }, 0);
+    };
+
+    useEffect(() => {
+        if (inputRef.current && inputRef.current.value === '0') {
+            inputRef.current.setSelectionRange(1, 1); // Place cursor after the '0'
+        }
+    },);
 
     const handlePaymentMethodChange = (event) => {
         setPaymentMethod(event.target.value);
     };
 
-    const handleDiscountChange = (event) => {
-        const selectedDiscount = Number(event.target.value);
-        setDiscountPercentage(selectedDiscount);
-        const calculatedDiscount = (selectedDiscount / 100) * totalAmount;
-        setDiscountAmount(calculatedDiscount); // Update discountAmount based on percentage
-        calculateNetAmount(calculatedDiscount, serviceCharge);
+    const handleDiscountChange = (event, value) => {
+        if (typeof value === 'number') {
+            // selected a predefined percentage from options
+            const selectedDiscount = value; 
+            setDiscountPercentage(selectedDiscount); 
+            const calculatedDiscount = (selectedDiscount / 100) * totalAmount; 
+            setDiscountAmount(calculatedDiscount); 
+            calculateNetAmount(calculatedDiscount, serviceCharge); 
+        } else if (event.target.value) {
+            // User typed a custom value
+            const inputDiscount = Number(event.target.value); // Convert input to a number
+            if (!isNaN(inputDiscount)) {
+                setDiscountPercentage(inputDiscount); // Update the discount percentage state
+                const calculatedDiscount = (inputDiscount / 100) * totalAmount; // Calculate discount amount based on totalAmount
+                setDiscountAmount(calculatedDiscount); // Update the discount amount
+                calculateNetAmount(calculatedDiscount, serviceCharge); // Recalculate net amount
+            }
+        }
     };
+
+
     const handleDiscountAmountChange = (event) => {
         const amount = Number(event.target.value);
-        setDiscountAmount(amount);
-        setDiscountPercentage((amount / totalAmount) * 100); // Update discount percentage based on the input
-        calculateNetAmount(amount, serviceCharge);
+        const roundedAmount = parseFloat(amount.toFixed(2));
+        // Update discount amount directly from input
+        setDiscountAmount(roundedAmount);
+        // Update discount percentage based on the amount input
+        const discountPercentage = (roundedAmount / totalAmount) * 100;
+        setDiscountPercentage(parseFloat(discountPercentage.toFixed(2)));
+        // Recalculate the net amount
+        calculateNetAmount(roundedAmount, serviceCharge);
     };
-
-
 
     const handleServiceChargeChange = (event) => {
         const charge = Number(event.target.value);
-        setServiceCharge(charge);
-        calculateNetAmount(discountPercentage, charge);
+        const roundedCharge = parseFloat(charge.toFixed(2)); // Round service charge to 2 decimal places
+        setServiceCharge(roundedCharge);
+        // Recalculate net amount whenever service charge changes
+        calculateNetAmount(discountAmount, roundedCharge);
     };
 
     const handlePaidAmountChange = (event) => {
@@ -86,14 +126,23 @@ const CashPayment = ({ visible,
     };
 
     const calculateNetAmount = (discountValue, charge) => {
-        const newNetAmount = totalAmount - discountValue + charge;
-        setNetAmount(newNetAmount);
+        // Use safe defaults to prevent NaN results
+        const safeDiscountValue = typeof discountValue === 'number' ? discountValue : 0; // Default to 0
+        const safeCharge = typeof charge === 'number' ? charge : 0; // Default to 0
+        const safeTotalAmount = totalAmount  ? totalAmount : 0; // Default to 0
+    
+        const newNetAmount = safeTotalAmount - safeDiscountValue + safeCharge;
+    
+        // Set the net amount, rounding to 2 decimal places
+        setNetAmount(parseFloat(newNetAmount.toFixed(2)));
     };
     
 
     useEffect(() => {
-        calculateNetAmount(discountPercentage, serviceCharge);
+        // Recalculate net amount whenever totalAmount changes, while maintaining existing discount and service charge values
+        calculateNetAmount(discountAmount, serviceCharge);
     }, [totalAmount]);
+
 
     const getCorporateBy = (input) => {
         if (!Array.isArray(accountHeads)) return [];
@@ -160,6 +209,21 @@ const CashPayment = ({ visible,
 
     console.log('patientage', patientData)
 
+    //reset form
+    const resetform = () => {
+
+        setDiscountPercentage(0);
+        setDiscountAmount();
+        setServiceCharge(0);
+        setPaymentMethod('');
+        setPaidAmount(0);
+        setBalance(0);
+        setDiscountReason('');
+        calculateNetAmount(0)
+        
+        
+    }
+
     const saveData = async () => {
         console.log('RefOutDr inside saveData:', refoutdr);
         console.log('corporteid inside saveData:', corporateId);
@@ -184,7 +248,7 @@ const CashPayment = ({ visible,
             CollectedById: StaffCollid,
             SampleOn: currentDateTime,
             "ReportTime": "2024-09-19T15:30:00",
-            Discount: 0,
+            Discount: discountAmount,
             Total: totalAmount,
             "RepThrPersonal": true,
             "RepThrEmail": true,
@@ -225,8 +289,11 @@ const CashPayment = ({ visible,
         try {
             const response = await axios.post('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate/InvoiceMstr', requestData);
             console.log('Data saved:', response.data);
+            toast.success('Saved Succesfully')
+            resetform()
         } catch (error) {
             console.error('Failed to save data', error);
+            toast.error('Failed to save data! Please try again.')
         }
     };
 
@@ -234,11 +301,12 @@ const CashPayment = ({ visible,
     const handleSave = () => {
 
         saveData();
+      
 
         // Call the saveData function
     };
 
- 
+
 
     console.log('service', serviceCharge)
     console.log('paymode', paymentMethod)
@@ -253,7 +321,10 @@ const CashPayment = ({ visible,
             size='sm'
             visible={visible}
             className='custom-modal-close'
-            onClose={() => setVisible(false)}
+            onClose={() => {
+                resetform();
+                setVisible(false)
+            }}
             aria-labelledby="VerticallyCenteredExample"
         >
             <CModalHeader className='modalheader'>
@@ -288,34 +359,48 @@ const CashPayment = ({ visible,
 
                     {/* Discount Percentage Field */}
                     <Grid item xs={12} sm={4}>
-                        <TextField
-                            select
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            label='Disc %'
-                            value={discountPercentage}
+                        <Autocomplete
+                            freeSolo
+                            options={[0, 10, 20, 30, 40, 50, 100]} // These represent percentage options
                             onChange={handleDiscountChange}
-                            InputLabelProps={{
-                                style: { fontSize: '0.95rem', top: '-6px', left: '1px' },
-                            }}
+                            value={discountPercentage} // Set the current discount percentage
+                            disableClearable
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    size="small"
+                                    label="Disc %"
+                                    onChange={handleDiscountChange} // Call handleDiscountChange on change
+                                    InputLabelProps={{
+                                        style: { fontSize: '0.95rem', top: '-6px', left: '1px' },
+                                    }}
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            padding: '6px',
+                                            fontSize: '0.95rem',
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            height: '30px',
+                                        },
+                                    }}
+                                />
+                            )}
                             sx={{
-                                '& .MuiInputBase-input': {
-                                    padding: '6px',
+                                '& .MuiAutocomplete-input': {
                                     fontSize: '0.95rem',
+                                    padding: '4px',
                                 },
                                 '& .MuiOutlinedInput-root': {
                                     height: '30px',
                                 },
                             }}
-                        >
-                            {[0, 10, 20, 30, 40, 50, 100].map(value => (
-                                <MenuItem key={value} value={value}>{value}</MenuItem>
-                            ))}
-                        </TextField>
+                        />
+                            
+                      
+                        
                     </Grid>
 
-                    {/* Discount Value Field */}
                     <Grid item xs={12} sm={8}>
                         <TextField
                             id='discount'
@@ -341,16 +426,17 @@ const CashPayment = ({ visible,
                         />
                     </Grid>
 
-
                     {/* Service Charge Field */}
                     <Grid item xs={12}>
                         <TextField
-                            id='s.charge'
+                            inputRef={inputRef} // Step 3: Attach the ref to the input field
+                            id="s.charge"
                             label="Service Charge"
                             variant="outlined"
                             size="small"
-                            value={serviceCharge}
-                            onChange={handleServiceChargeChange}
+                            value={serviceCharge} // Bind your state value
+                            onChange={handleServiceChargeChange} // Handle changes
+                            onFocus={handleFocus} // Step 3: Move the cursor to the end on focus
                             fullWidth
                             InputLabelProps={{
                                 style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
@@ -359,7 +445,7 @@ const CashPayment = ({ visible,
                                 '& .MuiInputBase-input': {
                                     padding: '6px',
                                     fontSize: '0.95rem',
-                                    textAlign: 'right',
+                                    textAlign: 'right', // Align text to the right
                                 },
                                 '& .MuiOutlinedInput-root': {
                                     height: '30px',
@@ -417,7 +503,19 @@ const CashPayment = ({ visible,
                                     },
                                 }}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth />
+                                    <TextField {...params} label="Bank" variant="outlined" size="small" fullWidth 
+                                    InputLabelProps={{
+                                        style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
+                                    }}
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            padding: '6px',
+                                            fontSize: '0.95rem',
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            height: '30px',
+                                        },
+                                    }}/>
                                 )}
                             />
                         </Grid>
@@ -442,7 +540,19 @@ const CashPayment = ({ visible,
                                     },
                                 }}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth />
+                                    <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth 
+                                    InputLabelProps={{
+                                        style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
+                                    }}
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            padding: '6px',
+                                            fontSize: '0.95rem',
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            height: '30px',
+                                        },
+                                    }}/>
                                 )}
                             />
                         </Grid>
@@ -451,12 +561,14 @@ const CashPayment = ({ visible,
                     {/* Paid Amount Field */}
                     <Grid item xs={12}>
                         <TextField
+
                             id='paidamt'
                             label="Paid Amount"
                             variant="outlined"
                             size="small"
                             value={paidAmount}
                             onChange={handlePaidAmountChange}
+
                             fullWidth
                             InputLabelProps={{
                                 style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
@@ -609,6 +721,7 @@ const CashPayment = ({ visible,
 
                                         onClick={handleSave}  >
                                         Save
+                                       
                                     </Button>
                                     <Button
                                         variant="contained"
@@ -631,8 +744,10 @@ const CashPayment = ({ visible,
                         </Grid>
                     </Grid>
                 </Grid>
+                
             </CModalBody>
-
+            <ToastContainer 
+            position='top-center' autoClose={1000} hideProgressBar/>
         </CModal>
     );
 };

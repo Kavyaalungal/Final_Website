@@ -83,7 +83,7 @@ function Maintable() {
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
-  const BranchId = sessionStorage.getItem('selectedBranch')
+  const BranchId = sessionStorage.getItem('selectedBranchKey')
   const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
 
   // Fetch current Lab No when the component mounts
@@ -147,7 +147,11 @@ function Maintable() {
           testName: matchedTest.tstname,
           price: matchedTest.Rate,
           discount: matchedTest.Discper,
-          testkey: matchedTest.tstkey
+          testkey: matchedTest.tstkey,
+          RptD:matchedTest.RptD,
+          RptTD:matchedTest.RptTD
+
+
         });
       }
     }
@@ -171,6 +175,8 @@ function Maintable() {
               price: matchedTest.Rate,
               discount: matchedTest.Discper,
               tstkey: matchedTest.tstkey,
+              RptD:matchedTest.RptD,
+              RptTD:matchedTest.RptTD,
               total: (matchedTest.Rate - (matchedTest.Rate * (matchedTest.Discper || 0) / 100)).toFixed(2)
             }
           ]);

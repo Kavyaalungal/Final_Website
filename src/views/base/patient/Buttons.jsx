@@ -170,7 +170,7 @@ function Buttons({
         // Delay navigation to ensure the modal closes and the save/update is complete
         setTimeout(() => {
           console.log("Navigating to /proceedtobill with Patient_Code:", patientCode);
-          navigate('/proceedtobill/', {
+          navigate(`/proceedtobill/`, {
             replace: true,
             state: { patientCode} // Pass the Patient_Code to the billing page
           });

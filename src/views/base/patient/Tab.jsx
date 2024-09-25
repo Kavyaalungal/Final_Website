@@ -601,8 +601,7 @@ const handleAgeChange = (field, value) => {
              isSaving={isSaving}
              flag={flag}
              handleDOBChange={handleDOBChange}
-             YearId={YearId}
-             branchId={branchId}
+           
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -633,8 +632,7 @@ const handleAgeChange = (field, value) => {
              handleSaveOrUpdate={handleSaveOrUpdate}
              isSaving={isSaving}
              flag={flag}
-             YearId={YearId}
-             branchId={branchId}/>
+            />
       </CustomTabPanel>
     </Box>
   );

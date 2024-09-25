@@ -479,7 +479,7 @@ return (
         <Grid item xs={12} sm={8}>
   <Card
     sx={{
-      width: "108%",
+      width: "115%",
       maxWidth: "auto",
       maxHeight: 700,
       height: 520,
