@@ -59,7 +59,7 @@ function Maintable() {
   const [filteredCorporate, setFilteredCorporate] = useState([]);
   const [referredByStaff, setReferredByStaff] = useState('');
   const [filteredStaff, setFilteredStaff] = useState([]);
-  const [referredCollectionmode, SetCollectionmode] = useState('');
+  const [referredCollectionmode, SetCollectionmode] = useState('DIRECT');
   const [filterCollmode, Setfilcollmode] = useState([]);
   const [refoutdr, setRefoutdr] = useState("")
   const [filteroutdr, setFilteroutdr] = useState([]);
@@ -126,6 +126,7 @@ function Maintable() {
 
   const handleRemoveRow = (id) => {
     setRows(rows.filter(row => row.id !== id));
+    alert('are you sure want to delete')
   };
 
   const handleChange = (e, value) => {
@@ -859,104 +860,85 @@ function Maintable() {
             </Grid>
           </Grid>
           <FormControl component="fieldset" fullWidth sx={{ mt: 1 }}>
-            <Grid container alignItems="center" spacing={2}>
-              <Grid item>
-                <Typography variant="body1">Report Requested Through</Typography>
-              </Grid>
-              <Grid item xs>
-                <FormGroup row sx={{ ml: 4 }}>
-                  <FormControlLabel
-                    control={<Checkbox name="personally" sx={{
-                      color: 'grey', // Unchecked color
-                      '&.Mui-checked': {
-                        color: '#bd2937', // Checked color
-                      },
-                    }} />}
-                    label="Personally"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="whatsapp" sx={{
-                      color: 'grey', // Unchecked color
-                      '&.Mui-checked': {
-                        color: '#bd2937', // Checked color
-                      },
-                    }} />}
-                    label="WhatsApp"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="courier"
-                      sx={{
-                        color: 'grey', // Unchecked color
-                        '&.Mui-checked': {
-                          color: '#bd2937', // Checked color
-                        },
-                      }} />}
-                    label="Courier"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="email" sx={{
-                      color: 'grey', // Unchecked color
-                      '&.Mui-checked': {
-                        color: '#bd2937', // Checked color
-                      },
-                    }} />}
-                    label="Email"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="sms" sx={{
-                      color: 'grey', // Unchecked color
-                      '&.Mui-checked': {
-                        color: '#bd2937', // Checked color
-                      },
-                    }} />}
-                    label="SMS"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="telephone" sx={{
-                      color: 'grey', // Unchecked color
-                      '&.Mui-checked': {
-                        color: '#bd2937', // Checked color
-                      },
-                    }} />}
-                    label="Telephone"
-                  />
-                </FormGroup>
-              </Grid>
-            </Grid>
-          </FormControl>
+  <Grid container alignItems="center" spacing={2}>
+    <Grid item>
+      <Typography variant="body1">Report Requested Through</Typography>
+    </Grid>
+    <Grid item xs>
+      <FormGroup row sx={{ ml: 4 }}>
+        <FormControlLabel
+          control={<Checkbox name="personally" sx={{
+            color: 'grey', // Unchecked color
+            '&.Mui-checked': {
+              color: '#bd2937', // Checked color
+            },
+          }} />}
+          label="Personally"
+        />
+        <FormControlLabel
+          control={<Checkbox name="whatsapp" sx={{
+            color: 'grey', // Unchecked color
+            '&.Mui-checked': {
+              color: '#bd2937', // Checked color
+            },
+          }} />}
+          label="WhatsApp"
+        />
+        <FormControlLabel
+          control={<Checkbox name="courier"
+            sx={{
+              color: 'grey', // Unchecked color
+              '&.Mui-checked': {
+                color: '#bd2937', // Checked color
+              },
+            }} />}
+          label="Courier"
+        />
+        <FormControlLabel
+          control={<Checkbox name="email" sx={{
+            color: 'grey', // Unchecked color
+            '&.Mui-checked': {
+              color: '#bd2937', // Checked color
+            },
+          }} />}
+          label="Email"
+        />
+        <FormControlLabel
+          control={<Checkbox name="sms" sx={{
+            color: 'grey', // Unchecked color
+            '&.Mui-checked': {
+              color: '#bd2937', // Checked color
+            },
+          }} />}
+          label="SMS"
+        />
+        <FormControlLabel
+          control={<Checkbox name="telephone" sx={{
+            color: 'grey', // Unchecked color
+            '&.Mui-checked': {
+              color: '#bd2937', // Checked color
+            },
+          }} />}
+          label="Telephone"
+        />
+        {/* Add the TextField directly here to align with checkboxes */}
+        <TextField
+          label="Other Report Request"
+          variant="outlined"
+          size="small"
+          sx={{ ml: 2 }} // Add some left margin for spacing
+        />
+      </FormGroup>
+    </Grid>
+  </Grid>
+</FormControl>
+
+
           <Grid container spacing={2}>
             {/* Left Column */}
             <Grid item xs={6}>
               <Grid container spacing={2}>
-                <Grid item sx={{
-                  ml: 31, '@media (max-width: 320px)': {
-                    // Further reduce font size for very small screens
-                    marginLeft: '30px',
-                  },
-                  '@media (max-width: 375px)': {
-                    // Further reduce font size for very small screens
-                    marginLeft: '300px',
-                  }, '@media (max-width: 430px)': {
-
-                    marginLeft: '-1px',     // Remove negative margin for smaller screens
-                  },
-                  '@media (max-width: 768px)': {
-                    // Adjust font size for smaller screens
-                    marginLeft: '7px',
-                    // Remove negative margin for smaller screens
-                  },
-                  '@media (max-width: 820px)': {
-                    fontSize: '1.5rem',  // Adjust font size for smaller screens
-                    marginLeft: '5px',     // Remove negative margin for smaller screens
-                  },
-                }}>
-                  <TextField
-                    label="Other Report Request"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                  />
-                </Grid>
+               
 
 
                 <Grid item xs={12}>

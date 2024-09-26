@@ -332,7 +332,7 @@
 
 
 import { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, IconButton, InputAdornment, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { TextField, Button, Box, Typography, IconButton,FormHelperText, InputAdornment, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import {  Visibility, VisibilityOff } from '@mui/icons-material';
 import './Login.css';
 import { useDispatch } from 'react-redux';
@@ -348,6 +348,7 @@ function LoginForm() {
   const [empKey, setEmpKey] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [branchError, setBranchError] = useState('');
   const [empKeyError, setEmpKeyError] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -485,9 +486,12 @@ function LoginForm() {
 
     let isValid = true;
 
+
+    setBranchError(''); 
+
     // Check if the branch and year are selected
     if (!Branch) {
-      toast.error('Branch is required');
+      setBranchError('Branch is required');  // Set error message for branch
       isValid = false;
     }
     if (!year) {
@@ -621,6 +625,11 @@ function LoginForm() {
     const selectedBranch = e.target.value;
     const selectedBranchDetail = Branches.find((br) => br.BranchName === selectedBranch);
     const selectedBranchKey = selectedBranchDetail?.Branchkey;
+  
+    if (selectedBranch) {
+      setBranchError(''); // Clear the error when a valid branch is selected
+    }
+  
     setBranch(selectedBranch);
     sessionStorage.setItem('selectedBranch', selectedBranch);
     sessionStorage.setItem('selectedBranchKey', selectedBranchKey?.toString() || '');
@@ -699,7 +708,7 @@ function LoginForm() {
             </Select>
           </FormControl>
 
-          <FormControl fullWidth size="small">
+          {/* <FormControl fullWidth size="small">
             <InputLabel id="branch-label">Branch</InputLabel>
             <Select
               labelId="branch-label"
@@ -719,7 +728,42 @@ function LoginForm() {
                 <MenuItem disabled>No branches available</MenuItem>
               )}
             </Select>
-          </FormControl>
+          </FormControl> */}
+ <FormControl 
+ fullWidth size="small" error={!!branchError}>
+  <InputLabel id="branch-label">Branch</InputLabel>
+  
+  <Select
+    labelId="branch-label"
+    id="branch"
+    value={Branch}
+    onChange={handleBranchChange}
+    label="Branch"
+    sx={{ fontSize: '1rem' }}
+    
+  >
+    {Branches.length > 0 ? (
+      Branches.map((branch) => (
+        <MenuItem
+          key={branch.BranchName}
+          value={branch.BranchName}
+          sx={{ 
+            fontSize: '0.75rem',  // Reducing font size
+            height: '30px',       // Custom height
+            padding: '4px 8px'    // Custom padding
+          }}
+        >
+          {branch.BranchName}
+        </MenuItem>
+      ))
+    ) : (
+      <MenuItem disabled>No branches available</MenuItem>
+    )}
+  </Select>
+  
+  {branchError && <FormHelperText>{branchError}</FormHelperText>}
+</FormControl>
+
 
           <TextField
             label={empKeyError || 'Empkey'}

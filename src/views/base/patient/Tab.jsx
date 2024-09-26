@@ -280,21 +280,31 @@ const handleSaveOrUpdate = async () => {
   try {
     const response = await axios.post('http://172.16.16.157:8083/api/PatientSaveUpdate', payload);
     
+    // Log the full response from the backend for debugging
+    console.log("Response from backend:", response);
+
     if (response.data.status && response.data.status[0].status === 'Success') {
       toast.success(flag === 'Edit' ? 'Patient details updated successfully' : 'Patient details saved successfully');
       
+    
+    
+      const opdno = response.data.status[0].opdno; 
+
       resetForm();
       
-      // Return the Patient_Code after a successful save/update
-      return payload.Patient_Code;
+      // Returning an object with the message and opdno after a successful save/update
+      return { opdno };
 
     } else {
       toast.error(`Failed to ${flag === 'Edit' ? 'update' : 'save'} patient details: ${response.data.status[0].Message}`);
     }
   } catch (error) {
+    console.error("Error occurred during save/update:", error);
     toast.error(`Error ${flag === 'Edit' ? 'updating' : 'saving'} patient details`);
   }
 };
+
+
 
 
 //function for changing the patient id field 

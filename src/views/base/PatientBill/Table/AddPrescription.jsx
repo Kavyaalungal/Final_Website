@@ -84,6 +84,9 @@ import '../PatientDetails/PatientDetails.css';
 import { useLocation } from 'react-router-dom';
 import { usePatient } from "../../patient/PatientContext";
 import Patientdetails from "../PatientDetails/Patientdetails";
+import useModal from "../../../../components/UseModal";
+import Patient from "../../patient/Patient";
+import { CModal, CModalBody, CModalHeader, CModalTitle } from "@coreui/react";
 
 // import Header from "../Heading/head";
 // import Patientdetails from "../PatientDetails/Patientdetails";
@@ -93,8 +96,9 @@ import Patientdetails from "../PatientDetails/Patientdetails";
 // import { usePatient } from "../../patient/PatientContext";
 
 function AddPrescription() {
+  const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
   const location = useLocation();
-  const { patientCode } = location.state || {};
+  const { opdno } = location.state || {};
   const [patientData, setPatientData] = useState(null);
   const [error, setError] = useState('');
  const [loading, setLoading] = useState(true);
@@ -171,10 +175,10 @@ const handleRemoveImage = () => {
 
 
  useEffect(() => {
-  console.log("Current Patient Code:", patientCode); // Log patientCode
+  console.log("Current Patient Code:", opdno); // Log opdno
 
   const fetchPatientData = async () => {
-    if (!patientCode) {
+    if (!opdno) {
       setError("No Patient_Code provided.");
        setLoading(false);
      return;
@@ -184,7 +188,7 @@ const handleRemoveImage = () => {
        const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
          YearId: YearId,
          BranchId: branchId,
-         PatCode: patientCode,
+         PatCode: opdno,
          editFlag: true
        });
 
@@ -204,7 +208,7 @@ const handleRemoveImage = () => {
    };
 
    fetchPatientData();
- }, [patientCode]);
+ }, [opdno]);
 
 
 return (
@@ -218,13 +222,13 @@ return (
         {/* <Patientdetails  sx={{marginLeft:100}}/> */}
        {patientData ? (
         
-        
+            
         <Card
         sx={{
           width: "75%",
           maxWidth: "auto",
           maxHeight: 700,
-          height: 520,
+          height: 510,
           p: 2,
           overflowY: "auto",
           marginLeft: -1,
@@ -243,7 +247,7 @@ return (
   
   <Typography
             sx={{
-              fontSize: { xs: 16, sm: 16, md: 16 },
+              fontSize: { xs: 14, sm: 14, md: 14 },
               marginTop:-2,
   
               textAlign: "start",
@@ -255,25 +259,52 @@ return (
             Patient Details
           </Typography>
        
-          <Box sx={{ mb: 2
-  , textAlign: "right" }}>
-            <Link
-              href="#"
-              sx={{
-                fontSize: { xs: 14, sm: 16, md: 16 },
-                color: "#bd2937",
-               
-                textDecoration: "none",
-                '&:hover': {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              Edit
-            </Link>
-          </Box>
+         
   
-      
+  <Box sx={{ mb: 2, textAlign: "right" }}>
+  <Link
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();  
+      toggleModal('Patient Registration', <Patient closeModal={closeModal}/>, 'lg');
+    }}
+    style={{ color: "#bd2937", textDecoration: "none",fontSize:12 }}
+  >
+    Edit
+  </Link>
+
+
+
+  <CModal visible={modal} onClose={closeModal} 
+                size={modalSize}
+                centered 
+                className='modal custom-modal-close custom-modal-width custom-centered-modal'
+                backdrop='static'
+                // scrollable
+                aria-labelledby="OptionalSizesExample2"
+               >
+          <CModalHeader className='custom-modal-header'>
+            <CModalTitle className='custom-modal-title'>{modalTitle}</CModalTitle>
+          </CModalHeader>
+          <CModalBody className='c-modal-body no-scroll ' style={{zoom:'0.8'}}>
+            {modalContent}
+          </CModalBody>
+        </CModal>
+
+
+
+
+  {/* Modal implementation */}
+  {/* <CModal visible={modal} onClose={closeModal} size={modalSize} centered backdrop="static">
+    <CModalHeader>
+      <CModalTitle>{modalTitle}</CModalTitle> 
+    </CModalHeader>
+    <CModalBody>{modalContent}</CModalBody>
+  </CModal> */}
+</Box>
+
+
+
   
           <Box
             sx={{
@@ -299,40 +330,46 @@ return (
               }
             />
   
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                ml: -2,
-              }}
-            >
-              <Typography
+           
+          </Box>
+  
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              marginTop:-4,
+              marginLeft:-1
+            }}
+          >
+             <Typography
                 variant="h6"
                 component="div"
                 sx={{
                   fontWeight: "bold",
-                  fontSize: { xs: 16, sm: 16, md: 16 },
-                  marginLeft:-2
+                  fontSize: { xs: 12, sm: 12, md: 12 },
+           
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
                 }}
               >
+              
                 {patientData.Patient_Name || "Patient Name"}
               </Typography>
-  
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "flex-start",
                   gap: 1,
-                  mt: -1,
-                  marginLeft:-2
+                  
+                 
                 }}
               >
                 <Typography
                   sx={{
                     fontWeight: "bold",
-                    fontSize: { xs: 14, sm: 16, md: 15 },
+                    fontSize: { xs: 12, sm: 12, md: 12 },
                   }}
                   color="black"
                 >
@@ -341,29 +378,17 @@ return (
                 <Typography
                   sx={{
                     fontWeight: "bold",
-                    fontSize: { xs: 14, sm: 16, md: 15 },
+                    fontSize: { xs: 12, sm: 12, md: 12 },
                   }}
                   color="black"
                 >
                   {patientData.Patient_Ismale || "Gender"}
                 </Typography>
               </Box>
-            </Box>
-          </Box>
-  
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              marginTop:-2,
-              marginLeft:-1
-            }}
-          >
             <Typography
               sx={{
                 mb: 1.5,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -374,7 +399,7 @@ return (
             <Typography
               sx={{
                 mt: -2,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: {xs: 12, sm: 12, md: 12},
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -385,7 +410,7 @@ return (
             <Typography
               sx={{
                 mt: 1,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -396,7 +421,7 @@ return (
             <Typography
               sx={{
                 mt: 0,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -407,7 +432,7 @@ return (
             <Typography
               sx={{
                 mt: 1,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12},
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -417,7 +442,7 @@ return (
             </Typography>
             <Typography
               sx={{
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -428,7 +453,7 @@ return (
             <Typography
               sx={{
                 mt: 1,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -438,7 +463,7 @@ return (
             </Typography>
             <Typography
               sx={{
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -449,7 +474,7 @@ return (
             <Typography
               sx={{
                 mt: 1,
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
@@ -459,17 +484,259 @@ return (
             </Typography>
             <Typography
               sx={{
-                fontSize: { xs: 14, sm: 12, md: 12 },
+                fontSize: { xs: 12, sm: 12, md: 12 },
                 wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
               color="#000"
             >
-              {patientData.branch || "N/A"}
+              {patientData.branchName || "N/A"}
             </Typography>
           </Box>
         </CardContent>
       </Card>
+  //       <Card
+  //       sx={{
+  //         width: "75%",
+  //         maxWidth: "auto",
+  //         maxHeight: 700,
+  //         height: 520,
+  //         p: 2,
+  //         overflowY: "auto",
+  //         marginLeft: -1,
+  //         marginTop:-1
+          
+  //       }}
+  //       className="firstcard"
+  //     >
+  //       <CardContent
+  //         sx={{
+  //           height: "100%",
+  //           overflowY: "hidden",
+  //         }}
+  //       >
+  
+  
+  // <Typography
+  //           sx={{
+  //             fontSize: { xs: 16, sm: 16, md: 16 },
+  //             marginTop:-2,
+  
+  //             textAlign: "start",
+  //             fontWeight: "Bold",
+  //           }}
+  //           color="#bd2937"
+  //           variant="h6"
+  //         >
+  //           Patient Details
+  //         </Typography>
+       
+  //         <Box sx={{ mb: 2
+  // , textAlign: "right" }}>
+  //           <Link
+  //             href="#"
+  //             sx={{
+  //               fontSize: { xs: 14, sm: 16, md: 16 },
+  //               color: "#bd2937",
+               
+  //               textDecoration: "none",
+  //               '&:hover': {
+  //                 textDecoration: "underline",
+  //               },
+  //             }}
+  //           >
+  //             Edit
+  //           </Link>
+  //         </Box>
+  
+      
+  
+  //         <Box
+  //           sx={{
+  //             display: "flex",
+  //             flexDirection: "column",
+  //             alignItems: "center",
+  //             mb: 2,
+  //           }}
+  //         >
+  //           <Avatar
+  //             sx={{
+  //               width: { xs: 60, sm: 70, md: 80 },
+  //               height: { xs: 60, sm: 70, md: 80 },
+  //               mb: 2,
+  //             }}
+  //             alt="Patient Avatar"
+  //             src={
+  //               patientData.Patient_Ismale === "Male"
+  //                 ? male
+  //                 : patientData.Patient_Ismale === "Female"
+  //                 ? female
+  //                 : commonDefault
+  //             }
+  //           />
+  
+         
+  //         </Box>
+  
+  //         <Box
+  //           sx={{
+  //             display: "flex",
+  //             flexDirection: "column",
+  //             alignItems: "flex-start",
+  //             marginTop:-2,
+  //             marginLeft:-1
+  //           }}
+  //         >
+  //            <Typography
+  //               variant="h6"
+  //               component="div"
+  //               sx={{
+  //                 fontWeight: "bold",
+  //                 fontSize: { xs: 16, sm: 14, md: 14 },
+                  
+  //               }}
+  //             >
+  //               {patientData.Patient_Name || "Patient Name"}
+  //             </Typography>
+  //             <Box
+  //               sx={{
+  //                 display: "flex",
+  //                 flexDirection: "row",
+  //                 justifyContent: "flex-start",
+  //                 gap: 1,
+                  
+                 
+  //               }}
+  //             >
+  //               <Typography
+  //                 sx={{
+  //                   fontWeight: "bold",
+  //                   fontSize: { xs: 16, sm: 16, md: 16 },
+  //                 }}
+  //                 color="black"
+  //               >
+  //                 {patientData.Patient_Ageyy || "Age"}
+  //               </Typography>
+  //               <Typography
+  //                 sx={{
+  //                   fontWeight: "bold",
+  //                   fontSize: { xs: 14, sm: 16, md: 16 },
+  //                 }}
+  //                 color="black"
+  //               >
+  //                 {patientData.Patient_Ismale || "Gender"}
+  //               </Typography>
+  //             </Box>
+  //           <Typography
+  //             sx={{
+  //               mb: 1.5,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#b0b0b0"
+  //           >
+  //             Contact No
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               mt: -2,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#000"
+  //           >
+  //              {patientData.Patient_mobile || patientData.Patient_Phno || "N/A"}
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               mt: 1,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#b0b0b0"
+  //           >
+  //             Email
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               mt: 0,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#000"
+  //           >
+  //             {patientData.Patient_Email || "N/A"}
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               mt: 1,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#b0b0b0"
+  //           >
+  //             PatientID
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#000"
+  //           >
+  //             {patientData.Patient_Code || "N/A"}
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               mt: 1,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#b0b0b0"
+  //           >
+  //             Address
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#000"
+  //           >
+  //             {patientData.Patient_Address || "N/A"}
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               mt: 1,
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#b0b0b0"
+  //           >
+  //             Branch
+  //           </Typography>
+  //           <Typography
+  //             sx={{
+  //               fontSize: { xs: 14, sm: 12, md: 12 },
+  //               wordBreak: "break-word",
+  //               overflowWrap: "break-word",
+  //             }}
+  //             color="#000"
+  //           >
+  //             {patientData.branchName || "N/A"}
+  //           </Typography>
+  //         </Box>
+  //       </CardContent>
+  //     </Card>
       ) : (
         <p>No patient data available.</p>
       )}
@@ -482,7 +749,7 @@ return (
       width: "115%",
       maxWidth: "auto",
       maxHeight: 700,
-      height: 520,
+      height: 510,
       p: 2,
       overflowY: "auto",
       marginLeft: -9,

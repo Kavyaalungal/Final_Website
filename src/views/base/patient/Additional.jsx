@@ -220,11 +220,15 @@ function Additional({patientDetails,setPatientDetails,handleGenderChange, closeM
 </Grid>
 
     <Grid item xs={12} >
-    <Buttons  resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode}
-       handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient} updatePatient={updatePatient}
-        closeModal={closeModal} newPatientId={newPatientId} saveOrUpdatePatient={saveOrUpdatePatient}
-        isSaving={isSaving} handleSaveOrUpdate={handleSaveOrUpdate} patientCode={patientCode} handleNewPatientButtonClick={handleNewPatientButtonClick}
-        handleSave={handleSave} buttonText={buttonText} flag={flag}/>
+    <Buttons  resetForm={resetForm}
+       fetchNewPatientId={fetchNewPatientId} 
+       isEditMode={isEditMode}
+       handleNewPatient={handleNewPatient}
+        closeModal={closeModal} 
+        newPatientId={newPatientId} 
+        isSaving={isSaving}
+         handleSaveOrUpdate={handleSaveOrUpdate}
+          flag={flag}/>
      
     </Grid>
     {/* <Grid item xs={12}>

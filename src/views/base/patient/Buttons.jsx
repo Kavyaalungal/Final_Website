@@ -149,15 +149,16 @@ function Buttons({
       // Log start of saving/updating process
       console.log("Saving or updating started");
       
-      // Trigger the save or update function and capture the returned Patient_Code
-      const patientCode = await handleSaveOrUpdate();
+      // Trigger the save or update function and capture the returned details
+      const result = await handleSaveOrUpdate();
       
-      // Log the patientCode to verify it's returned
-      console.log("Returned Patient_Code:", patientCode);
+      // Log the returned result to verify it's returned
+      console.log("Returned result:", result);
   
-      // If save/update is successful and Patient_Code is returned
-      if (patientCode) {
-        console.log("Patient data saved/updated successfully. Patient_Code:", patientCode);
+      // If save/update is successful and result is returned
+      if (result) {
+        const { opdno } = result; // Destructure opdno and message from the result
+        console.log("Patient data saved/updated successfully. OPD No:", opdno);
         
         // Proceed with closing the modal
         if (typeof closeModal === 'function') {
@@ -169,15 +170,15 @@ function Buttons({
   
         // Delay navigation to ensure the modal closes and the save/update is complete
         setTimeout(() => {
-          console.log("Navigating to /proceedtobill with Patient_Code:", patientCode);
-          navigate(`/proceedtobill/`, {
+          console.log("Navigating to /proceedtobill with OPD No:", opdno);
+          navigate(`/proceedtobill/${opdno}`, {
             replace: true,
-            state: { patientCode} // Pass the Patient_Code to the billing page
+            state: { opdno} // Pass the opdno and message to the billing page
           });
         }, 300); // Adjust the delay if necessary
       } else {
-        console.error("No Patient_Code returned from handleSaveOrUpdate.");
-        toast.error("Failed to retrieve Patient_Code.");
+        console.error("No result returned from handleSaveOrUpdate.");
+        toast.error("Failed to retrieve patient information.");
       }
     } catch (error) {
       // Log any errors that occur during the process

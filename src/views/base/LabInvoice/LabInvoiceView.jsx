@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -16,17 +16,50 @@ import {
 import { CModal, CModalBody, CModalHeader, CModalTitle, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react';
 import { Link } from 'react-router-dom';
 import Register from '../patient/Register';
+import axios from 'axios';
+import useModal from '../../../components/UseModal';
+import Patient from '../patient/Patient';
 
 
 const InvoiceView = () => {
 
-  const [modal, setModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState('Patient Registration');
-  const [modalSize, setModalSize] = useState('lg');
+  const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
+  const [statuses, setStatuses] = useState([]); 
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const response = await axios.get('http://172.16.16.157:8083/api/LabInvoiceView');
+        
+        // Log the full response object to the console
+        console.log("Full API response:", response);
+        
+        if (response.data.Success) {
+          // Log the response data before processing it
+          console.log("Response data:", response.data);
+  
+          // Assuming response.data.list[0] contains the status keys
+          const statusList = response.data.list[0];
+  
+          // Log the status list for inspection
+          console.log("Status List:", statusList);
+  
+          setStatuses(Object.entries(statusList)); // Convert to an array of [value, label] pairs
+        }
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchStatuses();
+  }, []);
+  
 
-  const toggleModal = () => {
-    setModal(!modal);
-  };
+  // const toggleModal = () => {
+  //   setModal(!modal);
+  // };
 
 
   const data = [
@@ -133,7 +166,32 @@ const InvoiceView = () => {
    
     </TextField>
     </Grid>
-    <Grid item xs={6} >
+    <Grid item xs={6}>
+      <TextField
+        select
+        label="Status"
+        variant="outlined"
+        size="small"
+        sx={{ width: 215 }}
+        fullWidth
+        InputLabelProps={{ style: { fontSize: '16px' } }}
+      >
+        {/* If loading, you can show a loader or a placeholder */}
+        {loading ? (
+          <MenuItem disabled>Loading...</MenuItem>
+        ) : (
+          <>
+            {/* Render MenuItem dynamically */}
+            {statuses.map(([key, value]) => (
+              <MenuItem key={key} value={value}>
+                {value}
+              </MenuItem>
+            ))}
+          </>
+        )}
+      </TextField>
+    </Grid>
+    {/* <Grid item xs={6} >
   <TextField
       select
       label="Status"
@@ -154,7 +212,7 @@ const InvoiceView = () => {
       <MenuItem value="Not Completed">Not Completed</MenuItem>
       <MenuItem value="Time Over Reminder">Time Over Reminder</MenuItem>
     </TextField>
-    </Grid>
+    </Grid> */}
   {/* Search By Dropdown */}
   <Grid item xs={12} sm={3} md={3} lg={2}>
     <TextField
@@ -230,10 +288,28 @@ const InvoiceView = () => {
               }}
               variant="contained"
               color="success"
-             
+              onClick={(e) => {
+                e.preventDefault();  
+                toggleModal('Patient Registration', <Patient closeModal={closeModal}/>, 'lg');
+              }}
             >
               New
             </Button>
+            <CModal visible={modal} onClose={closeModal} 
+                size={modalSize}
+                centered 
+                className='modal custom-modal-close custom-modal-width custom-centered-modal'
+                backdrop='static'
+                // scrollable
+                aria-labelledby="OptionalSizesExample2"
+               >
+          <CModalHeader className='custom-modal-header'>
+            <CModalTitle className='custom-modal-title'>{modalTitle}</CModalTitle>
+          </CModalHeader>
+          <CModalBody className='c-modal-body no-scroll ' style={{zoom:'0.8'}}>
+            {modalContent}
+          </CModalBody>
+        </CModal>
             <Button
               sx={{
                 textTransform: 'none',

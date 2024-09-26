@@ -41,7 +41,7 @@ const CashPayment = ({ visible,
     const [patientData, setPatientData] = useState(null);
     const [isUpdate, setIsUpdate] = useState(false);
     const location = useLocation();
-    const { patientCode } = location.state || {};
+    const { opdno } = location.state || {};
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
     const [filteredCorporate, setFilteredCorporate] = useState([]);
@@ -172,10 +172,10 @@ const CashPayment = ({ visible,
 
 
     useEffect(() => {
-        console.log("Current Patient Code:", patientCode); // Log patientCode
+        console.log("Current Patient Code:", opdno); // Log opdno
 
         const fetchPatientData = async () => {
-            if (!patientCode) {
+            if (!opdno) {
                 setError("No Patient_Code provided.");
                 setLoading(false);
                 return;
@@ -185,7 +185,7 @@ const CashPayment = ({ visible,
                 const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
                     YearId: YearId,
                     BranchId: BranchId,
-                    PatCode: patientCode,
+                    PatCode: opdno,
                     editFlag: true
                 });
 
@@ -205,7 +205,7 @@ const CashPayment = ({ visible,
         };
 
         fetchPatientData();
-    }, [patientCode]);
+    }, [opdno]);
 
     console.log('patientage', patientData)
 
@@ -267,8 +267,8 @@ const CashPayment = ({ visible,
             Gender: patientData.Patient_Ismale,
             Name: patientData.Patient_Name,
             title: patientData.Patient_Title,
-            pntInvId: patientData.Patient_Code,
-            pntId: patientData.Patient_Code,
+            pntInvId: patientData.opdno,
+            pntId: patientData.opdno,
             ItemDisc: 0,
             ShortName: shortNameList,
             sercharge: serviceCharge,

@@ -8,9 +8,13 @@ import female from '../../../../assets/images/female.png';
 import './PatientDetails.css';
 import { useLocation } from 'react-router-dom';
 import { usePatient } from "../../patient/PatientContext";
+import useModal from "../../../../components/UseModal";
+import { CModal, CModalBody, CModalHeader, CModalTitle } from "@coreui/react";
+import Patient from "../../patient/Patient";
 function Patientdetails() {
+  const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
   const location = useLocation();
-  const { patientCode } = location.state || {}; // Ensure this is set correctly
+  const { opdno } = location.state || {}; // Ensure this is set correctly
  const [patientData, setPatientData] = useState(null);
   const [error, setError] = useState('');
  const [loading, setLoading] = useState(true);
@@ -18,10 +22,10 @@ function Patientdetails() {
  const branchId = sessionStorage.getItem('selectedBranchKey');
 
  useEffect(() => {
-      console.log("Current Patient Code:", patientCode); // Log patientCode
+      console.log("Current Patient Code:", opdno); // Log opdno
   
       const fetchPatientData = async () => {
-        if (!patientCode) {
+        if (!opdno) {
           setError("No Patient_Code provided.");
            setLoading(false);
          return;
@@ -31,7 +35,7 @@ function Patientdetails() {
            const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
              YearId: YearId,
              BranchId: branchId,
-             PatCode: patientCode,
+             PatCode: opdno,
              editFlag: true
            });
   
@@ -51,7 +55,7 @@ function Patientdetails() {
        };
   
        fetchPatientData();
-     }, [patientCode]);
+     }, [opdno]);
   
   return (
     <>
@@ -98,25 +102,52 @@ function Patientdetails() {
             Patient Details
           </Typography>
        
-          <Box sx={{ mb: 2
-  , textAlign: "right" }}>
-            <Link
-              href="#"
-              sx={{
-                fontSize: { xs: 16, sm: 16, md: 16 },
-                color: "#bd2937",
-               
-                textDecoration: "none",
-                '&:hover': {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              Edit
-            </Link>
-          </Box>
+         
   
-      
+  <Box sx={{ mb: 2, textAlign: "right" }}>
+  <Link
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();  
+      toggleModal('Patient Registration', <Patient closeModal={closeModal}    patientData={patientData}/>, 'lg');
+    }}
+    style={{ color: "#bd2937", textDecoration: "none" }}
+  >
+    Edit
+  </Link>
+
+
+
+  <CModal visible={modal} onClose={closeModal} 
+                size={modalSize}
+                centered 
+                className='modal custom-modal-close custom-modal-width custom-centered-modal'
+                backdrop='static'
+                // scrollable
+                aria-labelledby="OptionalSizesExample2"
+               >
+          <CModalHeader className='custom-modal-header'>
+            <CModalTitle className='custom-modal-title'>{modalTitle}</CModalTitle>
+          </CModalHeader>
+          <CModalBody className='c-modal-body no-scroll ' style={{zoom:'0.8'}}>
+            {modalContent}
+          </CModalBody>
+        </CModal>
+
+
+
+
+  {/* Modal implementation */}
+  {/* <CModal visible={modal} onClose={closeModal} size={modalSize} centered backdrop="static">
+    <CModalHeader>
+      <CModalTitle>{modalTitle}</CModalTitle> 
+    </CModalHeader>
+    <CModalBody>{modalContent}</CModalBody>
+  </CModal> */}
+</Box>
+
+
+
   
           <Box
             sx={{
@@ -142,26 +173,32 @@ function Patientdetails() {
               }
             />
   
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                ml: -8,
-              }}
-            >
-              <Typography
+           
+          </Box>
+  
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              marginTop:-2,
+              marginLeft:-1
+            }}
+          >
+             <Typography
                 variant="h6"
                 component="div"
                 sx={{
                   fontWeight: "bold",
                   fontSize: { xs: 16, sm: 16, md: 16 },
-                  marginLeft:-2
+           
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
                 }}
               >
+              
                 {patientData.Patient_Name || "Patient Name"}
               </Typography>
-  
               <Box
                 sx={{
                   display: "flex",
@@ -169,7 +206,7 @@ function Patientdetails() {
                   justifyContent: "flex-start",
                   gap: 1,
                   
-                  marginLeft:-2
+                 
                 }}
               >
                 <Typography
@@ -191,18 +228,6 @@ function Patientdetails() {
                   {patientData.Patient_Ismale || "Gender"}
                 </Typography>
               </Box>
-            </Box>
-          </Box>
-  
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              marginTop:-2,
-              marginLeft:-1
-            }}
-          >
             <Typography
               sx={{
                 mb: 1.5,
@@ -308,7 +333,7 @@ function Patientdetails() {
               }}
               color="#000"
             >
-              {patientData.branch || "N/A"}
+              {patientData.branchName || "N/A"}
             </Typography>
           </Box>
         </CardContent>
@@ -392,22 +417,22 @@ export default Patientdetails;
 
 // // function ProceedToBill() {
 // //   const location = useLocation();
-// //   const { patientCode } = location.state || {};
+// //   const { opdno } = location.state || {};
 
 // //   useEffect(() => {
-// //     if (patientCode) {
-// //       console.log("Patient Code received:", patientCode);
-// //       // Fetch data or perform other actions using patientCode
+// //     if (opdno) {
+// //       console.log("Patient Code received:", opdno);
+// //       // Fetch data or perform other actions using opdno
 // //     } else {
 // //       console.error("No Patient_Code found in state.");
 // //     }
-// //   }, [patientCode]);
+// //   }, [opdno]);
 
 // //   return (
 // //     <div style={{ marginLeft:-20}}>
 // //       {/* <h1>Proceed to Bill</h1> */}
-// //       {patientCode ? (
-// //         <p>Patient Code: {patientCode}</p>
+// //       {opdno ? (
+// //         <p>Patient Code: {opdno}</p>
 // //       ) : (
 // //         <p>No Patient Code provided.</p>
 // //       )}
@@ -457,16 +482,16 @@ export default Patientdetails;
 // // import female from '../../../../assets/images/female.png';
 // // const ProceedToBill = () => {
 // //   const location = useLocation();
-// //   const { patientCode } = location.state || {}; // Ensure this is set correctly
+// //   const { opdno } = location.state || {}; // Ensure this is set correctly
 // //   const [patientData, setPatientData] = useState(null);
 // //   const [error, setError] = useState('');
 // //   const [loading, setLoading] = useState(true);
 
 // //   useEffect(() => {
-// //     console.log("Current Patient Code:", patientCode); // Log patientCode
+// //     console.log("Current Patient Code:", opdno); // Log opdno
 
 // //     const fetchPatientData = async () => {
-// //       if (!patientCode) {
+// //       if (!opdno) {
 // //         setError("No Patient_Code provided.");
 // //         setLoading(false);
 // //         return;
@@ -476,7 +501,7 @@ export default Patientdetails;
 // //         const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
 // //           YearId: 2425,
 // //           BranchId: 2,
-// //           PatCode: patientCode,
+// //           PatCode: opdno,
 // //           editFlag: true
 // //         });
 
@@ -496,7 +521,7 @@ export default Patientdetails;
 // //     };
 
 // //     fetchPatientData();
-// //   }, [patientCode]);
+// //   }, [opdno]);
 
 // //   return (
 // //     <div>
