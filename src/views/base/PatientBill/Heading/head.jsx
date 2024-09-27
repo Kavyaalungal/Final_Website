@@ -41,18 +41,18 @@ function Header() {
         fontSize: '1.5rem',
         fontWeight: 'bold',
         marginLeft: '-198px', 
-        '@media (max-width: 375px)': {
-          fontSize: '1.5rem', 
-          marginLeft: '50px',    
-        },
-        '@media (max-width: 575px)': {
-          fontSize: '1.5rem', 
-          marginLeft: '94px',    
-        },
-        '@media (max-width: 993px)': {
-          fontSize: '1.5rem', 
-          marginLeft: '-12px',    
-        },
+        // '@media (max-width: 375px)': {
+        //   fontSize: '1.5rem', 
+        //   marginLeft: '50px',    
+        // },
+        // '@media (max-width: 575px)': {
+        //   fontSize: '1.5rem', 
+        //   marginLeft: '94px',    
+        // },
+        // '@media (max-width: 993px)': {
+        //   fontSize: '1.5rem', 
+        //   marginLeft: '-12px',    
+        // },
 
    
       }} 

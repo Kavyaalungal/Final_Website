@@ -43,3 +43,14 @@
       margin-left: 300px;
     }
   } */
+
+  input {
+    caret-color: black;
+  }
+  
+  /* Focused input with custom caret color */
+  .caret-custom {
+    /* caret-color: #ff0000; */
+   
+    
+  }

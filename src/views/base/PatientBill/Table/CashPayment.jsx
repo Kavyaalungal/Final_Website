@@ -4,7 +4,7 @@ import './CashPayment.css';
 import { TextField, Grid, MenuItem, Typography, Button, Autocomplete } from '@mui/material';
 import WalletIcon from '../assets/wallet.svg';
 import UpiIcon from '../assets/Upi.svg';
-import Corporateicon from '../assets/corporate-icon.svg';
+ import Corporateicon from '../../../../assets/images/b2b copy1.svg';
 import PropTypes from 'prop-types';
 import { CreditCard as CreditCardIcon } from '@mui/icons-material';
 import { usePatient } from '../../patient/PatientContext';
@@ -14,6 +14,11 @@ import { useLocation } from 'react-router-dom';
 import Patient from './../../patient/Patient';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { faL } from '@fortawesome/free-solid-svg-icons';
+import { Columns } from 'lucide-react';
+import LogoCash from '../../../../assets/images/cash svg.svg'
+
+
 
 const CashPayment = ({ visible,
     setVisible,
@@ -29,7 +34,8 @@ const CashPayment = ({ visible,
     accountHeads,
     currentDateTime,
     masters,
-    shortNameList }) => {
+    shortNameList,
+    resetTable }) => {
 
     const [netAmount, setNetAmount] = useState(totalAmount);
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -81,11 +87,11 @@ const CashPayment = ({ visible,
     const handleDiscountChange = (event, value) => {
         if (typeof value === 'number') {
             // selected a predefined percentage from options
-            const selectedDiscount = value; 
-            setDiscountPercentage(selectedDiscount); 
-            const calculatedDiscount = (selectedDiscount / 100) * totalAmount; 
-            setDiscountAmount(calculatedDiscount); 
-            calculateNetAmount(calculatedDiscount, serviceCharge); 
+            const selectedDiscount = value;
+            setDiscountPercentage(selectedDiscount);
+            const calculatedDiscount = (selectedDiscount / 100) * totalAmount;
+            setDiscountAmount(calculatedDiscount);
+            calculateNetAmount(calculatedDiscount, serviceCharge);
         } else if (event.target.value) {
             // User typed a custom value
             const inputDiscount = Number(event.target.value); // Convert input to a number
@@ -129,14 +135,14 @@ const CashPayment = ({ visible,
         // Use safe defaults to prevent NaN results
         const safeDiscountValue = typeof discountValue === 'number' ? discountValue : 0; // Default to 0
         const safeCharge = typeof charge === 'number' ? charge : 0; // Default to 0
-        const safeTotalAmount = totalAmount  ? totalAmount : 0; // Default to 0
-    
+        const safeTotalAmount = totalAmount ? totalAmount : 0; // Default to 0
+
         const newNetAmount = safeTotalAmount - safeDiscountValue + safeCharge;
-    
+
         // Set the net amount, rounding to 2 decimal places
         setNetAmount(parseFloat(newNetAmount.toFixed(2)));
     };
-    
+
 
     useEffect(() => {
         // Recalculate net amount whenever totalAmount changes, while maintaining existing discount and service charge values
@@ -150,6 +156,8 @@ const CashPayment = ({ visible,
             account.Type === 'AccHd' && account.Pname.toLowerCase().includes(input.toLowerCase())
         );
     };
+
+    
     const getDiscres = (input) => {
         if (!Array.isArray(masters)) return [];
         return masters.filter(master =>
@@ -220,8 +228,9 @@ const CashPayment = ({ visible,
         setBalance(0);
         setDiscountReason('');
         calculateNetAmount(0)
-        
-        
+        resetTable()
+
+
     }
 
     const saveData = async () => {
@@ -301,9 +310,9 @@ const CashPayment = ({ visible,
     const handleSave = () => {
 
         saveData();
-      
+        setVisible(false)
 
-        // Call the saveData function
+        //Call the saveData function
     };
 
 
@@ -396,9 +405,9 @@ const CashPayment = ({ visible,
                                 },
                             }}
                         />
-                            
-                      
-                        
+
+
+
                     </Grid>
 
                     <Grid item xs={12} sm={8}>
@@ -422,12 +431,57 @@ const CashPayment = ({ visible,
                                 '& .MuiOutlinedInput-root': {
                                     height: '30px',
                                 },
+                                marginBottom:1
                             }}
                         />
                     </Grid>
+                    {(discountAmount > 0 || discountPercentage > 0) && (
+                        <Grid item xs={12}>
+                            <Autocomplete
+                                freeSolo
+                                options={filteredDisc.map((acc) => acc.Desc)}
+                                onInputChange={handleInputChange}
+                                value={discountReason}
+                                onChange={handleDiscreason}
+                                componentsProps={{
+                                    popper: {
+                                        sx: {
+                                            '& .MuiAutocomplete-listbox': {
+                                                fontSize: '0.75rem',
+                                            },
+                                        },
+                                    },
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Discount Reason"
+                                        variant="outlined"
+                                        size="small"
+                                        fullWidth
+                                        
+                                        InputLabelProps={{
+                                            style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
+                                        }}
+                                        sx={{
+                                            '& .MuiInputBase-input': {
+                                                padding: '6px',
+                                                fontSize: '0.95rem',
+                                                textAlign: 'right',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                height: '30px',
+                                            },
+                                            marginBottom:1
+                                        }}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                    )}
 
                     {/* Service Charge Field */}
-                    <Grid item xs={12}>
+                    <Grid item xs={12} marginBottom={2}>
                         <TextField
                             inputRef={inputRef} // Step 3: Attach the ref to the input field
                             id="s.charge"
@@ -439,7 +493,7 @@ const CashPayment = ({ visible,
                             onFocus={handleFocus} // Step 3: Move the cursor to the end on focus
                             fullWidth
                             InputLabelProps={{
-                                style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
+                                style: { fontSize: '0.95rem', top: '-2px', left: '1px' },
                             }}
                             sx={{
                                 '& .MuiInputBase-input': {
@@ -450,6 +504,11 @@ const CashPayment = ({ visible,
                                 '& .MuiOutlinedInput-root': {
                                     height: '30px',
                                 },
+                                width:"173px",
+                                display:'flex',
+                                justifyContent:'center',
+                                marginLeft:11.6
+                                                               
                             }}
                         />
                     </Grid>
@@ -475,11 +534,15 @@ const CashPayment = ({ visible,
                                 '& .MuiOutlinedInput-root': {
                                     height: '30px',
                                 },
+                                width:"173px",
+                                display:'flex',
+                                justifyContent:'center',
+                                marginLeft:11.6
                             }}
                         >
-                            <MenuItem value="Cash"><img src={WalletIcon} style={{ width: 25, marginRight: 5 }} alt="Wallet Icon" /> Cash</MenuItem>
+                            <MenuItem value="Cash"><img src={LogoCash} style={{ width: 25, marginRight: 5 }} alt="Wallet Icon" /> Cash</MenuItem>
                             <MenuItem value="Debit/Credit"><CreditCardIcon sx={{ mr: 1 }} /> Debit/Credit</MenuItem>
-                            <MenuItem value="Credit"><img src={Corporateicon} style={{ width: 23, marginRight: 7 }} /> Credit</MenuItem>
+                            <MenuItem value="Credit"><img src={Corporateicon} style={{ width: 28, marginRight: 7 }} /> Credit</MenuItem>
                             <MenuItem value="BHIM/UPI Online Payment"><img src={UpiIcon} style={{ width: 25, marginRight: 5 }} alt="UPI Icon" /> BHIM/UPI Online Payment</MenuItem>
                         </TextField>
                     </Grid>
@@ -503,19 +566,19 @@ const CashPayment = ({ visible,
                                     },
                                 }}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Bank" variant="outlined" size="small" fullWidth 
-                                    InputLabelProps={{
-                                        style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
-                                    }}
-                                    sx={{
-                                        '& .MuiInputBase-input': {
-                                            padding: '6px',
-                                            fontSize: '0.95rem',
-                                        },
-                                        '& .MuiOutlinedInput-root': {
-                                            height: '30px',
-                                        },
-                                    }}/>
+                                    <TextField {...params} label="Bank" variant="outlined" size="small" fullWidth
+                                        InputLabelProps={{
+                                            style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
+                                        }}
+                                        sx={{
+                                            '& .MuiInputBase-input': {
+                                                padding: '6px',
+                                                fontSize: '0.95rem',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                height: '30px',
+                                            },
+                                        }} />
                                 )}
                             />
                         </Grid>
@@ -540,19 +603,19 @@ const CashPayment = ({ visible,
                                     },
                                 }}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth 
-                                    InputLabelProps={{
-                                        style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
-                                    }}
-                                    sx={{
-                                        '& .MuiInputBase-input': {
-                                            padding: '6px',
-                                            fontSize: '0.95rem',
-                                        },
-                                        '& .MuiOutlinedInput-root': {
-                                            height: '30px',
-                                        },
-                                    }}/>
+                                    <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth
+                                        InputLabelProps={{
+                                            style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
+                                        }}
+                                        sx={{
+                                            '& .MuiInputBase-input': {
+                                                padding: '6px',
+                                                fontSize: '0.95rem',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                height: '30px',
+                                            },
+                                        }} />
                                 )}
                             />
                         </Grid>
@@ -582,11 +645,15 @@ const CashPayment = ({ visible,
                                 '& .MuiOutlinedInput-root': {
                                     height: '30px',
                                 },
+                                width:"173px",
+                                display:'flex',
+                                justifyContent:'center',
+                                marginLeft:11.6
                             }}
                         />
                     </Grid>
 
-                    {/* Balance Field */}
+                    {/* Balance Field
                     <Grid item xs={12}>
                         <TextField
                             id='balance'
@@ -610,48 +677,28 @@ const CashPayment = ({ visible,
                                 },
                             }}
                         />
-                    </Grid>
+                    </Grid> */}
+
                     <Grid item xs={12}>
-                        <Autocomplete
-                            freeSolo
-                            options={filteredDisc.map((acc) => acc.Desc)}
-                            onInputChange={handleInputChange}
-                            value={discountReason}
-                            onChange={handleDiscreason}
-                            componentsProps={{
-                                popper: {
-                                    sx: {
-                                        '& .MuiAutocomplete-listbox': {
-                                            fontSize: '0.75rem'
-                                        },
-                                    },
-                                },
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="DiscR"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    InputProps={{
-                                        ...params.InputProps,
-                                        style: {
-                                            height: '32px', // Adjust height
-                                            padding: '0 8px', // Adjust horizontal padding
-                                            lineHeight: '1.4',
-                                            fontSize: '14px' // Adjust line height
-                                        },
-                                    }}
+                        <Grid container spacing={2} direction="column" alignItems="center">
+                            {/* Grid for Net Amount Label */}
+                            <Grid item xs={12} sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', pr: 5 }}>
+                                <Typography
+                                    variant="h6"
                                     sx={{
-                                        '& .MuiInputBase-root': {
-                                            height: '32px', // Adjust height
-                                        },
+                                        fontWeight: 'bold',
+                                        color: '#bd2937',
+                                        fontSize: 14,
+                                        marginRight: -5
                                     }}
-                                />
-                            )}
-                        />
+                                >
+                                    Balance Amount :{balance.toFixed(2)}
+                                </Typography>
+                            </Grid>
+
+                        </Grid>
                     </Grid>
+
                     <Grid item xs={12}>
                         <Grid container spacing={2} direction="column" alignItems="center">
                             {/* Grid for Net Amount Label */}
@@ -721,7 +768,7 @@ const CashPayment = ({ visible,
 
                                         onClick={handleSave}  >
                                         Save
-                                       
+
                                     </Button>
                                     <Button
                                         variant="contained"
@@ -744,10 +791,10 @@ const CashPayment = ({ visible,
                         </Grid>
                     </Grid>
                 </Grid>
-                
+
             </CModalBody>
-            <ToastContainer 
-            position='top-center' autoClose={1000} hideProgressBar/>
+            <ToastContainer
+                position='top-center' autoClose={1000} hideProgressBar />
         </CModal>
     );
 };

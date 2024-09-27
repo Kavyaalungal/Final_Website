@@ -21,30 +21,121 @@ import useModal from '../../../components/UseModal';
 import Patient from '../patient/Patient';
 
 
+
 const InvoiceView = () => {
+  const [searchItem, setSearchItem] = useState('LabNo'); 
+  const [searchValue, setSearchValue] = useState(''); 
+  const [invoiceData, setInvoiceData] = useState([]); 
+  const [loading, setLoading] = useState(false); 
+  const [branches, setBranches] = useState([]);
+  const [loading1, setLoading1] = useState(true);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const formatDateTime = (dateString, showTime = true) => {
+    const date = new Date(dateString);
+  
+    // Format date as dd-mm-yyyy
+    const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); 
+  
+    if (!showTime) {
+      return formattedDate; // Return only the date if showTime is false
+    }
+  
+    // Format time as hh:mm AM/PM and convert am/pm to AM/PM
+    const formattedTime = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }).toUpperCase();
+  
+    return `${formattedDate} ${formattedTime}`; // Return both date and time
+  };
+  
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    setFromDate(currentDate);
+    setToDate(currentDate);
+  }, []);
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get('http://172.16.16.157:8083/api/Branchname_Get');
+        console.log(response.data); // Log the response to the console
+        if (response.data.Success) {
+          setBranches(response.data.brnch_dlts); // Set branch data to state
+        }
+      } catch (error) {
+        console.error('Error fetching branch names:', error);
+      } finally {
+        setLoading1(false); // Stop loading
+      }
+    };
+
+    fetchBranches();
+  }, []);
+  const searchItems = [
+    { label: 'SampleID', value: 'SampleID' },
+    { label: 'IPOP', value: 'RsltNo' },
+    { label: 'LabNo', value: 'LabNo' },
+    { label: 'Phone', value: 'Phone' },
+    { label: 'Email', value: 'Email' },
+    { label: 'Name', value: 'Name' },
+    { label: 'Patient ID', value: 'Patient ID' },
+  ];
+
+  const handleSearch = async () => {
+    if (!searchValue) {
+      alert('Please enter a search value');
+      return;
+    }
+
+    const requestData = {
+      SrchItem: searchItem,
+      SrchVal: searchValue,
+      BranchId: 2, 
+      YearId: 2425, 
+      FromDate: fromDate,
+      ToDate: toDate,
+    };
+
+    try {
+      setLoading(true);
+      console.log('data sending to backend',requestData);
+      
+      const response = await axios.post('http://172.16.16.157:8083/api/LabInvoiceView/PatientSearchMaster', requestData);
+      console.log('API response:', response.data.patDtsList); // Log API response
+      if (response.data && response.data.patDtsList) {
+        setInvoiceData(response.data.patDtsList); // Update invoice data state with patDtsList
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error); // Log any errors
+    } finally {
+      setLoading(false); // Set loading to false after request
+    }
+  };
 
   const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
-  const [statuses, setStatuses] = useState([]); 
-  const [loading, setLoading] = useState(true);
+   const [statuses, setStatuses] = useState([]); 
+  // const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
         const response = await axios.get('http://172.16.16.157:8083/api/LabInvoiceView');
         
-        // Log the full response object to the console
+       
         console.log("Full API response:", response);
         
         if (response.data.Success) {
-          // Log the response data before processing it
+       
           console.log("Response data:", response.data);
   
-          // Assuming response.data.list[0] contains the status keys
+         
           const statusList = response.data.list[0];
   
-          // Log the status list for inspection
+       
           console.log("Status List:", statusList);
   
-          setStatuses(Object.entries(statusList)); // Convert to an array of [value, label] pairs
+          setStatuses(Object.entries(statusList)); 
         }
       } catch (error) {
         console.error("Error fetching statuses:", error);
@@ -57,51 +148,16 @@ const InvoiceView = () => {
   }, []);
   
 
-  // const toggleModal = () => {
-  //   setModal(!modal);
-  // };
-
-
-  const data = [
-    { slNo: 1, labNo: '001', date: '2024-09-01', patientId: 'P123', name: 'John ', phone: '1234567890', refBy: 'Dr. Smith', releasingtime: '2024-09-01', branch: 'Main', corporate: 'ABC Corp', status: 'Result Issued' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'On Processing' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Time Over' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Urgent Report' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Cancelled Invoice' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Result Updated' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Half verified' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'TAT Reminder' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Result Issue Remainder' },
-    { slNo: 2, labNo: '002', date: '2024-09-02', patientId: 'P124', name: 'Jane ', phone: '0987654321', refBy: 'Dr. Brown', releasingtime: '2024-09-01', branch: 'Branch A', corporate: 'XYZ Inc', status: 'Partially Second Level' },// Add more data as needed...
-  ];
-  const getStatusStyles = (status) => {
-    switch (status) {
-      case 'Result Issued':
-        return { backgroundColor: '#8FF18C', color: 'black' };
-      case 'On Processing':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Time Over':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Urgent Report':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Cancelled Invoice':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Result Updated':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Half verified':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-        case 'TAT Reminder':
-          return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Result Issue Remainder':
-        return { backgroundColor: '#1C91FF', color: 'white' };
-      case 'Partially Second Level':
-        return { backgroundColor: '#1C91FF ', color: 'white' };
-      default:
-        return { backgroundColor: 'black', color: 'white' };
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch(); 
     }
   };
-  
 
+
+  const handleRefresh = () => {
+    handleSearch(); // Call fetchData again to refresh data
+  };
 
   return (
     <div>
@@ -115,7 +171,7 @@ const InvoiceView = () => {
       sx={{
         position: 'relative',
         top: -22,
-        fontSize: '1.5rem',
+        fontSize: '1.4rem',
         fontWeight: 'bold',
         marginLeft: '-175px', 
         '@media (max-width: 375px)': {
@@ -153,18 +209,26 @@ const InvoiceView = () => {
 
   
   <Grid container spacing={2}>
-  <Grid item xs={6} >
-  <TextField
-      select
-      label="Branch"
-      variant="outlined"
-      size="small"
-      fullWidth
-      InputLabelProps={{ style: { fontSize: '16px' } }}
-    >
-       <MenuItem value="All">--All--</MenuItem>
-   
-    </TextField>
+  <Grid item xs={6}>
+      <TextField
+        select
+        label="Branch"
+        variant="outlined"
+        size="small"
+        fullWidth
+        InputLabelProps={{ style: { fontSize: '16px' } }}
+      >
+       
+        {loading1 ? (
+          <MenuItem disabled>Loading...</MenuItem>
+        ) : (
+          branches.map((branch) => (
+            <MenuItem key={branch.BranchKey} value={branch.BranchKey}>
+              {branch.BranchName}
+            </MenuItem>
+          ))
+        )}
+      </TextField>
     </Grid>
     <Grid item xs={6}>
       <TextField
@@ -191,46 +255,25 @@ const InvoiceView = () => {
         )}
       </TextField>
     </Grid>
-    {/* <Grid item xs={6} >
-  <TextField
-      select
-      label="Status"
-      variant="outlined"
-      size="small"
-      sx={{width:215}}
-      fullWidth
-      InputLabelProps={{ style: { fontSize: '16px' } }}
-    >
-      <MenuItem value="All">--All--</MenuItem>
-      <MenuItem value="Result Issued">Result Issued</MenuItem>
-      <MenuItem value="On Processing">On Processing</MenuItem>
-      <MenuItem value="Time Over">Time Over</MenuItem>
-      <MenuItem value="Urgent Report">Urgent Report</MenuItem>
-      <MenuItem value="Cancelled Invoice">Cancelled Invoice</MenuItem>
-      <MenuItem value="Result Updated">Result Updated</MenuItem>
-      <MenuItem value="Half verified">Half verified</MenuItem>
-      <MenuItem value="Not Completed">Not Completed</MenuItem>
-      <MenuItem value="Time Over Reminder">Time Over Reminder</MenuItem>
-    </TextField>
-    </Grid> */}
-  {/* Search By Dropdown */}
+ 
   <Grid item xs={12} sm={3} md={3} lg={2}>
     <TextField
       select
       label="Search By"
       variant="outlined"
+      value={searchItem}
+      onChange={(e) => setSearchItem(e.target.value)}
+
       size="small"
       fullWidth
       InputLabelProps={{ style: { fontSize: '16px' } }}
     >
-      <MenuItem value="Phone">Phone</MenuItem>
-      <MenuItem value="Patient ID">Patient ID</MenuItem>
-      <MenuItem value="Name">Name</MenuItem>
-      <MenuItem value="Email">Email</MenuItem>
-      <MenuItem value="LabNo">LabNo</MenuItem>
-      <MenuItem value="LabNo">IPOP</MenuItem>
-      <MenuItem value="LabNo">Sample Id</MenuItem>
-      <MenuItem value="LabNo">Corporate</MenuItem>
+      {searchItems.map((item) => (
+          <MenuItem key={item.value} value={item.value}>
+            {item.label}
+          </MenuItem>
+        ))}
+
     </TextField>
   </Grid>
 
@@ -240,6 +283,9 @@ const InvoiceView = () => {
       variant="outlined"
       size="small"
       fullWidth
+      value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        onKeyDown={handleKeyDown} 
       InputLabelProps={{ style: { fontSize: '1rem' } }}
       InputProps={{
         style: { marginBottom: '20px' },
@@ -257,6 +303,8 @@ const InvoiceView = () => {
     <TextField
       label="From Date"
       type="date"
+      value={fromDate}
+      onChange={(e) => setFromDate(e.target.value)}
       InputLabelProps={{ shrink: true }}
       size="small"
       fullWidth
@@ -268,6 +316,8 @@ const InvoiceView = () => {
     <TextField
       label="To Date"
       type="date"
+      value={toDate}
+      onChange={(e) => setToDate(e.target.value)}
       InputLabelProps={{ shrink: true }}
       size="small"
       fullWidth
@@ -322,7 +372,7 @@ const InvoiceView = () => {
               }}
               variant="contained"
               color="success"
-             
+            onClick={handleRefresh}
             >
               Refresh
             </Button>
@@ -351,150 +401,71 @@ const InvoiceView = () => {
     className='customwidth'
   >
     <CardContent>
-   
-        <CTable 
+    <CTable 
           striped 
           style={{ width: '100%', tableLayout: 'fixed', padding: 0, margin: 0 }}> 
           <CTableHead>
             <CTableRow>
-              <CTableHeaderCell scope="col" style={{ width: '4%', backgroundColor: '#d6d1d1' }}>SlNo</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Lab No</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Date</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Patient ID</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '18%', backgroundColor: '#d6d1d1' }}>Name</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1' }}>Releasing Time</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '10%', backgroundColor: '#d6d1d1' }}>Phone</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1' }}>Ref.By</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '4%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>SlNo</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Lab No</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Date</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Patient ID</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '18%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Name</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Releasing Time</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '10%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Phone</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Ref.By</CTableHeaderCell>
            
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Branch</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Corporate</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '13%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Branch</CTableHeaderCell>
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Corporate</CTableHeaderCell>
+              {/* <CTableHeaderCell scope="col" style={{ width: '13%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell> */}
             </CTableRow>
           </CTableHead>
+
+
           <CTableBody>
-            {data.map((item, index) => (
-              <CTableRow key={index}>
-                <CTableDataCell>{item.slNo}</CTableDataCell>
-                <CTableDataCell>
-                  <Link to={`/proceedtobill/${item.labNo}`} style={{ textDecoration: 'none' }}>
-                    {item.labNo}
-                  </Link>
-                </CTableDataCell>
-                <CTableDataCell>{item.date}</CTableDataCell>
-                <CTableDataCell>
-                  <Link to={`/patient/${item.patientId}`} style={{ textDecoration: 'none' }}>
-                    {item.patientId}
-                  </Link>
-                </CTableDataCell>
-                <CTableDataCell>{item.name}</CTableDataCell>
-                <CTableDataCell>{item.releasingtime}</CTableDataCell>
-                <CTableDataCell>{item.phone}</CTableDataCell>
-                <CTableDataCell>{item.refBy}</CTableDataCell>
-              
-                <CTableDataCell>{item.branch}</CTableDataCell>
-                <CTableDataCell>{item.corporate}</CTableDataCell>
-                {/* <CTableDataCell style={{
-    backgroundColor: getStatusStyles(item.status).backgroundColor,
-    color: getStatusStyles(item.status).color,
-    padding: '4px 8px',
-    borderRadius: '4px',
-    display: 'inline-block',
-    textAlign: 'center', // Center the text
-    fontSize: '0.9em',
-    lineHeight: '1.5',
-    height: '40px', // Set a height (adjust as necessary)
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    cursor: 'pointer',
-    verticalAlign: 'middle', // Ensures vertical centering
-}}
-onMouseEnter={(e) => {
-    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-    e.currentTarget.style.transform = 'scale(1.05)';
-}}
-onMouseLeave={(e) => {
-    e.currentTarget.style.boxShadow = 'none';
-    e.currentTarget.style.transform = 'scale(1)';
-}}>
-    {item.status}
-</CTableDataCell> */}
- <CTableDataCell style={{
-    backgroundColor: getStatusStyles(item.status).backgroundColor,
-    color: getStatusStyles(item.status).color,
-    padding: '4px 4px',
-    borderRadius: '4px',
-    display: 'flex',
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    textAlign: 'center',
-    fontSize: '0.9rem',
-    lineHeight: '1.5',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    cursor: 'pointer',
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-    e.currentTarget.style.transform = 'scale(1.05)';
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.boxShadow = 'none';
-    e.currentTarget.style.transform = 'scale(1)';
-  }}>
-    {item.status}
+  {!loading && invoiceData.length > 0 ? (
+    invoiceData.map((invoice, index) => (
+      <CTableRow key={index}>
+         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{index + 1}</CTableDataCell>
+         <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+  <Link to={`/proceedtobill/${invoice.labno}`} style={{ textDecoration: 'none', }}>
+    {invoice.labno}
+  </Link>
+</CTableDataCell>
+        <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+  {invoice.SampleDate ? formatDateTime(invoice.SampleDate, false) : 'N/A'} {/* Display only date */}
 </CTableDataCell>
 
-{/* <CTableDataCell style={{
-    backgroundColor: getStatusStyles(item.status).backgroundColor,
-    color: getStatusStyles(item.status).color,
-    padding: '2px 4px',  // Reduced padding
-    borderRadius: '4px',
-    display: 'flex',
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    textAlign: 'center',
-    fontSize: '0.9rem',
-    lineHeight: '1.5',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    cursor: 'pointer',
-    width: '100px',  // Set fixed width, adjust as needed
-    minWidth: '80px'  // Ensure the cell doesn't shrink too much
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-    e.currentTarget.style.transform = 'scale(1.05)';
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.boxShadow = 'none';
-    e.currentTarget.style.transform = 'scale(1)';
-  }}>
-    {item.status}
-</CTableDataCell> */}
+        {/* <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.SampleDate}</CTableDataCell> */}
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Link to={`/${invoice.PatientID}`} style={{ textDecoration: 'none', }}>
+    {invoice.PatientID}
+  </Link>
+        </CTableDataCell>
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.PatName}</CTableDataCell>
+        <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+  {invoice.RptTime ? formatDateTime(invoice.RptTime) : 'N/A'} {/* Display both date and time */}
+</CTableDataCell>
 
-{/* <CTableDataCell style={{
-                  backgroundColor: getStatusStyles(item.status).backgroundColor,
-                  color: getStatusStyles(item.status).color,
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  display: 'inline-block',
-                  textAlign: 'center',
-                  fontSize: '0.9em',
-                  lineHeight: '1.5',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}>
-                  {item.status}
-                </CTableDataCell> */}
-              </CTableRow>
-            ))}
-          </CTableBody>
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Phone}</CTableDataCell>
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.RefDr}</CTableDataCell>
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Branchname}</CTableDataCell>
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Corporatename}</CTableDataCell>
+      </CTableRow>
+    ))
+  ) : (
+    <CTableRow>
+      <CTableDataCell colSpan={10} style={{ textAlign: 'center' }}>
+        {/* No data available */}
+      </CTableDataCell>
+    </CTableRow>
+  )}
+</CTableBody>
+
+
         </CTable>
+   
+    
      
     </CardContent>
   </Card>
@@ -505,44 +476,10 @@ onMouseLeave={(e) => {
 
      
 
- {/* <Card
-  sx={{
-    height: {xs:140,sm:75},
-    marginLeft: { xs: -2, sm: -20 }, 
-    width: { xs: 370,md:1400 }, 
-    marginTop: { xs: 0, sm: 1 },
-  }}
-  className='customwidth'
->
-  <CardContent>
-    <Grid container spacing={2}>
-    <TableContainer  style={{ marginTop: '20px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Column 1</TableCell>
-              <TableCell>Column 2</TableCell>
-              <TableCell>Column 3</TableCell>
-              <TableCell>Column 4</TableCell>
-              <TableCell>Column 5</TableCell>
-              <TableCell>Column 6</TableCell>
-              <TableCell>Column 7</TableCell>
-              <TableCell>Column 8</TableCell>
-              <TableCell>Column 9</TableCell>
-              <TableCell>Column 10</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-           
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Grid>
-  </CardContent>
-</Card>  */}
      
     </div>
   );
 };
 
 export default InvoiceView;
+

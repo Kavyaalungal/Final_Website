@@ -36,12 +36,13 @@ const NavigationWithModals = () => {
   return (
     <>
       <div className='custom-nav-container'>
-        {/* <CNavItem className="custom-nav-item">
+        <CNavItem className="custom-nav-item">
           <CNavLink className="custom-nav-link">
             <CIcon icon={cilSpeedometer} className="me-2" /> Dashboard
-            <CBadge color="info" className="ms-2">NEW</CBadge>
+            {/* <CBadge color="info" className="ms-2">NEW</CBadge> */}
           </CNavLink>
-        </CNavItem> */}
+        </CNavItem>
+     
         <CNavItem className="custom-nav-item">
           <CNavLink className="custom-nav-link" onClick={() => toggleModal('Patient Registration', <Patient closeModal={closeModal} />,'lg')}>
             <CIcon icon={cilGroup} className="me-2" /> Patient Registration
@@ -52,6 +53,21 @@ const NavigationWithModals = () => {
         <CIcon icon={cilBackspace} className="me-2" />  Invoice View
       </CNavLink>
     </CNavItem>
+    <CNavItem className="custom-nav-item">
+      <CNavLink className="custom-nav-link" >
+        <CIcon icon={cilBackspace} className="me-2" />  Barcode/Labeling
+      </CNavLink>
+    </CNavItem>
+    <CNavItem className="custom-nav-item">
+      <CNavLink className="custom-nav-link" >
+        <CIcon icon={cilBackspace} className="me-2" />  Pending Collection
+      </CNavLink>
+    </CNavItem>
+    <CNavItem className="custom-nav-item">
+      <CNavLink className="custom-nav-link" onClick={() => navigate('/invoice')}>
+        <CIcon icon={cilBackspace} className="me-2" />  Result Releasing
+      </CNavLink>
+    </CNavItem>
 
         {/* <CNavItem className="custom-nav-item">
           <CNavLink className="custom-nav-link" onClick={() => toggleModal('Cancel Invoice', <Cancel />, 'lg')}>
@@ -59,8 +75,58 @@ const NavigationWithModals = () => {
           </CNavLink>
         </CNavItem> */}
         <CNavItem className='custom-nav-item'>
-          <CNavLink className='custom-nav-link' onClick={() => toggleModal('Pending Collection', <Pending />)}>
+          <CNavLink className='custom-nav-link'>
             <CIcon icon={cilSpreadsheet} className='me-2' /> Pending Collection
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link' >
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Payments
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link' >
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Cash Closing
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link' >
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Calculator
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Appointment
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Chat/Alerts
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Home Collection
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Email List
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Alarm
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> About Us
+          </CNavLink>
+        </CNavItem>
+        <CNavItem className='custom-nav-item'>
+          <CNavLink className='custom-nav-link'>
+            <CIcon icon={cilSpreadsheet} className='me-2' /> Exit
           </CNavLink>
         </CNavItem>
 

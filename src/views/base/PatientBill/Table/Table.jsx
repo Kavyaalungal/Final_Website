@@ -10,7 +10,8 @@ import { CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@co
 import CashPayment from './CashPayment';
 import PropTypes from 'prop-types';
 import { useActionData } from 'react-router-dom';
-
+import './Table.css'
+import CookiePopup from './Deletepopup';
 
 // Function to get formatted current date and time
 const getCurrentDateTime = () => {
@@ -68,6 +69,9 @@ function Maintable() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [ipOpValue, setIpOpValue] = useState('');
   const [shortNameList, setShortNameList] = useState('');
+  const [bankName, setBankname] = useState('')
+  const [openPopup, setOpenPopup] = useState(false);  // To manage popup open/close
+  const [selectedRowId, setSelectedRowId] = useState(null);
 
   //for id
   const [referredByIdd, setReferredById] = useState('');
@@ -90,7 +94,7 @@ function Maintable() {
   useEffect(() => {
     const fetchLabNo = async () => {
       try {
-        const response = await axios.get('http://172.16.16.157:8083/api/LabNoMax', {
+        const response = await axios.get('http://172.16.16.10:8060/api/LabNoMax', {
           params: {
             yrId: YearId,
             CmId: BranchId
@@ -124,10 +128,25 @@ function Maintable() {
     return () => clearInterval(intervalId);
   }, []);
 
+  // const handleRemoveRow = (id) => {
+  //   setRows(rows.filter(row => row.id !== id));
+  //   alert('Are you sure you want to remove?')
+  // };
+
   const handleRemoveRow = (id) => {
-    setRows(rows.filter(row => row.id !== id));
-    alert('are you sure want to delete')
+    setSelectedRowId(id);  // Set the ID of the row to be deleted
+    setOpenPopup(true);
+
+  }
+  const handleAccept = () => {
+    setRows(rows.filter(row => row.id !== selectedRowId));  // Remove the row
+    setOpenPopup(false);  // Close the popup
   };
+
+  const handleReject = () => {
+    setOpenPopup(false);  // Close the popup without deleting
+  };
+
 
   const handleChange = (e, value) => {
     const { name } = e.target;
@@ -149,8 +168,8 @@ function Maintable() {
           price: matchedTest.Rate,
           discount: matchedTest.Discper,
           testkey: matchedTest.tstkey,
-          RptD:matchedTest.RptD,
-          RptTD:matchedTest.RptTD
+          RptD: matchedTest.RptD,
+          RptTD: matchedTest.RptTD
 
 
         });
@@ -176,8 +195,8 @@ function Maintable() {
               price: matchedTest.Rate,
               discount: matchedTest.Discper,
               tstkey: matchedTest.tstkey,
-              RptD:matchedTest.RptD,
-              RptTD:matchedTest.RptTD,
+              RptD: matchedTest.RptD,
+              RptTD: matchedTest.RptTD,
               total: (matchedTest.Rate - (matchedTest.Rate * (matchedTest.Discper || 0) / 100)).toFixed(2)
             }
           ]);
@@ -234,16 +253,16 @@ function Maintable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const accountHeadsResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=AccountHeads');
-        const mastersResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Masters')
-        const testResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Testdlts');
+        const accountHeadsResponse = await fetch('http://localhost:8083/api/LabInvoiceSaveUpdate?type=AccountHeads');
+        const mastersResponse = await fetch('http://localhost:8083/api/LabInvoiceSaveUpdate?type=Masters')
+        const testResponse = await fetch('http://localhost:8083/api/LabInvoiceSaveUpdate?type=Testdlts');
         const accountHeadsData = await accountHeadsResponse.json();
         const mastersData = await mastersResponse.json()
         const testData = await testResponse.json();
         setAccountHeads(accountHeadsData.Accountvalues);
         setMasters(mastersData.Mastervalues)
         setTestdata(testData.Testvalues || []);
-        console.log(testData.Testvalues)
+        console.log(accountHeadsData.Accountvalues)
 
 
       } catch (error) {
@@ -289,7 +308,10 @@ function Maintable() {
     const selectedcollmode = masters.find(account => account.Desc === value);
     SetCollectionmode(value || '');
     setCollmodeId(selectedcollmode ? selectedcollmode.Mstrkey : '')
+
+
   }
+
 
   const handleoutdrchange = (event, value) => {
     console.log('outdrbefore', value)
@@ -312,11 +334,12 @@ function Maintable() {
       account.Type === 'Doctor' && account.Pname.toLowerCase().includes(input.toLowerCase())
     );
   };
-
   const getCorporateBy = (input) => {
     if (!Array.isArray(accountHeads)) return [];
     return accountHeads.filter(account =>
-      account.Type === 'AccHd' && account.Pname.toLowerCase().includes(input.toLowerCase())
+      (account.Type === 'AccHd' && (account.Grpid.trim() === '27' || account.Grpid.trim() === '28')) ||
+      account.Type === 'Hosp' &&
+      account.Pname.toLowerCase().includes(input.toLowerCase())
     );
   };
   const getStaffBy = (input) => {
@@ -339,7 +362,19 @@ function Maintable() {
     setFilteredStaff(getStaffBy(value));
     Setfilcollmode(getCollmode(value));
     setFilteroutdr(getoutdrBy(value));
+
   };
+
+  //reset
+  const resetTable = () => {
+    setReferredByInput(' ');
+    setRefoutdr(' ');
+    SetCollectionmode(' ');
+    setIpOpValue(' ');
+    setReferredByCorporate(' ');
+    setReferredByStaff(' ')
+
+  }
 
 
   return (
@@ -498,21 +533,21 @@ function Maintable() {
           width: 490,
           height: 1530,
           marginLeft: '58px',
-          marginTop: '-800px'     // Remove negative margin for smaller screens
+          marginTop: '-800px'     
         },
 
         '@media (max-width:575px)': {
           width: 770,
           height: 1330,
           marginLeft: '100px',
-          marginTop: '-830px'     // Remove negative margin for smaller screens
+          marginTop: '-830px'     
         },
         '@media (min-width:993px)': {
           width: 870,
           height: 750,
           marginLeft: '-105px',
           // marginTop:'-830px'   
-          marginBottom:1  // Remove negative margin for smaller screens
+          marginBottom:1  
         },
 
 
@@ -521,13 +556,14 @@ function Maintable() {
 
 
           <Grid container spacing={2} sx={{ mb: 2 }}>
-            <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
                 options={filteredDoctors.map((doctor) => doctor.Pname)}
                 onInputChange={handleInputChange}
                 value={referredByInput}
                 onChange={handleReferredByChange}
+                // disableClearable
                 componentsProps={{
                   popper: {
                     sx: {
@@ -538,10 +574,20 @@ function Maintable() {
                   },
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Referred By" variant="outlined" size="small" fullWidth />
+                  <TextField {...params} label="Referred By" variant="outlined" size="small" fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+
+                        '& input:focus': {
+                          backgroundColor: '#adff2f', // Set background color when focused
+                        },
+                      },
+                    }} />
                 )}
               />
             </Grid>
+
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
@@ -549,20 +595,38 @@ function Maintable() {
                 onInputChange={handleInputChange}
                 value={refoutdr}
                 onChange={handleoutdrchange}
+                // disableClearable
                 componentsProps={{
                   popper: {
                     sx: {
                       '& .MuiAutocomplete-listbox': {
-                        fontSize: '0.75rem'
+                        fontSize: '0.75rem',
                       },
                     },
                   },
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label='Out Dr' variant='outlined' size='small' fullWidth />
+                  <TextField
+                    {...params}
+                    label='Out Dr'
+                    variant='outlined'
+                    size='small'
+                    fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+
+                        '& input:focus': {
+                          backgroundColor: '#adff2f', // Set background color when focused
+                        },
+                      },
+                    }}
+                  />
                 )}
               />
+
             </Grid>
+
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
@@ -570,24 +634,42 @@ function Maintable() {
                 onInputChange={handleInputChange}
                 value={referredCollectionmode}
                 onChange={handlecollbychange}
+                // disableClearable
                 componentsProps={{
                   popper: {
                     sx: {
                       '& .MuiAutocomplete-listbox': {
-                        fontSize: '0.75rem'
+                        fontSize: '0.75rem',
+                        '&input': {
+                          '&:focus': {
+                            backgroundColor: '#adff2f'
+                          }
+                        }
+
                       },
                     },
                   },
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label='Collection Mode' variant='outlined' size='small' fullWidth />
+                  <TextField {...params} label='Collection Mode' variant='outlined' size='small' fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+
+                        '& input:focus': {
+                          backgroundColor: '#adff2f', // Set background color when focused
+                        },
+                      },
+                    }}
+                  />
                 )}
               />
             </Grid>
+
           </Grid>
 
           <Grid container spacing={2} sx={{ mb: 1, marginTop: -3 }}>
-            <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4}>
               <TextField
                 label="IP/OP"
                 variant="outlined"
@@ -598,10 +680,16 @@ function Maintable() {
                 sx={{
                   fontSize: '1rem',
                   height: 40,
-                  '& input': { padding: '8px', fontSize: '0.95remrem' }
+                  '& input': {
+                    padding: '8px', fontSize: '0.95remrem',
+                    '&:focus': {
+                      backgroundColor: '#adff2f'
+                    }
+                  }
                 }}
               />
             </Grid>
+
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
@@ -609,6 +697,7 @@ function Maintable() {
                 onInputChange={handleInputChange}
                 value={referredByCorporate}
                 onChange={handleCorporateByChange}
+                // disableClearable
                 componentsProps={{
                   popper: {
                     sx: {
@@ -619,10 +708,20 @@ function Maintable() {
                   },
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth />
+                  <TextField {...params} label="Corporate" variant="outlined" size="small" fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+
+                        '& input:focus': {
+                          backgroundColor: '#adff2f', // Set background color when focused
+                        },
+                      },
+                    }} />
                 )}
               />
             </Grid>
+
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
@@ -630,6 +729,7 @@ function Maintable() {
                 onInputChange={handleInputChange}
                 value={referredByStaff}
                 onChange={handleStaffByChange}
+                // disableClearable
                 componentsProps={{
                   popper: {
                     sx: {
@@ -640,12 +740,22 @@ function Maintable() {
                   },
                 }}
                 renderInput={(params) => (
-                  <TextField{...params} label='Collectedby' variant='outlined' size='small' fullWidth />
+                  <TextField{...params} label='Collectedby' variant='outlined' size='small' fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+
+                        '& input:focus': {
+                          backgroundColor: '#adff2f', // Set background color when focused
+                        },
+                      },
+                    }} />
                 )}
 
 
               />
             </Grid>
+
           </Grid>
 
 
@@ -667,8 +777,8 @@ function Maintable() {
             <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
               <TableHead sx={{ position: 'sticky', zIndex: 1, top: 0, backgroundColor: '#d6d1d1' }}>
                 <TableRow sx={{ border: '2px solid #d6d1d1', height: '32px' }}>
-                  <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '6%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1 ', fontWeight: 'bold' }}>Sl No</TableCell>
-                  <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '10%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1', fontWeight: 'bold' }}>Test Code</TableCell>
+                  <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1 ', fontWeight: 'bold' }}>Sl No</TableCell>
+                  <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1', fontWeight: 'bold' }}>Test Code</TableCell>
                   <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '35%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1', fontWeight: 'bold' }}>Test Name</TableCell>
                   <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '7%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1', fontWeight: 'bold' }}>Price</TableCell>
                   <TableCell sx={{ fontSize: '0.95rem', padding: '4px 8px', width: '12%', border: '1px solid #d6d1d1', backgroundColor: '#d6d1d1', fontWeight: 'bold' }}>Discount</TableCell>
@@ -679,8 +789,8 @@ function Maintable() {
               <TableBody>
                 {rows.map((row, index) => (
                   <TableRow key={row.id} sx={{ height: '32px' }}>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '6%', padding: '4px 8px' }}>{index + 1}</TableCell>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '10%', padding: '4px 8px' }}>{row.testCode}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '7%', padding: '4px 8px' }}>{index + 1}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.testCode}</TableCell>
                     <TableCell sx={{ fontSize: '0.95rem', width: '35%', padding: '4px 8px' }}>{row.testName}</TableCell>
                     <TableCell sx={{ fontSize: '0.95rem', width: '7%', padding: '4px 8px' }}>{row.price || ''}</TableCell>
                     <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.discount}</TableCell>
@@ -697,11 +807,20 @@ function Maintable() {
                   <TableCell sx={{ width: '10%', padding: '4px 8px' }}>
                     <Autocomplete
                       freeSolo
-                      options={testdata.map(test => test.Shortname)}
+                      options={testdata
+                        .filter(test => test.Shortname && test.Shortname.trim() !== '') //trim for filtering short name 
+                        .map(test => test.Shortname)}
                       value={currentRow.testCode}
                       onInputChange={(event, newValue) => handleChange(event, newValue)}
                       onChange={(event, value) => handleTestSelection(event, value, 'selectOption', 'testCode')}
                       inputValue={currentRow.testCode}
+                      // disableClearable
+                      filterOptions={(options, { inputValue }) => {
+                        const filtered = options.filter(option =>
+                          option.toLowerCase().includes(inputValue.toLowerCase())
+                        );
+                        return inputValue ? filtered : options; // Show all options if inputValue is empty
+                      }}
                       componentsProps={{
                         popper: {
                           sx: {
@@ -720,11 +839,18 @@ function Maintable() {
                           fullWidth
                           inputRef={testCodeRef}
                           onKeyDown={handleKeyDown}
+                          onFocus={(e) => e.target.classList.add('caret-custom')}
+
                           InputProps={{
                             ...params.InputProps,
                             sx: {
                               '& fieldset': { border: 'none' },
-                              input: { padding: '0px', fontSize: '1rem', height: 20 }
+                              input: {
+                                padding: '0px', fontSize: '1rem', height: 20,
+                                '&:focus': {
+                                  backgroundColor: '#adff2f'
+                                }
+                              }
                             }
                           }}
                         />
@@ -739,6 +865,13 @@ function Maintable() {
                       onInputChange={(event, newValue) => handleChange(event, newValue)}
                       onChange={(event, value) => handleTestSelection(event, value, 'selectOption', 'testName')}
                       inputValue={currentRow.testName}
+                      // disableClearable
+                      filterOptions={(options, { inputValue }) => {
+                        const filtered = options.filter(option =>
+                          option.toLowerCase().includes(inputValue.toLowerCase())
+                        );
+                        return inputValue ? filtered : options; // Show all options if inputValue is empty
+                      }}
                       componentsProps={{
                         popper: {
                           sx: {
@@ -757,11 +890,17 @@ function Maintable() {
                           fullWidth
                           inputRef={testNameRef}
                           onKeyDown={handleKeyDown}
+                          onFocus={(e) => e.target.classList.add('caret-custom')}
                           InputProps={{
                             ...params.InputProps,
                             sx: {
                               '& fieldset': { border: 'none' },
-                              input: { padding: '0px', fontSize: '1rem', height: 20 }
+                              input: {
+                                padding: '0px', fontSize: '1rem', height: 20,
+                                '&:focus': {
+                                  backgroundColor: '#adff2f'
+                                }
+                              }
                             }
                           }}
                         />
@@ -776,9 +915,10 @@ function Maintable() {
               </TableBody>
             </Table>
           </TableContainer>
+
           <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
 
-            <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3}>
               <TextField
                 id="sampleOn"
                 label="Sample On"
@@ -787,9 +927,21 @@ function Maintable() {
                 value={currentDateTimeForInput}
                 size="small"
                 fullWidth
-                InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
+                InputLabelProps={{
+                  shrink: true,
+                  style: { fontSize: '1rem' },
+                }}
+                InputProps={{
+                  sx: {
+                    '&.Mui-focused input': {
+                      backgroundColor: '#adff2f',
+                    },
+                  },
+                }}
               />
+
             </Grid>
+
             <Grid item xs={12} sm={3}>
               <TextField
                 id="reportTime"
@@ -799,9 +951,20 @@ function Maintable() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
+                InputLabelProps={{
+                  shrink: true,
+                  style: { fontSize: '1rem' },
+                }}
+                InputProps={{
+                  sx: {
+                    '&.Mui-focused input': {
+                      backgroundColor: '#adff2f',
+                    },
+                  },
+                }}
               />
             </Grid>
+
             <Grid item xs={12} sm={1.5}>
               <TextField
                 id="standard-basic"
@@ -830,8 +993,9 @@ function Maintable() {
                 }}
                 fullWidth
               />
-            </Grid>
-            <Grid item xs={12} sm={1.5}>
+              </Grid>
+
+              <Grid item xs={12} sm={1.5}>
               <TextField
                 label="Total"
                 variant="outlined"
@@ -858,6 +1022,7 @@ function Maintable() {
                 fullWidth
               />
             </Grid>
+
           </Grid>
           <FormControl component="fieldset" fullWidth sx={{ mt: 1 }}>
   <Grid container alignItems="center" spacing={2}>
@@ -926,7 +1091,21 @@ function Maintable() {
           label="Other Report Request"
           variant="outlined"
           size="small"
-          sx={{ ml: 2 }} // Add some left margin for spacing
+         
+         
+         sx={{
+            ml: 2,
+            fontSize: '1rem',
+            height: 40,
+            '& input': {
+              padding: '8px', fontSize: '0.95rem',
+              '&:focus': {
+                backgroundColor: '#adff2f'
+              }
+            } 
+          }}
+
+          // Add some left margin for spacing
         />
       </FormGroup>
     </Grid>
@@ -941,7 +1120,7 @@ function Maintable() {
                
 
 
-                <Grid item xs={12}>
+              <Grid item xs={12}>
                   <TextField
                     id="notes"
                     label="Notes"
@@ -951,12 +1130,18 @@ function Maintable() {
                     size="small"
                     fullWidth
                     sx={{
+                      mt:1,
                       '@media (max-width: 320px)': {
                         width: '100%', // Ensure full width on small screens
                       },
+                      '& .MuiOutlinedInput-root.Mui-focused': {
+                        backgroundColor: '#adff2f', // Set background color on focus
+                      },
                     }}
                   />
+
                 </Grid>
+
                 <Grid item >
                   <FormControlLabel
                     control={<Checkbox name="urgent" sx={{
@@ -1125,7 +1310,19 @@ function Maintable() {
                       currentDateTime={currentDateTime}
                       masters={masters}
                       shortNameList={shortNameList}
+                      resetTable={resetTable}
+
                     />
+
+
+                    <CookiePopup
+                      onAccept={handleAccept}
+                      onReject={handleReject}
+                      open={openPopup}
+                      onClose={handleReject}
+
+                    />
+
                   </div>
 
                 </Grid>
