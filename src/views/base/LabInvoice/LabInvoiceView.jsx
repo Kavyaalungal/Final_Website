@@ -28,9 +28,47 @@ const InvoiceView = () => {
   const [invoiceData, setInvoiceData] = useState([]); 
   const [loading, setLoading] = useState(false); 
   const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('');
   const [loading1, setLoading1] = useState(true);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('All');
+
+
+
+
+  const handleStatusChange = (event) => {
+    setSelectedStatus(event.target.value);
+  };
+
+
+
+  // Filtered invoice data based on selected status
+  const filteredInvoices = invoiceData.filter((invoice) => {
+    if (selectedStatus === 'All') return true; // Show all invoices
+    switch (selectedStatus) {
+      case "Result Issued":
+        return invoice.Status === 1;
+      case "On Processing":
+        return invoice.Status === 0;
+      case "Urgent Report":
+        return invoice.Status === 2;
+      case "Cancelled Invoice":
+        return invoice.Status === -1;
+      case "Result Updated":
+        return invoice.Status === 4;
+      case "Half verified":
+        return invoice.Status === 5;
+      case "Not Completed":
+        return invoice.Status === 3; // Assuming 3 is for 'Not Completed'
+      case "Time Over Reminder":
+        return invoice.Status === 6; // Assuming 6 is for 'Time Over Reminder'
+      default:
+        return true; // Fallback to show all
+    }
+  });
+
+
   const formatDateTime = (dateString, showTime = true) => {
     const date = new Date(dateString);
   
@@ -83,6 +121,9 @@ const InvoiceView = () => {
     { label: 'Patient ID', value: 'Patient ID' },
   ];
 
+
+  
+
   const handleSearch = async () => {
     if (!searchValue) {
       alert('Please enter a search value');
@@ -92,7 +133,7 @@ const InvoiceView = () => {
     const requestData = {
       SrchItem: searchItem,
       SrchVal: searchValue,
-      BranchId: 2, 
+      BranchId: selectedBranch, 
       YearId: 2425, 
       FromDate: fromDate,
       ToDate: toDate,
@@ -116,36 +157,6 @@ const InvoiceView = () => {
 
   const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
    const [statuses, setStatuses] = useState([]); 
-  // const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      try {
-        const response = await axios.get('http://172.16.16.157:8083/api/LabInvoiceView');
-        
-       
-        console.log("Full API response:", response);
-        
-        if (response.data.Success) {
-       
-          console.log("Response data:", response.data);
-  
-         
-          const statusList = response.data.list[0];
-  
-       
-          console.log("Status List:", statusList);
-  
-          setStatuses(Object.entries(statusList)); 
-        }
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchStatuses();
-  }, []);
   
 
   const handleKeyDown = (event) => {
@@ -159,6 +170,25 @@ const InvoiceView = () => {
     handleSearch(); // Call fetchData again to refresh data
   };
 
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 1:
+        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Result Issued
+      case 0:
+        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Processing
+      case 2:
+        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Urgent
+      case -1:
+        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Cancelled
+      case 4:
+        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Updated
+      case 5:
+        return { backgroundColor: '#2C7EFF', color: 'black', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Half Verified
+      default:
+        return { backgroundColor: 'gray', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Default for unknown status
+    }
+  };
   return (
     <div>
        <Typography 
@@ -210,52 +240,48 @@ const InvoiceView = () => {
   
   <Grid container spacing={2}>
   <Grid item xs={6}>
-      <TextField
-        select
-        label="Branch"
-        variant="outlined"
-        size="small"
-        fullWidth
-        InputLabelProps={{ style: { fontSize: '16px' } }}
-      >
-       
-        {loading1 ? (
-          <MenuItem disabled>Loading...</MenuItem>
-        ) : (
-          branches.map((branch) => (
-            <MenuItem key={branch.BranchKey} value={branch.BranchKey}>
-              {branch.BranchName}
-            </MenuItem>
-          ))
-        )}
-      </TextField>
+  <TextField
+  select
+  label="Branch"
+  value={selectedBranch}
+  onChange={(e) => setSelectedBranch(e.target.value)}
+  fullWidth
+  size="small"
+  InputLabelProps={{ style: { fontSize: '16px' } }}
+>
+  {branches.map((branch) => (
+    <MenuItem key={branch.BranchKey} value={branch.BranchKey}>
+      {branch.BranchName}
+    </MenuItem>
+  ))}
+</TextField>
     </Grid>
     <Grid item xs={6}>
-      <TextField
-        select
-        label="Status"
-        variant="outlined"
-        size="small"
-        sx={{ width: 215 }}
-        fullWidth
-        InputLabelProps={{ style: { fontSize: '16px' } }}
-      >
-        {/* If loading, you can show a loader or a placeholder */}
-        {loading ? (
-          <MenuItem disabled>Loading...</MenuItem>
-        ) : (
-          <>
-            {/* Render MenuItem dynamically */}
-            {statuses.map(([key, value]) => (
-              <MenuItem key={key} value={value}>
-                {value}
-              </MenuItem>
-            ))}
-          </>
-        )}
-      </TextField>
-    </Grid>
- 
+  <TextField
+    select
+    label="Status"
+    variant="outlined"
+    size="small"
+    sx={{ width: 215 }}
+    fullWidth
+    InputLabelProps={{ style: { fontSize: '16px' } }}
+    value={selectedStatus} // Set the current value
+    onChange={handleStatusChange} // Handle change
+  >
+    <MenuItem value="All">--All--</MenuItem>
+    <MenuItem value="Result Issued">Result Issued</MenuItem>
+    <MenuItem value="On Processing">On Processing</MenuItem>
+    <MenuItem value="Time Over">Time Over</MenuItem>
+    <MenuItem value="Urgent Report">Urgent Report</MenuItem>
+    <MenuItem value="Cancelled Invoice">Cancelled Invoice</MenuItem>
+    <MenuItem value="Result Updated">Result Updated</MenuItem>
+    <MenuItem value="Half verified">Half verified</MenuItem>
+    <MenuItem value="Not Completed">Not Completed</MenuItem>
+    <MenuItem value="Time Over Reminder">Time Over Reminder</MenuItem>
+  </TextField>
+</Grid>
+
+
   <Grid item xs={12} sm={3} md={3} lg={2}>
     <TextField
       select
@@ -417,26 +443,31 @@ const InvoiceView = () => {
            
               <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Branch</CTableHeaderCell>
               <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Corporate</CTableHeaderCell>
-              {/* <CTableHeaderCell scope="col" style={{ width: '13%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell> */}
+              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
 
 
+
+
           <CTableBody>
-  {!loading && invoiceData.length > 0 ? (
-    invoiceData.map((invoice, index) => (
+  {!loading && filteredInvoices.length > 0 ? (
+    filteredInvoices.map((invoice, index) => (
       <CTableRow key={index}>
-         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{index + 1}</CTableDataCell>
+    
+
+
+        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{index + 1}</CTableDataCell>
          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
   <Link to={`/proceedtobill/${invoice.labno}`} style={{ textDecoration: 'none', }}>
     {invoice.labno}
   </Link>
 </CTableDataCell>
         <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-  {invoice.SampleDate ? formatDateTime(invoice.SampleDate, false) : 'N/A'} {/* Display only date */}
+  {invoice.Date ? formatDateTime(invoice.Date, false) : 'N/A'} 
 </CTableDataCell>
 
-        {/* <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.SampleDate}</CTableDataCell> */}
+       
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
         <Link to={`/${invoice.PatientID}`} style={{ textDecoration: 'none', }}>
     {invoice.PatientID}
@@ -444,23 +475,36 @@ const InvoiceView = () => {
         </CTableDataCell>
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.PatName}</CTableDataCell>
         <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-  {invoice.RptTime ? formatDateTime(invoice.RptTime) : 'N/A'} {/* Display both date and time */}
+  {invoice.RptTime ? formatDateTime(invoice.RptTime) : 'N/A'} 
 </CTableDataCell>
 
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Phone}</CTableDataCell>
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.RefDr}</CTableDataCell>
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Branchname}</CTableDataCell>
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Corporatename}</CTableDataCell>
+        <CTableDataCell style={getStatusColor(invoice.Status)}>
+          {invoice.Status === 1 && "Result Issued"}
+          {invoice.Status === 0 && "Processing"}
+          {invoice.Status === 2 && "Urgent"}
+          {invoice.Status === -1 && "Cancelled"}
+          {invoice.Status === 4 && "Updated"}
+          {invoice.Status === 5 && "Half Verified"}
+        </CTableDataCell>
       </CTableRow>
     ))
   ) : (
     <CTableRow>
-      <CTableDataCell colSpan={10} style={{ textAlign: 'center' }}>
-        {/* No data available */}
+      <CTableDataCell colSpan={11} style={{ textAlign: 'center' }}>
+       
       </CTableDataCell>
     </CTableRow>
   )}
 </CTableBody>
+
+
+
+
+   
 
 
         </CTable>

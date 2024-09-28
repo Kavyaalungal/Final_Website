@@ -76,7 +76,7 @@ function Maintable() {
   //for id
   const [referredByIdd, setReferredById] = useState('');
   const [corporateId, setCorporateId] = useState('')
-  const [collbyId, setCollmodeId] = useState('')
+  const [collbyId, setCollmodeId] = useState('512')
   const [StaffCollid, setStaffCollid] = useState('')
   useEffect(() => {
     // Set up an interval to update the date and time every minute
@@ -94,7 +94,7 @@ function Maintable() {
   useEffect(() => {
     const fetchLabNo = async () => {
       try {
-        const response = await axios.get('http://172.16.16.10:8060/api/LabNoMax', {
+        const response = await axios.get('http://172.16.16.157:8083/api/LabNoMax', {
           params: {
             yrId: YearId,
             CmId: BranchId
@@ -253,9 +253,9 @@ function Maintable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const accountHeadsResponse = await fetch('http://localhost:8083/api/LabInvoiceSaveUpdate?type=AccountHeads');
-        const mastersResponse = await fetch('http://localhost:8083/api/LabInvoiceSaveUpdate?type=Masters')
-        const testResponse = await fetch('http://localhost:8083/api/LabInvoiceSaveUpdate?type=Testdlts');
+        const accountHeadsResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=AccountHeads');
+        const mastersResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Masters')
+        const testResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Testdlts');
         const accountHeadsData = await accountHeadsResponse.json();
         const mastersData = await mastersResponse.json()
         const testData = await testResponse.json();

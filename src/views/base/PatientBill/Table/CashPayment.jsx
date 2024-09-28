@@ -2,20 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CModal, CModalHeader, CModalTitle, CModalBody } from '@coreui/react';
 import './CashPayment.css';
 import { TextField, Grid, MenuItem, Typography, Button, Autocomplete } from '@mui/material';
-import WalletIcon from '../assets/wallet.svg';
-import UpiIcon from '../assets/Upi.svg';
- import Corporateicon from '../../../../assets/images/b2b copy1.svg';
+import UpiIcon from '../../../../assets/images/upi symbol.svg';
+import Debit from '../../../../assets/images/debit & credit symbol.svg'
+import Credit from '../../../../assets/images/b2b credit symbol.svg'
 import PropTypes from 'prop-types';
-import { CreditCard as CreditCardIcon } from '@mui/icons-material';
-import { usePatient } from '../../patient/PatientContext';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import Patient from './../../patient/Patient';
-import { ToastContainer, toast } from 'react-toastify';
+ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { faL } from '@fortawesome/free-solid-svg-icons';
-import { Columns } from 'lucide-react';
 import LogoCash from '../../../../assets/images/cash svg.svg'
 
 
@@ -35,7 +29,10 @@ const CashPayment = ({ visible,
     currentDateTime,
     masters,
     shortNameList,
-    resetTable }) => {
+    resetTable, 
+    defaultId,
+    defaultColl
+}) => {
 
     const [netAmount, setNetAmount] = useState(totalAmount);
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -268,7 +265,7 @@ const CashPayment = ({ visible,
             "Note": "Urgent report required",
             "Urgent": 1,
             email: patientData.Patient_Email,
-            BrId: sessionStorage.getItem(BranchId),
+            BrId: BranchId,
             Address: patientData.Patient_Address,
             PhnNo: patientData.Patient_Phno,
             Ageymd: "year",
@@ -276,8 +273,8 @@ const CashPayment = ({ visible,
             Gender: patientData.Patient_Ismale,
             Name: patientData.Patient_Name,
             title: patientData.Patient_Title,
-            pntInvId: patientData.opdno,
-            pntId: patientData.opdno,
+            pntInvId: labno,
+            pntId: patientData.Patient_Code,
             ItemDisc: 0,
             ShortName: shortNameList,
             sercharge: serviceCharge,
@@ -467,7 +464,7 @@ const CashPayment = ({ visible,
                                             '& .MuiInputBase-input': {
                                                 padding: '6px',
                                                 fontSize: '0.95rem',
-                                                textAlign: 'right',
+                                               
                                             },
                                             '& .MuiOutlinedInput-root': {
                                                 height: '30px',
@@ -541,8 +538,8 @@ const CashPayment = ({ visible,
                             }}
                         >
                             <MenuItem value="Cash"><img src={LogoCash} style={{ width: 25, marginRight: 5 }} alt="Wallet Icon" /> Cash</MenuItem>
-                            <MenuItem value="Debit/Credit"><CreditCardIcon sx={{ mr: 1 }} /> Debit/Credit</MenuItem>
-                            <MenuItem value="Credit"><img src={Corporateicon} style={{ width: 28, marginRight: 7 }} /> Credit</MenuItem>
+                            <MenuItem value="Debit/Credit"><img src={Debit} style={{ width: 28, marginRight: 7 }} alt='Debit/Credit Icon'/> Debit/Credit</MenuItem>
+                            <MenuItem value="Credit"><img src={Credit} style={{ width: 28, marginRight: 7 }} alt='Credit Icon'/> Credit</MenuItem>
                             <MenuItem value="BHIM/UPI Online Payment"><img src={UpiIcon} style={{ width: 25, marginRight: 5 }} alt="UPI Icon" /> BHIM/UPI Online Payment</MenuItem>
                         </TextField>
                     </Grid>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CNavItem, CNavLink, CModal, CModalHeader, CModalTitle, CModalBody, CBadge, CNavGroup, CCollapse,  } from '@coreui/react';
 import Patient from '../views/base/patient/Patient';
 import CIcon from '@coreui/icons-react';
-import { cilBackspace, cilSpeedometer, cilGroup, cilSpreadsheet, cilPuzzle,  } from '@coreui/icons';
+import { cilBackspace, cilSpeedometer, cilGroup, cilSpreadsheet, cilBarcode,cilCalculator,cilCash } from '@coreui/icons';
 import './NavigationWithModals.css';
 import Cancel from '../views/base/Cancelinvoice/MainModel/Mainmode';
 import Pending from '../views/base/PendingCollection/Main/Main';
@@ -50,17 +50,18 @@ const NavigationWithModals = () => {
         </CNavItem>
         <CNavItem className="custom-nav-item">
       <CNavLink className="custom-nav-link" onClick={() => navigate('/invoice')}>
-        <CIcon icon={cilBackspace} className="me-2" />  Invoice View
+      <CIcon icon={cilBackspace} className="me-2"  />
+      Lab  Invoice View
       </CNavLink>
     </CNavItem>
     <CNavItem className="custom-nav-item">
       <CNavLink className="custom-nav-link" >
-        <CIcon icon={cilBackspace} className="me-2" />  Barcode/Labeling
+        <CIcon icon={cilBarcode}  className="me-2" />  Barcode/Labeling
       </CNavLink>
     </CNavItem>
     <CNavItem className="custom-nav-item">
       <CNavLink className="custom-nav-link" >
-        <CIcon icon={cilBackspace} className="me-2" />  Pending Collection
+        <CIcon icon={cilCash} className="me-2" />  Pending Collection
       </CNavLink>
     </CNavItem>
     <CNavItem className="custom-nav-item">
@@ -76,7 +77,7 @@ const NavigationWithModals = () => {
         </CNavItem> */}
         <CNavItem className='custom-nav-item'>
           <CNavLink className='custom-nav-link'>
-            <CIcon icon={cilSpreadsheet} className='me-2' /> Pending Collection
+            <CIcon icon={cilCash} className='me-2' /> Pending Collection
           </CNavLink>
         </CNavItem>
         <CNavItem className='custom-nav-item'>
@@ -91,7 +92,7 @@ const NavigationWithModals = () => {
         </CNavItem>
         <CNavItem className='custom-nav-item'>
           <CNavLink className='custom-nav-link' >
-            <CIcon icon={cilSpreadsheet} className='me-2' /> Calculator
+            <CIcon icon={cilCalculator} className='me-2' /> Calculator
           </CNavLink>
         </CNavItem>
         <CNavItem className='custom-nav-item'>
