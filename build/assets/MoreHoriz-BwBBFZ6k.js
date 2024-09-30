@@ -1,1 +1,0 @@
-import{ae as r,af as a,z as t}from"./index-Cl6ikgVv.js";var e={},o=a;Object.defineProperty(e,"__esModule",{value:!0});var u=e.default=void 0,s=o(r()),i=t;u=e.default=(0,s.default)((0,i.jsx)("path",{d:"M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"}),"MoreHoriz");export{u as d};

@@ -23,72 +23,26 @@ import Patient from '../patient/Patient';
 
 
 const InvoiceView = () => {
+  const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
+  const [statuses, setStatuses] = useState([]); 
   const [searchItem, setSearchItem] = useState('LabNo'); 
   const [searchValue, setSearchValue] = useState(''); 
   const [invoiceData, setInvoiceData] = useState([]); 
   const [loading, setLoading] = useState(false); 
   const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState(sessionStorage.getItem('selectedBranchKey') || ''); 
   const [loading1, setLoading1] = useState(true);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All');
 
 
-
-
-  const handleStatusChange = (event) => {
-    setSelectedStatus(event.target.value);
-  };
+  const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID');
+  const storedBranchId = sessionStorage.getItem('selectedBranchKey'); // Stored branch id
+  const Branch = sessionStorage.getItem('selectedBranch'); // Stored branch name
 
 
 
-  // Filtered invoice data based on selected status
-  const filteredInvoices = invoiceData.filter((invoice) => {
-    if (selectedStatus === 'All') return true; // Show all invoices
-    switch (selectedStatus) {
-      case "Result Issued":
-        return invoice.Status === 1;
-      case "On Processing":
-        return invoice.Status === 0;
-      case "Urgent Report":
-        return invoice.Status === 2;
-      case "Cancelled Invoice":
-        return invoice.Status === -1;
-      case "Result Updated":
-        return invoice.Status === 4;
-      case "Half verified":
-        return invoice.Status === 5;
-      case "Not Completed":
-        return invoice.Status === 3; // Assuming 3 is for 'Not Completed'
-      case "Time Over Reminder":
-        return invoice.Status === 6; // Assuming 6 is for 'Time Over Reminder'
-      default:
-        return true; // Fallback to show all
-    }
-  });
-
-
-  const formatDateTime = (dateString, showTime = true) => {
-    const date = new Date(dateString);
-  
-    // Format date as dd-mm-yyyy
-    const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); 
-  
-    if (!showTime) {
-      return formattedDate; // Return only the date if showTime is false
-    }
-  
-    // Format time as hh:mm AM/PM and convert am/pm to AM/PM
-    const formattedTime = date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    }).toUpperCase();
-  
-    return `${formattedDate} ${formattedTime}`; // Return both date and time
-  };
-  
   useEffect(() => {
     const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
     setFromDate(currentDate);
@@ -111,6 +65,13 @@ const InvoiceView = () => {
 
     fetchBranches();
   }, []);
+
+  // Handling branch selection from dropdown
+  const handleBranchChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedBranch(selectedValue);
+  };
+
   const searchItems = [
     { label: 'SampleID', value: 'SampleID' },
     { label: 'IPOP', value: 'RsltNo' },
@@ -119,6 +80,7 @@ const InvoiceView = () => {
     { label: 'Email', value: 'Email' },
     { label: 'Name', value: 'Name' },
     { label: 'Patient ID', value: 'Patient ID' },
+    {label:'Corporate ID',value:'CorporateID'}
   ];
 
 
@@ -133,8 +95,8 @@ const InvoiceView = () => {
     const requestData = {
       SrchItem: searchItem,
       SrchVal: searchValue,
-      BranchId: selectedBranch, 
-      YearId: 2425, 
+      BranchId: selectedBranch || storedBranchId, // Use selected branch or stored branch
+      YearId: YearId,
       FromDate: fromDate,
       ToDate: toDate,
     };
@@ -155,8 +117,7 @@ const InvoiceView = () => {
     }
   };
 
-  const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
-   const [statuses, setStatuses] = useState([]); 
+ 
   
 
   const handleKeyDown = (event) => {
@@ -171,23 +132,77 @@ const InvoiceView = () => {
   };
 
 
+
+
+  // Filtered invoice data based on selected status
+  const filteredInvoices = invoiceData.filter((invoice) => {
+    if (selectedStatus === 'All') return true; // Show all invoices
+    switch (selectedStatus) {
+      case "Result Issued":
+        return invoice.Status === 1;
+      case "On Processing":
+        return invoice.Status === 0;
+      case "Urgent Report":
+        return invoice.Status === 2;
+      case "Cancelled Invoice":
+        return invoice.Status === -1;
+      case "Result Updated":
+        return invoice.Status === 4;
+      case "Half verified":
+        return invoice.Status === 5;
+      case "Not Completed":
+        return invoice.Status === 3;
+      case "Time Over Reminder":
+        return invoice.Status === 6; 
+      default:
+        return true; 
+    }
+  });
+
+  const handleStatusChange = (event) => {
+    setSelectedStatus(event.target.value);
+  };
+
+
   const getStatusColor = (status) => {
     switch (status) {
       case 1:
-        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Result Issued
+        return { backgroundColor: '#8EEE94', color: 'black', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Result Issued
       case 0:
-        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Processing
+        return { backgroundColor: '#0072C5', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Processing
       case 2:
-        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Urgent
+        return { backgroundColor: '#FF00FF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Urgent
       case -1:
-        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Cancelled
+        return { backgroundColor: '#B6C2DA', color: 'black', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Cancelled
       case 4:
-        return { backgroundColor: '#2C7EFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Updated
+        return { backgroundColor: '#218FFF', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Updated
       case 5:
-        return { backgroundColor: '#2C7EFF', color: 'black', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Half Verified
+        return { backgroundColor: '#FFFF05', color: 'black', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Half Verified
       default:
         return { backgroundColor: 'gray', color: 'white', borderRadius: '5px', padding: '5px', textAlign: 'center', display: 'inline-block', width: 'auto' }; // Default for unknown status
     }
+  };
+
+
+
+  const formatDateTime = (dateString, showTime = true) => {
+    const date = new Date(dateString);
+  
+    // Format date as dd-mm-yyyy
+    const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); 
+  
+    if (!showTime) {
+      return formattedDate; // Return only the date if showTime is false
+    }
+  
+    // Format time as hh:mm AM/PM and convert am/pm to AM/PM
+    const formattedTime = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }).toUpperCase();
+  
+    return `${formattedDate} ${formattedTime}`; // Return both date and time
   };
   return (
     <div>
@@ -241,20 +256,20 @@ const InvoiceView = () => {
   <Grid container spacing={2}>
   <Grid item xs={6}>
   <TextField
-  select
-  label="Branch"
-  value={selectedBranch}
-  onChange={(e) => setSelectedBranch(e.target.value)}
-  fullWidth
-  size="small"
-  InputLabelProps={{ style: { fontSize: '16px' } }}
->
-  {branches.map((branch) => (
-    <MenuItem key={branch.BranchKey} value={branch.BranchKey}>
-      {branch.BranchName}
-    </MenuItem>
-  ))}
-</TextField>
+      select
+      label="Branch"
+      value={selectedBranch || Branch} 
+      onChange={handleBranchChange}
+      fullWidth
+      size="small"
+      InputLabelProps={{ style: { fontSize: '16px' } }}
+    >
+      {branches.map((branch) => (
+        <MenuItem key={branch.BranchKey} value={branch.BranchKey}>
+          {branch.BranchName}
+        </MenuItem>
+      ))}
+    </TextField>
     </Grid>
     <Grid item xs={6}>
   <TextField
@@ -271,13 +286,13 @@ const InvoiceView = () => {
     <MenuItem value="All">--All--</MenuItem>
     <MenuItem value="Result Issued">Result Issued</MenuItem>
     <MenuItem value="On Processing">On Processing</MenuItem>
-    <MenuItem value="Time Over">Time Over</MenuItem>
+    {/* <MenuItem value="Time Over">Time Over</MenuItem> */}
     <MenuItem value="Urgent Report">Urgent Report</MenuItem>
     <MenuItem value="Cancelled Invoice">Cancelled Invoice</MenuItem>
     <MenuItem value="Result Updated">Result Updated</MenuItem>
     <MenuItem value="Half verified">Half verified</MenuItem>
-    <MenuItem value="Not Completed">Not Completed</MenuItem>
-    <MenuItem value="Time Over Reminder">Time Over Reminder</MenuItem>
+    {/* <MenuItem value="Not Completed">Not Completed</MenuItem>
+    <MenuItem value="Time Over Reminder">Time Over Reminder</MenuItem> */}
   </TextField>
 </Grid>
 

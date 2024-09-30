@@ -33,9 +33,11 @@ function Register({patientDetails,
   newPatientId,
   handleSaveOrUpdate,
   flag,
+  patientData,
+  setPatientData,
   handleDOBChange}) {
 
-
+console.log('patientdata',patientData)
   
  return (
    <>
@@ -119,12 +121,28 @@ function Register({patientDetails,
   >
     <CardContent>
       <Grid container spacing={2}>
+      {/* <TextField
+  id="patientid"
+  label="Patient ID"
+  variant="outlined"
+  value={
+    !patientDetails ? '' // New Entry: field is empty
+    : patientDetails.Patient_Code && patientData ? patientDetails.Patient_Code // Editing: use existing patient data
+    : patientDetails.Patient_Code // Default: for already existing data
+  }
+  onChange={handlePatientIdChange}
+  size="small"
+  fullWidth
+  InputLabelProps={{ style: { fontSize: '1rem' } }}
+  InputProps={{ readOnly: !patientData }} // Make the field read-only if viewing existing data, editable when editing
+/> */}
+
       <Grid item xs={12} sm={4} md={4}>
   <TextField
     id="patientid"
     label="Patient ID"
     variant="outlined"
-    value={patientDetails ? patientDetails.Patient_Code : ''}
+    value={patientData ? patientData.Patient_Code :(patientDetails ? patientDetails.Patient_Code : '')}
     onChange={handlePatientIdChange}
     size="small"
     fullWidth
@@ -172,7 +190,8 @@ function Register({patientDetails,
           select
           label="Prefix"
           variant="outlined"
-          value={patientDetails ? patientDetails.Patient_Title : ''}
+          value={patientData?patientData.
+            Patient_Title:(patientDetails ? patientDetails.Patient_Title : '')}
           onChange={handleTitleChange}
           size="small"
           fullWidth
@@ -190,11 +209,27 @@ function Register({patientDetails,
             id="name"
             label="Name"
             variant="outlined"
-            value={patientDetails ? patientDetails.Patient_Name : ''}                     
+          
+            value={patientData ? patientData.Patient_Name : (patientDetails ? patientDetails.Patient_Name : '')}   
             onChange={(e) => {
-              setPatientDetails({ ...patientDetails, Patient_Name: e.target.value });
+              const newValue = e.target.value;
+            
+              // Update patientDetails
+              setPatientDetails({ ...patientDetails, Patient_Name: newValue });
+            
+              // If patientData is editable, update it as well
+              if (patientData) {
+                setPatientDetails({ ...patientData, Patient_Name: newValue });
+              }
+            
+              // Clear any existing errors for Patient_Name
               setErrors((prevErrors) => ({ ...prevErrors, Patient_Name: '' }));
             }}
+                              
+            // onChange={(e) => {
+            //   setPatientDetails({ ...patientDetails, Patient_Name: e.target.value });
+            //   setErrors((prevErrors) => ({ ...prevErrors, Patient_Name: '' }));
+            // }}
             size="small"
             fullWidth
             InputLabelProps={{ style: { fontSize: '1rem' } }}
@@ -207,7 +242,7 @@ function Register({patientDetails,
           label="Age YY"
           variant="outlined"
           size="small"
-          value={patientDetails ? patientDetails.Patient_Ageyy : ''}
+          value={patientData ? patientData.Patient_Ageyy :(patientDetails ? patientDetails.Patient_Ageyy : '')}
           onChange={(e) => handleAgeChange('yy', e.target.value)}
           fullWidth
           InputLabelProps={{ style: { fontSize: '1rem' } }}
@@ -220,7 +255,7 @@ function Register({patientDetails,
           label="Age MM"
           variant="outlined"
           size="small"
-          value={patientDetails ? patientDetails.Patient_Agemm : ''}   
+          value={patientData ? patientData.Patient_Agemm :(patientDetails ? patientDetails.Patient_Agemm : '')}   
           onChange={(e) => handleAgeChange('mm', e.target.value)}
           fullWidth
           InputLabelProps={{ style: { fontSize: '1rem' } }}
@@ -233,7 +268,7 @@ function Register({patientDetails,
           label="Age DD"
           variant="outlined"
           size="small"
-          value={patientDetails ? patientDetails.Patient_Agedd : ''}   
+          value={patientData ? patientData.Patient_Agedd :(patientDetails ? patientDetails.Patient_Agedd : '')}   
           onChange={(e) => handleAgeChange('dd', e.target.value)}
           fullWidth
           InputLabelProps={{ style: { fontSize: '1rem' } }}
@@ -248,7 +283,7 @@ function Register({patientDetails,
           variant="outlined"
           size="small"
           fullWidth
-           value={patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : ''}
+          value={patientData ? patientData.Patient_Dob ? patientData.Patient_Dob.split('T')[0] : '' : (patientDetails ? patientDetails.Patient_Dob ? patientDetails.Patient_Dob.split('T')[0] : '' : '')}
           onChange={handleDateOfBirthChange}
           InputLabelProps={{ shrink: true, style: { fontSize: '1rem' } }}
         />
@@ -260,7 +295,7 @@ function Register({patientDetails,
             labelId="genderLabel"
             id="gender"
             label="Gender"
-            value={patientDetails ? patientDetails.Patient_Ismale : ''}
+            value={patientData ? patientData.Patient_Ismale :(patientDetails ? patientDetails.Patient_Ismale : '')}
             onChange={handleGenderChange}
             InputLabelProps={{ style: { fontSize: '1rem' } }}
             error={!!errors.Patient_Ismale}
@@ -282,7 +317,7 @@ function Register({patientDetails,
             id="phone1"
             label="Phone1"
             variant="outlined"
-            value={patientDetails ? patientDetails.Patient_Phno : ''}    
+            value={patientData ? patientData.Patient_Phno :(patientDetails ? patientDetails.Patient_Phno : '')}    
             onChange={(e) => {
               setPatientDetails({ ...patientDetails, Patient_Phno: e.target.value });
               setErrors((prevErrors) => ({ ...prevErrors, Patient_Phno: '' }));
@@ -301,7 +336,7 @@ function Register({patientDetails,
             label="Phone2"
             variant="outlined"
             size="small"
-            value={patientDetails ? patientDetails.Patient_mobile : ''}    
+            value={patientData ? patientData.Patient_mobile :(patientDetails ? patientDetails.Patient_mobile : '')}    
             onChange={(e) => {
               setPatientDetails({ ...patientDetails, Patient_mobile: e.target.value });
               setErrors((prevErrors) => ({ ...prevErrors, Patient_mobile: '' }));
@@ -319,7 +354,7 @@ function Register({patientDetails,
             label="Email"
             variant="outlined"
             size="small"
-            value={patientDetails ? patientDetails.Patient_Email : ''}    
+            value={patientData ? patientData.Patient_Email :(patientDetails ? patientDetails.Patient_Email : '')}    
             onChange={(e) => {
               setPatientDetails({ ...patientDetails, Patient_Email: e.target.value });
               setErrors((prevErrors) => ({ ...prevErrors, Patient_Email: '' }));
@@ -338,7 +373,7 @@ function Register({patientDetails,
             multiline
             rows={3}
             size="small"
-            value={patientDetails ? patientDetails.Patient_Address : ''}    
+            value={patientData ? patientData.Patient_Address :(patientDetails ? patientDetails.Patient_Address : '')}    
             onChange={(e)=>setPatientDetails({...patientDetails, Patient_Address: e.target.value})}
             fullWidth
             InputLabelProps={{ style: { fontSize: '1rem' } }}

@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import { useActionData } from 'react-router-dom';
 import './Table.css'
 import CookiePopup from './Deletepopup';
+import dayjs from 'dayjs';
 
 // Function to get formatted current date and time
 const getCurrentDateTime = () => {
@@ -60,7 +61,7 @@ function Maintable() {
   const [filteredCorporate, setFilteredCorporate] = useState([]);
   const [referredByStaff, setReferredByStaff] = useState('');
   const [filteredStaff, setFilteredStaff] = useState([]);
-  const [referredCollectionmode, SetCollectionmode] = useState('DIRECT');
+  const [referredCollectionmode, SetCollectionmode] = useState("DIRECT");
   const [filterCollmode, Setfilcollmode] = useState([]);
   const [refoutdr, setRefoutdr] = useState("")
   const [filteroutdr, setFilteroutdr] = useState([]);
@@ -72,12 +73,17 @@ function Maintable() {
   const [bankName, setBankname] = useState('')
   const [openPopup, setOpenPopup] = useState(false);  // To manage popup open/close
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [defaultColl,SetDefCollectionmode] = useState('')
+  const [urgentvalue,setUrgentValue] = useState(0);
+  const [status,setStatus]  = useState(0);
+  const [completionDate, setCompletionDate] = useState('');
 
   //for id
   const [referredByIdd, setReferredById] = useState('');
   const [corporateId, setCorporateId] = useState('')
-  const [collbyId, setCollmodeId] = useState('512')
+  const [collbyId, setCollmodeId] = useState('')
   const [StaffCollid, setStaffCollid] = useState('')
+  const [defaultId,setDefCollmodeId] = useState('')
   useEffect(() => {
     // Set up an interval to update the date and time every minute
     const intervalId = setInterval(() => {
@@ -111,7 +117,6 @@ function Maintable() {
 
     fetchLabNo();
   }, []);
-
 
 
 
@@ -153,6 +158,17 @@ function Maintable() {
     setCurrentRow({ ...currentRow, [name]: value });
   };
 
+  const convertToHours = (rptD, rptTD) => {
+    switch (rptTD) {
+      case 'Days':
+        return rptD * 24; // Convert days to hours
+      case 'Minutes':
+        return rptD / 60; // Convert minutes to hours
+      case 'Hours':
+      default:
+        return rptD; // Already in hours
+    }
+  };
 
   const handleTestSelection = (event, value, reason, name) => {
     if (reason === 'selectOption') {
@@ -211,6 +227,44 @@ function Maintable() {
       }
     }
   };
+
+
+
+
+  // Function to find the test with the longest report time
+const getLongestReportTime = (rows) => {
+  if (rows.length === 0) return null;
+
+  let maxReportTimeRow = rows[0];
+  
+  rows.forEach(row => {
+    if (row.reportTimeInHours > maxReportTimeRow.reportTimeInHours) {
+      maxReportTimeRow = row;
+    }
+  });
+
+  return maxReportTimeRow;
+};
+
+// Function to calculate the expected report completion date
+const calculateCompletionDate = (longestTest) => {
+  if (!longestTest) return null;
+
+  const now = dayjs(); // Current date and time
+  const reportCompletionTime = now.add(longestTest.reportTimeInHours, 'hour'); // Add the longest time to the current time
+
+  return reportCompletionTime.format('YYYY-MM-DD HH:mm:ss'); // Format the result as date and time
+};
+
+// Example of how to use the functions
+useEffect(() => {
+  const longestTest = getLongestReportTime(rows);
+  if (longestTest) {
+    const completionDate = calculateCompletionDate(longestTest);
+    setCompletionDate(dayjs(completionDate).format('YYYY-MM-DD HH:mm'));
+  }
+}, [rows]);
+
   // const tstkey=rows.map(row=>row.tstkey);
   // Filter test data based on user input
   const filterTestData = (inputValue) => {
@@ -254,23 +308,37 @@ function Maintable() {
     const fetchData = async () => {
       try {
         const accountHeadsResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=AccountHeads');
-        const mastersResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Masters')
+        const mastersResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Masters');
         const testResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Testdlts');
+        
         const accountHeadsData = await accountHeadsResponse.json();
-        const mastersData = await mastersResponse.json()
+        const mastersData = await mastersResponse.json();
         const testData = await testResponse.json();
+  
         setAccountHeads(accountHeadsData.Accountvalues);
-        setMasters(mastersData.Mastervalues)
+        setMasters(mastersData.Mastervalues || []); // Ensures `Mastervalues` is always an array
         setTestdata(testData.Testvalues || []);
-        console.log(accountHeadsData.Accountvalues)
-
-
+  
+        // Set "DIRECT" as default collection mode and its ID
+        if (mastersData.Mastervalues && Array.isArray(mastersData.Mastervalues)) {
+          const defaultMode = mastersData.Mastervalues.find(account => account.Desc === 'DIRECT');
+          if (defaultMode) {
+            SetDefCollectionmode(defaultMode.Desc); // Set "DIRECT" as default
+            setDefCollmodeId(defaultMode.Mstrkey);  // Set corresponding ID
+          }
+        }
+  
       } catch (error) {
-        console.error('Error fetching data', error);
+        console.error('Error fetching data:', error);
       }
     };
+  
     fetchData();
   }, []);
+  useEffect(() => {
+    console.log('defaultColl:', defaultColl);
+  }, [defaultColl]);
+
 
   const handleIpOpChange = (event) => {
     setIpOpValue(event.target.value);
@@ -375,6 +443,22 @@ function Maintable() {
     setReferredByStaff(' ')
 
   }
+//urgent value checkbox
+  const handlecheckboxchange = (event)=>{
+    const value = (event.target.checked? 1 : 0);
+    setUrgentValue(value);
+
+
+    if(value===1){
+      setStatus(2)
+    }else{
+      setStatus(0)
+    }
+    
+  };
+
+
+
 
 
   return (
@@ -555,8 +639,8 @@ function Maintable() {
         <CardContent sx={{ marginTop: -1 }}>
 
 
-          <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={4}>
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
                 options={filteredDoctors.map((doctor) => doctor.Pname)}
@@ -626,13 +710,12 @@ function Maintable() {
               />
 
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
                 options={filterCollmode.map((mode) => mode.Desc)}
                 onInputChange={handleInputChange}
-                value={referredCollectionmode}
+                value={defaultColl||referredCollectionmode}
                 onChange={handlecollbychange}
                 // disableClearable
                 componentsProps={{
@@ -665,11 +748,10 @@ function Maintable() {
                 )}
               />
             </Grid>
-
           </Grid>
 
           <Grid container spacing={2} sx={{ mb: 1, marginTop: -3 }}>
-          <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 label="IP/OP"
                 variant="outlined"
@@ -689,7 +771,6 @@ function Maintable() {
                 }}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
@@ -721,7 +802,6 @@ function Maintable() {
                 )}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
@@ -755,8 +835,8 @@ function Maintable() {
 
               />
             </Grid>
-
           </Grid>
+
 
 
           <TableContainer
@@ -918,7 +998,7 @@ function Maintable() {
 
           <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
 
-          <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 id="sampleOn"
                 label="Sample On"
@@ -927,6 +1007,7 @@ function Maintable() {
                 value={currentDateTimeForInput}
                 size="small"
                 fullWidth
+                sx={{width:'105%'}}
                 InputLabelProps={{
                   shrink: true,
                   style: { fontSize: '1rem' },
@@ -941,19 +1022,20 @@ function Maintable() {
               />
 
             </Grid>
-
             <Grid item xs={12} sm={3}>
               <TextField
                 id="reportTime"
                 label="Report Time"
                 type="datetime-local"
-                value={currentDateTimeForInput}
+                value={completionDate}
                 variant="outlined"
+                sx={{width:'105%'}}
                 size="small"
                 fullWidth
                 InputLabelProps={{
                   shrink: true,
                   style: { fontSize: '1rem' },
+                  
                 }}
                 InputProps={{
                   sx: {
@@ -964,6 +1046,7 @@ function Maintable() {
                 }}
               />
             </Grid>
+
 
             <Grid item xs={12} sm={1.5}>
               <TextField
@@ -1144,7 +1227,7 @@ function Maintable() {
 
                 <Grid item >
                   <FormControlLabel
-                    control={<Checkbox name="urgent" sx={{
+                    control={<Checkbox name="urgent" onChange={handlecheckboxchange} sx={{
                       color: 'grey',
                       '&.Mui-checked': {
                         color: '#bd2937',
@@ -1311,6 +1394,13 @@ function Maintable() {
                       masters={masters}
                       shortNameList={shortNameList}
                       resetTable={resetTable}
+                      defaultId={defaultId}
+                      defaultColl={defaultColl}
+                      urgentvalue={urgentvalue}
+                      status={status}
+                      completionDate={completionDate}
+
+
 
                     />
 

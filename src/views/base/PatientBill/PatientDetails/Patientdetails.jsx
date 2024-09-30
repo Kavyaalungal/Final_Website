@@ -20,6 +20,7 @@ function Patientdetails() {
  const [loading, setLoading] = useState(true);
  const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
  const branchId = sessionStorage.getItem('selectedBranchKey');
+ 
 
  useEffect(() => {
       console.log("Current Patient Code:", opdno); // Log opdno
@@ -109,7 +110,7 @@ function Patientdetails() {
     href="#"
     onClick={(e) => {
       e.preventDefault();  
-      toggleModal('Patient Registration', <Patient closeModal={closeModal}    patientData={patientData}/>, 'lg');
+      toggleModal('Patient Registration', <Patient closeModal={closeModal}    patientData={patientData}  setPatientData={setPatientData}/>, 'lg');
     }}
     style={{ color: "#bd2937", textDecoration: "none" }}
   >

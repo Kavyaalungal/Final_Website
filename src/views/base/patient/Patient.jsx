@@ -11,7 +11,16 @@ import { CAccordion, CAccordionBody, CAccordionHeader, CAccordionItem } from '@c
 import Register from './Register';
 
 
-function Patient({closeModal ,handleSaveOrUpdate,resetForm,fetchNewPatientId,isEditMode,handleNewPatient,saveNewPatient,updatePatient}) {
+function Patient({closeModal ,
+  handleSaveOrUpdate,
+  resetForm,
+  fetchNewPatientId,
+  isEditMode,
+  handleNewPatient,
+  saveNewPatient,
+  updatePatient,
+  patientData,
+  setPatientData}) {
  
   return (
    <>
@@ -48,7 +57,16 @@ function Patient({closeModal ,handleSaveOrUpdate,resetForm,fetchNewPatientId,isE
 </Grid>  */}
    
     <Grid item xs={12} sm={6} md={9}>
-      <BasicTabs closeModal={closeModal} resetForm={resetForm} fetchNewPatientId={fetchNewPatientId} isEditMode={isEditMode} handleNewPatient={handleNewPatient} saveNewPatient={saveNewPatient}updatePatient={updatePatient}/>
+      <BasicTabs closeModal={closeModal}
+       resetForm={resetForm}
+        fetchNewPatientId={fetchNewPatientId}
+         isEditMode={isEditMode}
+          handleNewPatient={handleNewPatient} 
+          saveNewPatient={saveNewPatient}
+          updatePatient={updatePatient}
+           patientData={patientData}
+           setPatientData={setPatientData}
+           />
       
   
     </Grid>

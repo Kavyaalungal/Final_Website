@@ -266,7 +266,7 @@ return (
     href="#"
     onClick={(e) => {
       e.preventDefault();  
-      toggleModal('Patient Registration', <Patient closeModal={closeModal}/>, 'lg');
+      toggleModal('Patient Registration', <Patient closeModal={closeModal} patientData={patientData}/>, 'lg');
     }}
     style={{ color: "#bd2937", textDecoration: "none",fontSize:12 }}
   >

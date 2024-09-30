@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({ closeModal }) {
+export default function BasicTabs({ closeModal ,patientData,setPatientData }) {
    // declaring state variables needed
   const [value, setValue] = useState(0);
   const { patientDetails, setPatientDetails } = usePatient();
@@ -611,7 +611,8 @@ const handleAgeChange = (field, value) => {
              isSaving={isSaving}
              flag={flag}
              handleDOBChange={handleDOBChange}
-           
+             patientData={patientData}
+             setPatientData={setPatientData}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -642,6 +643,8 @@ const handleAgeChange = (field, value) => {
              handleSaveOrUpdate={handleSaveOrUpdate}
              isSaving={isSaving}
              flag={flag}
+             patientData={patientData}
+             setPatientData={setPatientData}
             />
       </CustomTabPanel>
     </Box>
