@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Additional from './Additional';
 import { usePatient } from './PatientContext';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import axios from 'axios';
 
 function CustomTabPanel(props) {
@@ -56,7 +56,20 @@ export default function BasicTabs({ closeModal ,patientData,setPatientData }) {
   const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
   const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
  
+  useEffect(() => {
+    if (patientData) {
+        setPatientDetails({ ...patientData }); // Set the initial patient details
+    }
+}, [patientData, setPatientDetails]);
 
+
+useEffect(() => {
+  if (patientData) {
+    setFlag('Edit');
+  } else {
+    setFlag('Save');
+  }
+}, [patientData]);
        // Retrieve YearId and BranchId from sessionStorage
   
       const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
@@ -255,8 +268,7 @@ export default function BasicTabs({ closeModal ,patientData,setPatientData }) {
         Patient_Code: newId,
       }));
       setFlag('Save')
-      // setIsEditMode(false); // This should correctly set isEditMode to false
-      setButtonText('Save Patient'); // This should correctly set button text
+    
     } else {
       toast.error('Failed to fetch a new patient ID');
     }
@@ -284,6 +296,10 @@ const handleSaveOrUpdate = async () => {
     console.log("Response from backend:", response);
 
     if (response.data.status && response.data.status[0].status === 'Success') {
+      // const updatedPatientData = response.data.patDetails;
+
+      // // Update the parent component's patientData state
+      // setPatientData(updatedPatientData);  
       toast.success(flag === 'Edit' ? 'Patient details updated successfully' : 'Patient details saved successfully');
       
     

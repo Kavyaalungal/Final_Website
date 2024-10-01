@@ -59,7 +59,7 @@ const CashPayment = ({ visible,
     //input from the session storage
     const BranchId = sessionStorage.getItem('selectedBranchKey')
     const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
-
+ const UserId = sessionStorage.getItem('userId')
     //to make the textcursor in input field after the initial value
     const inputRef = useRef(null); //useref for the input 
 
@@ -250,7 +250,7 @@ const CashPayment = ({ visible,
             Date: currentDateTime,
             ReferredById: referredById,
             OutDr: refoutdr,
-            CollectionModeId: defaultId || collbyId,
+            CollectionModeId: collbyId ||defaultId,
             IP_OP: ipOpValue,
             CorporateId: corporateId,
             CollectedById: StaffCollid,
@@ -288,7 +288,7 @@ const CashPayment = ({ visible,
             CurRcvdAmt: paidAmount,
             CurBalAmt: Math.abs(balance),
             NetAmt: netAmount,
-
+            UsrId:UserId,
             InvTestDlts: invdlts
 
         };
@@ -296,8 +296,9 @@ const CashPayment = ({ visible,
         // If it's an update, include the lab number in the request data
 
         try {
-            const response = await axios.post('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate/InvoiceMstr', requestData);
             console.log("saved data",requestData)
+            const response = await axios.post('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate/InvoiceMstr', requestData);
+            
             console.log('Data saved:', response.data);
             toast.success('Saved Succesfully')
             const invno = response.data.invno

@@ -22,9 +22,9 @@ import Patient from '../patient/Patient';
 
 
 
-const InvoiceView = () => {
+const InvoiceView = ({patientData}) => {
   const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
-  const [statuses, setStatuses] = useState([]); 
+
   const [searchItem, setSearchItem] = useState('LabNo'); 
   const [searchValue, setSearchValue] = useState(''); 
   const [invoiceData, setInvoiceData] = useState([]); 
@@ -484,7 +484,11 @@ const InvoiceView = () => {
 
        
         <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-        <Link to={`/${invoice.PatientID}`} style={{ textDecoration: 'none', }}>
+        <Link to={`/${invoice.PatientID}`} style={{ textDecoration: 'none', }} 
+         onClick={(e) => {
+          e.preventDefault();  
+          toggleModal('Patient Registration', <Patient closeModal={closeModal} patientData={patientData}/>, 'lg');
+        }}>
     {invoice.PatientID}
   </Link>
         </CTableDataCell>

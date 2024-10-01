@@ -77,7 +77,6 @@ function Maintable() {
   const [urgentvalue,setUrgentValue] = useState(0);
   const [status,setStatus]  = useState(0);
   const [completionDate, setCompletionDate] = useState('');
-
   //for id
   const [referredByIdd, setReferredById] = useState('');
   const [corporateId, setCorporateId] = useState('')
@@ -157,7 +156,6 @@ function Maintable() {
     const { name } = e.target;
     setCurrentRow({ ...currentRow, [name]: value });
   };
-
   const convertToHours = (rptD, rptTD) => {
     switch (rptTD) {
       case 'Days':
@@ -193,6 +191,7 @@ function Maintable() {
     }
   };
 
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -202,6 +201,8 @@ function Maintable() {
           (currentRow.testName && test.tstname === currentRow.testName)
         );
         if (matchedTest) {
+          const reportTimeInHours = convertToHours(matchedTest.RptD, matchedTest.RptTD);
+  
           setRows([
             ...rows,
             {
@@ -213,25 +214,23 @@ function Maintable() {
               tstkey: matchedTest.tstkey,
               RptD: matchedTest.RptD,
               RptTD: matchedTest.RptTD,
+              reportTimeInHours, // Store the report time in hours
               total: (matchedTest.Rate - (matchedTest.Rate * (matchedTest.Discper || 0) / 100)).toFixed(2)
             }
           ]);
+  
           // Update shortNameList with hyphen
           setShortNameList(prev => {
-            // Concatenate with hyphen if it's not empty
             return prev ? `${prev} - ${matchedTest.Shortname}` : matchedTest.Shortname;
           });
+  
           setCurrentRow({ id: Date.now(), testCode: '', testName: '', price: '', discount: '', tstkey: '' });
           testCodeRef.current.focus(); // Move focus to test code input for new row
         }
       }
     }
   };
-
-
-
-
-  // Function to find the test with the longest report time
+// Function to find the test with the longest report time
 const getLongestReportTime = (rows) => {
   if (rows.length === 0) return null;
 
@@ -264,8 +263,6 @@ useEffect(() => {
     setCompletionDate(dayjs(completionDate).format('YYYY-MM-DD HH:mm'));
   }
 }, [rows]);
-
-  // const tstkey=rows.map(row=>row.tstkey);
   // Filter test data based on user input
   const filterTestData = (inputValue) => {
     return testdata.filter(test =>
@@ -373,12 +370,27 @@ useEffect(() => {
   };
 
   const handlecollbychange = (event, value) => {
-    const selectedcollmode = masters.find(account => account.Desc === value);
-    SetCollectionmode(value || '');
-    setCollmodeId(selectedcollmode ? selectedcollmode.Mstrkey : '')
-
+    // const selectedcollmode = masters.find(account => account.Desc === value);
+    // SetCollectionmode(value || '');
+    // setCollmodeId(selectedcollmode ? selectedcollmode.Mstrkey : '')
+    if(value){
+      const selectedcollmode = masters.find(account => account.Desc === value);
+      if(selectedcollmode){
+        SetCollectionmode(value)
+        setCollmodeId(selectedcollmode.Mstrkey)
+      }
+      else{
+        SetCollectionmode('')
+        setCollmodeId('')
+      }
+    }
+    else{
+      SetCollectionmode('')
+      setCollmodeId('')
+    }
 
   }
+
 
 
   const handleoutdrchange = (event, value) => {
@@ -456,6 +468,8 @@ useEffect(() => {
     }
     
   };
+
+
 
 
 
@@ -763,7 +777,7 @@ useEffect(() => {
                   fontSize: '1rem',
                   height: 40,
                   '& input': {
-                    padding: '8px', fontSize: '0.95remrem',
+                    padding: '8px', fontSize: '0.95rem',
                     '&:focus': {
                       backgroundColor: '#adff2f'
                     }

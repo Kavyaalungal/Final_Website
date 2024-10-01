@@ -7,7 +7,7 @@ import Patient from './Patient';
 import './Register.css';
 import male from '../../../assets/images/male1.png';
 import female from '../../../assets/images/female.png';
-function UserCard() {
+function UserCard({patientData}) {
   const { patientDetails } = usePatient(); // retrieves patient data from a context using custom hook usePatient
   const [image, setImage] = useState(null); // Initializes state for storing the selected image with a default value of null.
     
@@ -46,7 +46,7 @@ function UserCard() {
     Patient_Address: '',
   };
 
-  const details = patientDetails || placeholderDetails; // Use patient details if available, otherwise use placeholder data
+  const details = patientDetails || patientData || placeholderDetails  // Use patient details if available, otherwise use placeholder data
   // const genderDisplay = details.Patient_Ismale === 'Male' ? 'M' : 'F'; // Display gender as M for male and F for female
   // const genderAvatar = genderDisplay === 'M' ? male : female; // Set avatar based on gender
   // const age = details.Patient_Dob ? calculateAge(details.Patient_Dob) : ''; // Calculate age if DOB is available
