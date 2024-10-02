@@ -11,10 +11,10 @@ import {
   Button,
   Typography,
   Grid,
-   Card, CardContent, FormControl,  InputLabel, MenuItem, Select, TextField,InputAdornment
+   Card, CardContent, FormControl,  InputLabel, MenuItem, Select, TextField,InputAdornment,CircularProgress
 } from '@mui/material';
 import { CModal, CModalBody, CModalHeader, CModalTitle, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Register from '../patient/Register';
 import axios from 'axios';
 import useModal from '../../../components/UseModal';
@@ -22,9 +22,9 @@ import Patient from '../patient/Patient';
 
 
 
-const InvoiceView = ({patientData}) => {
+const InvoiceView = () => {
   const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
-
+  const navigate = useNavigate();
   const [searchItem, setSearchItem] = useState('LabNo'); 
   const [searchValue, setSearchValue] = useState(''); 
   const [invoiceData, setInvoiceData] = useState([]); 
@@ -40,8 +40,6 @@ const InvoiceView = ({patientData}) => {
   const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID');
   const storedBranchId = sessionStorage.getItem('selectedBranchKey'); // Stored branch id
   const Branch = sessionStorage.getItem('selectedBranch'); // Stored branch name
-
-
 
   useEffect(() => {
     const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
@@ -443,91 +441,143 @@ const InvoiceView = ({patientData}) => {
   >
     <CardContent>
     <CTable 
-          striped 
-          style={{ width: '100%', tableLayout: 'fixed', padding: 0, margin: 0 }}> 
-          <CTableHead>
-            <CTableRow>
-              <CTableHeaderCell scope="col" style={{ width: '4%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>SlNo</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Lab No</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Date</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Patient ID</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '18%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Name</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Releasing Time</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '10%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Phone</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Ref.By</CTableHeaderCell>
-           
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Branch</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Corporate</CTableHeaderCell>
-              <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
+  striped 
+  style={{ width: '100%', tableLayout: 'fixed', padding: 0, margin: 0 }}> 
+  <CTableHead>
+    <CTableRow>
+      <CTableHeaderCell scope="col" style={{ width: '4%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>SlNo</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Lab No</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Date</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Patient ID</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '18%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Name</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Releasing Time</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '10%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Phone</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '12%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Ref.By</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Branch</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Corporate</CTableHeaderCell>
+      <CTableHeaderCell scope="col" style={{ width: '8%', backgroundColor: '#d6d1d1' }}>Status</CTableHeaderCell>
+    </CTableRow>
+  </CTableHead>
 
-
-
-
-          <CTableBody>
-  {!loading && filteredInvoices.length > 0 ? (
-    filteredInvoices.map((invoice, index) => (
-      <CTableRow key={index}>
-    
-
-
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{index + 1}</CTableDataCell>
-         <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-  <Link to={`/proceedtobill/${invoice.labno}`} style={{ textDecoration: 'none', }}>
-    {invoice.labno}
-  </Link>
-</CTableDataCell>
-        <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-  {invoice.Date ? formatDateTime(invoice.Date, false) : 'N/A'} 
-</CTableDataCell>
-
-       
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-        <Link to={`/${invoice.PatientID}`} style={{ textDecoration: 'none', }} 
-         onClick={(e) => {
-          e.preventDefault();  
-          toggleModal('Patient Registration', <Patient closeModal={closeModal} patientData={patientData}/>, 'lg');
-        }}>
-    {invoice.PatientID}
-  </Link>
-        </CTableDataCell>
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.PatName}</CTableDataCell>
-        <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-  {invoice.RptTime ? formatDateTime(invoice.RptTime) : 'N/A'} 
-</CTableDataCell>
-
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Phone}</CTableDataCell>
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.RefDr}</CTableDataCell>
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Branchname}</CTableDataCell>
-        <CTableDataCell style={{  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Corporatename}</CTableDataCell>
-        <CTableDataCell style={getStatusColor(invoice.Status)}>
-          {invoice.Status === 1 && "Result Issued"}
-          {invoice.Status === 0 && "Processing"}
-          {invoice.Status === 2 && "Urgent"}
-          {invoice.Status === -1 && "Cancelled"}
-          {invoice.Status === 4 && "Updated"}
-          {invoice.Status === 5 && "Half Verified"}
+  <CTableBody>
+    {loading ? (
+      // Show spinner when loading
+      <CTableRow>
+        <CTableDataCell colSpan={11} style={{ textAlign: 'center', padding: '20px' }}>
+          <CircularProgress />
         </CTableDataCell>
       </CTableRow>
-    ))
-  ) : (
-    <CTableRow>
-      <CTableDataCell colSpan={11} style={{ textAlign: 'center' }}>
-       
-      </CTableDataCell>
-    </CTableRow>
-  )}
-</CTableBody>
+    ) : filteredInvoices.length > 0 ? (
+      // Render table data when loading is false
+      filteredInvoices.map((invoice, index) => (
+        <CTableRow key={index}>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{index + 1}</CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+      <Link
+        to="#"
+        style={{ textDecoration: 'none' }}
+        onClick={async (e) => {
+          e.preventDefault();  // Prevent default link navigation
+
+          try {
+            console.log(`Fetching data for LabNo: ${invoice.labno}`);  // Log the LabNo being fetched
+
+            // Fetch the patient's data using the LabNo from the invoice
+            const response = await axios.get(
+              `http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?LabNo=${invoice.labno}&YrId=${YearId}&cmpyId=${storedBranchId}`
+            );
+
+            // Log the entire response for inspection
+            console.log("API Response:", response);
+
+            if (response.data) {
+              const labData = response.data;  // Get the lab data from the response
+
+              // Log the data that will be passed to the next page
+              console.log("Lab Data:", labData);
+
+              // Navigate to the proceedtobill page with the lab data
+              navigate(`/proceedtobill/${invoice.labno}`, { state: { labData } });
+            } else {
+              console.error("No data received from the API.");
+            }
+          } catch (error) {
+            console.error("Error fetching Lab data:", error);
+          }
+        }}
+      >
+        {invoice.labno}
+      </Link>
+    </CTableDataCell>
 
 
 
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {invoice.Date ? formatDateTime(invoice.Date, false) : 'N/A'}
+          </CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+  <Link to={`/${invoice.PatientID}`} style={{ textDecoration: 'none' }} 
+    onClick={async (e) => {
+      e.preventDefault();  // Prevent navigation to the URL
 
-   
+      // Fetch patient details using the API
+      try {
+        const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
+          YearId: YearId,
+          BranchId: storedBranchId,
+          PatCode: invoice.PatientID,  // Pass the PatientID from the invoice
+          editFlag: true
+        });
 
+        // Check if the response contains data
+        if (response.data && response.data.patDetails) {
+          const invoiceViewData = response.data.patDetails;  // Extract patient details from the response
 
-        </CTable>
-   
+          // Now open the modal and pass the fetched patient data
+          toggleModal('Patient Registration', 
+            <Patient closeModal={closeModal} invoiceViewData={invoiceViewData} />, 'lg');
+        } else {
+          console.error("No patient data found.");
+        }
+      } catch (error) {
+        console.error("Error fetching patient details:", error);
+      }
+    }}>
+    {invoice.PatientID}
+  </Link>
+</CTableDataCell>
+
+         
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.PatName}</CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {invoice.RptTime ? formatDateTime(invoice.RptTime) : 'N/A'}
+          </CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Phone}</CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.RefDr}</CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Branchname}</CTableDataCell>
+          <CTableDataCell style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{invoice.Corporatename}</CTableDataCell>
+          <CTableDataCell style={getStatusColor(invoice.Status)}>
+            {invoice.Status === 1 && "Result Issued"}
+            {invoice.Status === 0 && "Processing"}
+            {invoice.Status === 2 && "Urgent"}
+            {invoice.Status === -1 && "Cancelled"}
+            {invoice.Status === 4 && "Updated"}
+            {invoice.Status === 5 && "Half Verified"}
+          </CTableDataCell>
+        </CTableRow>
+      ))
+    ) : (
+      // No data available
+      <CTableRow>
+        <CTableDataCell colSpan={11} style={{ textAlign: 'center' }}>
+          No invoices found.
+        </CTableDataCell>
+      </CTableRow>
+    )}
+  </CTableBody>
+</CTable>
+
+  
     
      
     </CardContent>
@@ -546,3 +596,65 @@ const InvoiceView = ({patientData}) => {
 
 export default InvoiceView;
 
+// import React, { useState } from 'react';
+// import axios from 'axios';
+
+// const LabDataComponent = () => {
+//   const [labData, setLabData] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+
+//   // Function to fetch lab data by LabNo
+//   const fetchLabData = async (labNo) => {
+//     setLoading(true); // Set loading to true when starting the fetch
+//     setError(null); // Reset any previous error state
+//     try {
+//       const response = await axios.get(`http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?LabNo=${labNo}&YrId=2425&cmpyId=2`);
+//       setLabData(response.data); // Store the fetched data
+//       console.log(response.data); // Log the fetched data for debugging
+//     } catch (error) {
+//       setError("Error fetching lab data: " + error.message); // Set error state if fetch fails
+//       console.error("Error fetching lab data:", error); // Log the error for debugging
+//     } finally {
+//       setLoading(false); // Set loading to false after fetch completes
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h2>Lab Numbers:</h2>
+//       <ul>
+//         {/* Replace this with your actual lab number rendering logic */}
+//         {[25162, 25163, 25164].map(labNo => (
+//           <li key={labNo}>
+//             <a 
+//               href="#" 
+//               onClick={(e) => {
+//                 e.preventDefault(); // Prevent default link behavior
+//                 fetchLabData(labNo); // Call fetch function with clicked lab number
+//               }}
+//             >
+//               {labNo}
+//             </a>
+//           </li>
+//         ))}
+//       </ul>
+
+//       {/* Loading state */}
+//       {loading && <p>Loading...</p>}
+
+//       {/* Display error message if there is one */}
+//       {error && <p style={{ color: 'red' }}>{error}</p>}
+
+//       {/* Display fetched data if available */}
+//       {labData && (
+//         <div>
+//           <h3>Lab Data:</h3>
+//           <pre>{JSON.stringify(labData, null, 2)}</pre>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default LabDataComponent;

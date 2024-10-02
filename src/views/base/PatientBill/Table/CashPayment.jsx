@@ -4,7 +4,7 @@ import './CashPayment.css';
 import { TextField, Grid, MenuItem, Typography, Button, Autocomplete } from '@mui/material';
 import UpiIcon from '../../../../assets/images/upi symbol.svg';
 import Debit from '../../../../assets/images/debit & credit symbol.svg'
-import Credit from '../../../../assets/images/b2b credit symbol.svg'
+import Credit from '../../../../assets/images/credit icon.svg'
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
@@ -55,14 +55,18 @@ const CashPayment = ({ visible,
     const [discountReason, setDiscountReason] = useState('')
     const [Discreasonid, setDiscRId] = useState('')
     const [discountAmount, setDiscountAmount] = useState();
-
+    const[pending,setPending]= useState(0)
     //input from the session storage
     const BranchId = sessionStorage.getItem('selectedBranchKey')
     const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
  const UserId = sessionStorage.getItem('userId')
     //to make the textcursor in input field after the initial value
     const inputRef = useRef(null); //useref for the input 
-
+    useEffect(() => {
+        if (balance !== null && balance !== undefined && balance !== 0) {
+          setPending(1); 
+        }
+      }, [balance]);
     const handleFocus = () => {
         setTimeout(() => {
             const input = inputRef.current;
@@ -289,6 +293,7 @@ const CashPayment = ({ visible,
             CurBalAmt: Math.abs(balance),
             NetAmt: netAmount,
             UsrId:UserId,
+            Ispending:pending,
             InvTestDlts: invdlts
 
         };

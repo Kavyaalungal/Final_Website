@@ -13,9 +13,11 @@ import { useActionData } from 'react-router-dom';
 import './Table.css'
 import CookiePopup from './Deletepopup';
 import dayjs from 'dayjs';
+import { useLocation } from 'react-router-dom';
 
 // Function to get formatted current date and time
 const getCurrentDateTime = () => {
+  
   const current = new Date();
   const year = current.getFullYear();
   const month = String(current.getMonth() + 1).padStart(2, '0');
@@ -74,7 +76,7 @@ function Maintable() {
   const [openPopup, setOpenPopup] = useState(false);  // To manage popup open/close
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [defaultColl,SetDefCollectionmode] = useState('')
-  const [urgentvalue,setUrgentValue] = useState(0);
+  const [urgentvalue,setUrgentValue] = useState('0');
   const [status,setStatus]  = useState(0);
   const [completionDate, setCompletionDate] = useState('');
   //for id
@@ -83,6 +85,16 @@ function Maintable() {
   const [collbyId, setCollmodeId] = useState('')
   const [StaffCollid, setStaffCollid] = useState('')
   const [defaultId,setDefCollmodeId] = useState('')
+
+
+  const location = useLocation();
+  const labData = location.state?.labData;  
+
+  // Check if labData is present
+  // if (!labData) {
+  //   return <p>No lab data available.</p>;
+  // }
+
   useEffect(() => {
     // Set up an interval to update the date and time every minute
     const intervalId = setInterval(() => {
@@ -477,6 +489,11 @@ useEffect(() => {
 
   return (
     <>
+     {/* <div style={{marginBottom:59}}>
+      <h5>Proceed to Bill for Lab No: {labData.LabNo}</h5>
+
+      
+    </div> */}
 
       <Grid
         container

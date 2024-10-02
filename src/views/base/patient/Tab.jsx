@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({ closeModal ,patientData,setPatientData }) {
+export default function BasicTabs({ closeModal ,patientData,setPatientData ,invoiceViewData}) {
    // declaring state variables needed
   const [value, setValue] = useState(0);
   const { patientDetails, setPatientDetails } = usePatient();
@@ -56,21 +56,18 @@ export default function BasicTabs({ closeModal ,patientData,setPatientData }) {
   const [searchValue, setSearchValue] = useState('');// state variable for searchitem value depends on the search criteria
   const [suggestions, setSuggestions] = useState([]); // state variable for providing suggestions depending on the search value
  
-  useEffect(() => {
-    if (patientData) {
-        setPatientDetails({ ...patientData }); // Set the initial patient details
-    }
-}, [patientData, setPatientDetails]);
 
 
-useEffect(() => {
-  if (patientData) {
-    setFlag('Edit');
-  } else {
-    setFlag('Save');
+useEffect(()=>{
+  if(patientData || invoiceViewData ){
+    setFlag('Edit')
   }
-}, [patientData]);
-       // Retrieve YearId and BranchId from sessionStorage
+  else{
+    setFlag('Save')
+  }
+},[patientData, invoiceViewData])
+
+     
   
       const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
        const branchId = sessionStorage.getItem('selectedBranchKey');
@@ -629,6 +626,7 @@ const handleAgeChange = (field, value) => {
              handleDOBChange={handleDOBChange}
              patientData={patientData}
              setPatientData={setPatientData}
+             invoiceViewData={invoiceViewData}
              />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

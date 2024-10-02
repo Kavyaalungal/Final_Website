@@ -75,9 +75,9 @@ import {
 import CIcon from '@coreui/icons-react';
 import { AppSidebarNav } from './AppSidebarNav';
 import { sygnet } from 'src/assets/brand/Sygnet';
-import iconLogo from '../assets/images/icon logo white.png';
-import logo from '../assets/images/icon infoware logo white (3).svg';
-import iconlogo from '../assets/images/icon-logo.png';
+
+import logo from '../assets/images/icon infoware logo white.svg';
+
 import NavigationWithModals from './NavigationWithModals'; // Import the modal handling component
 import './AppSidebar.css';
 import { Box, Button, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';

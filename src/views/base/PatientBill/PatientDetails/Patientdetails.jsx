@@ -20,43 +20,51 @@ function Patientdetails() {
  const [loading, setLoading] = useState(true);
  const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
  const branchId = sessionStorage.getItem('selectedBranchKey');
- 
+ const username = sessionStorage.getItem('username');
 
+ const labData = location.state?.labData;  
+ const { pntId } = labData || {};
+ console.log('labdata coming', labData);
+ 
  useEffect(() => {
-      console.log("Current Patient Code:", opdno); // Log opdno
-  
-      const fetchPatientData = async () => {
-        if (!opdno) {
-          setError("No Patient_Code provided.");
-           setLoading(false);
-         return;
-         }
-  
-         try {
-           const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-             YearId: YearId,
-             BranchId: branchId,
-             PatCode: opdno,
-             editFlag: true
-           });
-  
-           console.log("Response from API:", response.data); // Check this log
-  
-           if (response.data && response.data.patDetails) {
-             setPatientData(response.data.patDetails);
-           } else {
-             setError("No patient data found.");
-           }
-         } catch (err) {
-           console.error("Failed to fetch patient data:", err);
-           setError("Failed to fetch patient data.");
-         } finally {
-           setLoading(false);
-         }
-       };
-  
-       fetchPatientData();
-     }, [opdno]);
+   console.log("Current Patient Code:", opdno); // Log opdno
+ 
+   const fetchPatientData = async () => {
+     // Use opdno if it exists; otherwise, use pntId
+     const patientCode = opdno || pntId;
+ 
+     if (!patientCode) {
+       setError("No Patient_Code provided.");
+       setLoading(false);
+       return;
+     }
+ 
+     try {
+       const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
+         YearId: YearId,
+         BranchId: branchId,
+         PatCode: patientCode, // Use the combined patient code
+         editFlag: true
+       });
+ 
+       console.log("Response from API:", response.data); // Check this log
+ 
+       if (response.data && response.data.patDetails) {
+         setPatientData(response.data.patDetails);
+       } else {
+         setError("No patient data found.");
+       }
+     } catch (err) {
+       console.error("Failed to fetch patient data:", err);
+       setError("Failed to fetch patient data.");
+     } finally {
+       setLoading(false);
+     }
+   };
+ 
+   fetchPatientData();
+ }, [opdno, pntId]);
+ 
   
   return (
     <>
@@ -383,7 +391,7 @@ function Patientdetails() {
           fontWeight: 'bold',
         }}
       >
-        User Info: 
+        User Info: {username}
       </Typography>
       <Typography
         variant="body1"

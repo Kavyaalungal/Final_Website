@@ -20,7 +20,8 @@ function Patient({closeModal ,
   saveNewPatient,
   updatePatient,
   patientData,
-  setPatientData}) {
+  setPatientData,
+  invoiceViewData}) {
  
   return (
    <>
@@ -66,6 +67,7 @@ function Patient({closeModal ,
           updatePatient={updatePatient}
            patientData={patientData}
            setPatientData={setPatientData}
+           invoiceViewData={invoiceViewData}
            />
       
   
