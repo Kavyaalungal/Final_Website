@@ -840,7 +840,7 @@ function LoginForm() {
     transform: 'scale(0.8)', 
   }}
 >
-  <a href="https://iconinfoware.com/" target="_blank" rel="noopener noreferrer">
+  {/* <a href="https://iconinfoware.com/" target="_blank" rel="noopener noreferrer"> */}
     <img 
       src={logo} 
       alt="Logo" 
@@ -850,7 +850,7 @@ function LoginForm() {
         marginLeft:1500
       }} 
     />
-  </a>
+  {/* </a> */}
 </Box>
 
       <ToastContainer  autoClose={3000} hideProgressBar />

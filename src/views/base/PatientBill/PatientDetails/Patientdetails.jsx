@@ -27,10 +27,10 @@ function Patientdetails() {
  console.log('labdata coming', labData);
  
  useEffect(() => {
-   console.log("Current Patient Code:", opdno); // Log opdno
+   console.log("Current Patient Code:", opdno);
  
    const fetchPatientData = async () => {
-     // Use opdno if it exists; otherwise, use pntId
+   
      const patientCode = opdno || pntId;
  
      if (!patientCode) {
@@ -43,11 +43,11 @@ function Patientdetails() {
        const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
          YearId: YearId,
          BranchId: branchId,
-         PatCode: patientCode, // Use the combined patient code
+         PatCode: patientCode, 
          editFlag: true
        });
  
-       console.log("Response from API:", response.data); // Check this log
+       console.log("Response from API:", response.data); 
  
        if (response.data && response.data.patDetails) {
          setPatientData(response.data.patDetails);

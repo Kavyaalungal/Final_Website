@@ -89,7 +89,7 @@ function Maintable() {
 
   const location = useLocation();
   const labData = location.state?.labData;  
-
+  const { LabNo } = labData || {};
   // Check if labData is present
   // if (!labData) {
   //   return <p>No lab data available.</p>;
@@ -631,7 +631,7 @@ useEffect(() => {
                 },
               }}
             >
-              {labNo !== null ? labNo.toString() : 'Loading...'}
+              {labNo !== null ? labNo.toString() : LabNo}
             </Typography>
           </Box>
         </Grid>
