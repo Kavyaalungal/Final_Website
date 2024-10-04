@@ -27,6 +27,7 @@ import {
 import './AppHeader.css';
 import AppMenu from './AppMenu';
 import { AppBar, Toolbar, Button, Box, Menu, MenuItem, useMediaQuery, useTheme ,} from '@mui/material';
+import config from '../Config'
 
 // import { AppBreadcrumb } from './index'
 //  import { AppHeaderDropdown } from './header/Index'
@@ -40,7 +41,7 @@ const AppHeader = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if it's mobile view
   useEffect(() => {
-    const storedUsername = sessionStorage.getItem('username');
+    const storedUsername = config.public_userName;
     if (storedUsername) {
       setUsername(storedUsername);
     }

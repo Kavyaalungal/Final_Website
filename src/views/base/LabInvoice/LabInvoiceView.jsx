@@ -19,6 +19,7 @@ import Register from '../patient/Register';
 import axios from 'axios';
 import useModal from '../../../components/UseModal';
 import Patient from '../patient/Patient';
+import config from '../../../Config';
 
 
 
@@ -30,26 +31,26 @@ const InvoiceView = () => {
   const [invoiceData, setInvoiceData] = useState([]); 
   const [loading, setLoading] = useState(false); 
   const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(sessionStorage.getItem('selectedBranchKey') || ''); 
+  const [selectedBranch, setSelectedBranch] = useState(config.public_branchId || ''); 
   const [loading1, setLoading1] = useState(true);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All');
 
 
-  const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID');
-  const storedBranchId = sessionStorage.getItem('selectedBranchKey'); // Stored branch id
-  const Branch = sessionStorage.getItem('selectedBranch'); // Stored branch name
+
 
   useEffect(() => {
     const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
     setFromDate(currentDate);
     setToDate(currentDate);
   }, []);
+
+
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await axios.get('http://172.16.16.157:8083/api/Branchname_Get');
+        const response = await axios.get(`${config.public_apiUrl}/Branchname_Get`);
         console.log(response.data); // Log the response to the console
         if (response.data.Success) {
           setBranches(response.data.brnch_dlts); // Set branch data to state
@@ -64,11 +65,13 @@ const InvoiceView = () => {
     fetchBranches();
   }, []);
 
+
   // Handling branch selection from dropdown
   const handleBranchChange = (e) => {
     const selectedValue = e.target.value;
     setSelectedBranch(selectedValue);
   };
+
 
   const searchItems = [
     { label: 'SampleID', value: 'SampleID' },
@@ -93,8 +96,8 @@ const InvoiceView = () => {
     const requestData = {
       SrchItem: searchItem,
       SrchVal: searchValue,
-      BranchId: selectedBranch || storedBranchId, // Use selected branch or stored branch
-      YearId: YearId,
+      BranchId: selectedBranch || config.public_branchId, // Use selected branch or stored branch
+      YearId: config.public_yearId,
       FromDate: fromDate,
       ToDate: toDate,
     };
@@ -103,7 +106,7 @@ const InvoiceView = () => {
       setLoading(true);
       console.log('data sending to backend',requestData);
       
-      const response = await axios.post('http://172.16.16.157:8083/api/LabInvoiceView/PatientSearchMaster', requestData);
+      const response = await axios.post(`${config.public_apiUrl}/LabInvoiceView/PatientSearchMaster`, requestData);
       console.log('API response:', response.data.patDtsList); // Log API response
       if (response.data && response.data.patDtsList) {
         setInvoiceData(response.data.patDtsList); // Update invoice data state with patDtsList
@@ -157,6 +160,7 @@ const InvoiceView = () => {
     }
   });
 
+
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
@@ -202,6 +206,8 @@ const InvoiceView = () => {
   
     return `${formattedDate} ${formattedTime}`; // Return both date and time
   };
+
+
   return (
     <div>
        <Typography 
@@ -256,7 +262,7 @@ const InvoiceView = () => {
   <TextField
       select
       label="Branch"
-      value={selectedBranch || Branch} 
+      value={selectedBranch || public_branchName} 
       onChange={handleBranchChange}
       fullWidth
       size="small"
@@ -484,7 +490,7 @@ const InvoiceView = () => {
 
             // Fetch the patient's data using the LabNo from the invoice
             const response = await axios.get(
-              `http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?LabNo=${invoice.labno}&YrId=${YearId}&cmpyId=${storedBranchId}`
+              `${config.public_apiUrl}/LabInvoiceSaveUpdate?LabNo=${invoice.labno}&YrId=${config.public_yearId}&cmpyId=${config.public_branchId}`
             );
 
             // Log the entire response for inspection
@@ -522,9 +528,9 @@ const InvoiceView = () => {
 
       // Fetch patient details using the API
       try {
-        const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-          YearId: YearId,
-          BranchId: storedBranchId,
+        const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
+          YearId: config.public_yearId,
+          BranchId: config.public_branchId,
           PatCode: invoice.PatientID,  // Pass the PatientID from the invoice
           editFlag: true
         });
@@ -576,11 +582,7 @@ const InvoiceView = () => {
     )}
   </CTableBody>
 </CTable>
-
-  
-    
-     
-    </CardContent>
+ </CardContent>
   </Card>
   </Grid>
 </Grid>
@@ -596,65 +598,3 @@ const InvoiceView = () => {
 
 export default InvoiceView;
 
-// import React, { useState } from 'react';
-// import axios from 'axios';
-
-// const LabDataComponent = () => {
-//   const [labData, setLabData] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-
-//   // Function to fetch lab data by LabNo
-//   const fetchLabData = async (labNo) => {
-//     setLoading(true); // Set loading to true when starting the fetch
-//     setError(null); // Reset any previous error state
-//     try {
-//       const response = await axios.get(`http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?LabNo=${labNo}&YrId=2425&cmpyId=2`);
-//       setLabData(response.data); // Store the fetched data
-//       console.log(response.data); // Log the fetched data for debugging
-//     } catch (error) {
-//       setError("Error fetching lab data: " + error.message); // Set error state if fetch fails
-//       console.error("Error fetching lab data:", error); // Log the error for debugging
-//     } finally {
-//       setLoading(false); // Set loading to false after fetch completes
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h2>Lab Numbers:</h2>
-//       <ul>
-//         {/* Replace this with your actual lab number rendering logic */}
-//         {[25162, 25163, 25164].map(labNo => (
-//           <li key={labNo}>
-//             <a 
-//               href="#" 
-//               onClick={(e) => {
-//                 e.preventDefault(); // Prevent default link behavior
-//                 fetchLabData(labNo); // Call fetch function with clicked lab number
-//               }}
-//             >
-//               {labNo}
-//             </a>
-//           </li>
-//         ))}
-//       </ul>
-
-//       {/* Loading state */}
-//       {loading && <p>Loading...</p>}
-
-//       {/* Display error message if there is one */}
-//       {error && <p style={{ color: 'red' }}>{error}</p>}
-
-//       {/* Display fetched data if available */}
-//       {labData && (
-//         <div>
-//           <h3>Lab Data:</h3>
-//           <pre>{JSON.stringify(labData, null, 2)}</pre>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default LabDataComponent;

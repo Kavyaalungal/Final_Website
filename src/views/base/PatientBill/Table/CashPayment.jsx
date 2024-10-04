@@ -11,7 +11,13 @@ import { useLocation } from 'react-router-dom';
  import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LogoCash from '../../../../assets/images/cash svg.svg'
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import PrintPopup from './PrintPopUp';
+import config from '../../../../Config';
 
 
 const CashPayment = ({ visible,
@@ -35,7 +41,8 @@ const CashPayment = ({ visible,
     urgentvalue ,
     status,
     completionDate}) => {
-
+    const [openPopup, setOpenPopup] = useState(false);
+    const [invno, setInvno] = useState(null);
     const [netAmount, setNetAmount] = useState(totalAmount);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [discountPercentage, setDiscountPercentage] = useState(0);
@@ -56,10 +63,8 @@ const CashPayment = ({ visible,
     const [Discreasonid, setDiscRId] = useState('')
     const [discountAmount, setDiscountAmount] = useState();
     const[pending,setPending]= useState(0)
-    //input from the session storage
-    const BranchId = sessionStorage.getItem('selectedBranchKey')
-    const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
- const UserId = sessionStorage.getItem('userId')
+  
+
     //to make the textcursor in input field after the initial value
     const inputRef = useRef(null); //useref for the input 
     useEffect(() => {
@@ -82,6 +87,11 @@ const CashPayment = ({ visible,
             inputRef.current.setSelectionRange(1, 1); // Place cursor after the '0'
         }
     },);
+    
+
+   
+
+
 
     const handlePaymentMethodChange = (event) => {
         setPaymentMethod(event.target.value);
@@ -193,9 +203,9 @@ const CashPayment = ({ visible,
             }
 
             try {
-                const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-                    YearId: YearId,
-                    BranchId: BranchId,
+                const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
+                    YearId: config.public_yearId,
+                    BranchId: config.public_branchId,
                     PatCode: opdno,
                     editFlag: true
                 });
@@ -249,7 +259,7 @@ const CashPayment = ({ visible,
         let requestData = {
             saveEditflag: false,  // true for update, false for new save
             cmpyId: patientData.Patient_CpyId,
-            YrId: YearId,
+            YrId: config.public_yearId,
             LabNo: labno,
             Date: currentDateTime,
             ReferredById: referredById,
@@ -272,7 +282,7 @@ const CashPayment = ({ visible,
             Status : status,
             IsUrgent : urgentvalue,
             email: patientData.Patient_Email,
-            BrId: BranchId,
+            BrId: config.public_branchId,
             Address: patientData.Patient_Address,
             PhnNo: patientData.Patient_Phno,
             Ageymd: "year",
@@ -292,7 +302,7 @@ const CashPayment = ({ visible,
             CurRcvdAmt: paidAmount,
             CurBalAmt: Math.abs(balance),
             NetAmt: netAmount,
-            UsrId:UserId,
+            UsrId:config.public_userId,
             Ispending:pending,
             InvTestDlts: invdlts
 
@@ -302,35 +312,90 @@ const CashPayment = ({ visible,
 
         try {
             console.log("saved data",requestData)
-            const response = await axios.post('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate/InvoiceMstr', requestData);
+            const response = await axios.post(`${config.public_apiUrl}/LabInvoiceSaveUpdate/InvoiceMstr`, requestData);
             
             console.log('Data saved:', response.data);
             toast.success('Saved Succesfully')
-            const invno = response.data.invno
+            // const invno = response.data.invno
 
-  
+            const invno = response.data.invno;
+            setInvno(invno); // Store the invoice number after save
+
 
       resetform()
       console.log('invno',invno)
-      return {invno}
-    
-           
+ 
+      setOpenPopup(true);    
         } catch (error) {
             console.error('Failed to save data', error);
             toast.error('Failed to save data! Please try again.')
         }
     };
 
-    // Function to trigger save or update
-    const handleSave = () => {
 
-        saveData();
+    //  // Print API call
+    //  const handlePrint = async () => {
+    //     try {
+          
+    //         const apiUrl = `http://172.16.16.157:8083/api/InvoicePrintPDF?yrid=${YearId}&cmpyid=${BranchId}&labno=${invno}`;
+
+    //         const response = await axios.get(apiUrl);
+    //         console.log('Print API Response:', response.data);
+
+    //         // Optionally handle the response (like opening a PDF)
+
+    //     } catch (error) {
+    //         console.error('Error during printing:', error);
+    //     } finally {
+    //         setOpenPopup(false); // Close the dialog after printing or error
+    //     }
+    // };
+  
+    // // Function to trigger save or update
+    // const handleSave = () => {
+
+    //     saveData();
       
 
-        //Call the saveData function
-    };
+    //     //Call the saveData function
+    // };
 
+  
+ // Print API call
+ const handlePrint = async () => {
+    try {
+        if (!invno) {
+            console.error("No invoice number available for printing.");
+            return;
+        }
 
+        const apiUrl = `${config.public_apiUrl}/InvoicePrintPDF?yrid=${config.public_yearId}&cmpyid=${config.public_branchId}&labno=${invno}`;
+
+        const response = await axios.get(apiUrl);
+        console.log('Print API Response:', response.data);
+
+        // Optionally handle the response (like opening a PDF)
+    } catch (error) {
+        console.error('Error during printing:', error);
+    } finally {
+        setOpenPopup(false); // Close the dialog after printing or error
+    }
+};
+
+// Function to trigger save or update
+const handleSave = () => {
+    saveData();
+};
+
+// Function to accept and trigger print
+const handleAccept = () => {
+    handlePrint();  // Trigger the print function when user clicks "Yes" in popup
+};
+
+// Function to reject print
+const handleReject = () => {
+    setOpenPopup(false);  // Close the popup without printing
+};
 
     console.log('service', serviceCharge)
     console.log('paymode', paymentMethod)
@@ -669,31 +734,7 @@ const CashPayment = ({ visible,
                     />
                 </Grid>
 
-                {/* Balance Field
-                <Grid item xs={12}>
-                    <TextField
-                        id='balance'
-                        label="Balance"
-                        variant="outlined"
-                        size="small"
-                        value={balance.toFixed(2)}
-                        InputProps={{ readOnly: true }}
-                        fullWidth
-                        InputLabelProps={{
-                            style: { fontSize: '0.95rem', top: '-3px', left: '1px' },
-                        }}
-                        sx={{
-                            '& .MuiInputBase-input': {
-                                padding: '6px',
-                                fontSize: '0.95rem',
-                                textAlign: 'right',
-                            },
-                            '& .MuiOutlinedInput-root': {
-                                height: '30px',
-                            },
-                        }}
-                    />
-                </Grid> */}
+           
 
                 <Grid item xs={12}>
                     <Grid container spacing={2} direction="column" alignItems="center">
@@ -767,7 +808,7 @@ const CashPayment = ({ visible,
                                             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
                                         },
                                     }}
-
+                                    onClick={handlePrint}
                                 >
                                     Print
                                 </Button>
@@ -786,6 +827,12 @@ const CashPayment = ({ visible,
                                     Save
 
                                 </Button>
+                                <PrintPopup
+                                  onAccept={handleAccept}
+                                  onReject={handleReject}
+                                  open={openPopup}
+                                  onClose={handleReject}/>
+                             
                                 <Button
                                     variant="contained"
                                     // className="button"

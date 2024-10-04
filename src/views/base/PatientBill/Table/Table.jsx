@@ -14,6 +14,7 @@ import './Table.css'
 import CookiePopup from './Deletepopup';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
+import config from '../../../../Config';
 
 // Function to get formatted current date and time
 const getCurrentDateTime = () => {
@@ -104,17 +105,17 @@ function Maintable() {
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
-  const BranchId = sessionStorage.getItem('selectedBranchKey')
-  const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
+  // const BranchId = sessionStorage.getItem('selectedBranchKey')
+  // const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
 
   // Fetch current Lab No when the component mounts
   useEffect(() => {
     const fetchLabNo = async () => {
       try {
-        const response = await axios.get('http://172.16.16.157:8083/api/LabNoMax', {
+        const response = await axios.get(`${config.public_apiUrl}/LabNoMax`, {
           params: {
-            yrId: YearId,
-            CmId: BranchId
+            yrId: config.public_yearId,
+            CmId: config.public_branchId
           }
 
         });
@@ -284,10 +285,10 @@ useEffect(() => {
   };
 
   const invdlts = rows.map(row => ({
-    cmpyId: BranchId,
+    cmpyId: config.public_branchId,
     TestRate: row.price,
     tstid: row.tstkey,
-    YrId: YearId,
+    YrId: config.public_yearId,
     Discamt: row.discount,
     Orgrate: row.price
 
@@ -316,9 +317,9 @@ useEffect(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const accountHeadsResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=AccountHeads');
-        const mastersResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Masters');
-        const testResponse = await fetch('http://172.16.16.157:8083/api/LabInvoiceSaveUpdate?type=Testdlts');
+        const accountHeadsResponse = await fetch(`${config.public_apiUrl}/LabInvoiceSaveUpdate?type=AccountHeads`);
+        const mastersResponse = await fetch(`${config.public_apiUrl}/LabInvoiceSaveUpdate?type=Masters`);
+        const testResponse = await fetch(`${config.public_apiUrl}/LabInvoiceSaveUpdate?type=Testdlts`);
         
         const accountHeadsData = await accountHeadsResponse.json();
         const mastersData = await mastersResponse.json();

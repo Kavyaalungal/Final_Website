@@ -11,6 +11,7 @@ import { usePatient } from "../../patient/PatientContext";
 import useModal from "../../../../components/UseModal";
 import { CModal, CModalBody, CModalHeader, CModalTitle } from "@coreui/react";
 import Patient from "../../patient/Patient";
+import config from "../../../../Config";
 function Patientdetails() {
   const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
   const location = useLocation();
@@ -18,9 +19,8 @@ function Patientdetails() {
  const [patientData, setPatientData] = useState(null);
   const [error, setError] = useState('');
  const [loading, setLoading] = useState(true);
- const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
- const branchId = sessionStorage.getItem('selectedBranchKey');
- const username = sessionStorage.getItem('username');
+
+
 
  const labData = location.state?.labData;  
  const { pntId } = labData || {};
@@ -40,9 +40,9 @@ function Patientdetails() {
      }
  
      try {
-       const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-         YearId: YearId,
-         BranchId: branchId,
+       const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
+         YearId: config.public_yearId,
+         BranchId: config.public_branchId,
          PatCode: patientCode, 
          editFlag: true
        });
@@ -391,7 +391,7 @@ function Patientdetails() {
           fontWeight: 'bold',
         }}
       >
-        User Info: {username}
+        User Info: {config.public_userName}
       </Typography>
       <Typography
         variant="body1"

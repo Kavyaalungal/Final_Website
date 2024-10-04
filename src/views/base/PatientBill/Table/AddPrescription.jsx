@@ -1,78 +1,3 @@
-// import { Box, Grid } from "@mui/material"
-// import Header from "../Heading/head"
-// import Patientdetails from "../PatientDetails/Patientdetails"
-// import Maintable from "../Table/Table"
-// import Footer from "../Footer/Footer"
-// import CustomBreadcrumbs from "../Breadcrumbs"
-// import './PattientMain.css';
-// import Card from "../Card";
-// import ImageCard from "../Card"
-
-// function PatientMain() {
-//     return (
-//         <>
-        
-//          <Box 
-//   sx={{ 
-//     position: 'relative',
-//     width: '100%', 
-//     maxWidth: '1200px',
-//     margin: '0 auto',  
-//     transition: 'all 0.3s ease-in-out',
-//     zoom:'0.9',
-
-//     '@media (max-width: 1200px)': {
-//       maxWidth: '1100px', 
-//       marginLeft: '-2%', 
-//     },
-
-//     '@media (max-width: 992px)': {
-//       maxWidth: '900px',
-//       marginLeft: '-5%',
-//     },
-
-//     '@media (max-width: 768px)': {
-//       maxWidth: '700px',
-//       marginLeft: '-10%',
-//     },
-
-//     '@media (max-width: 576px)': {
-//       maxWidth: '500px',
-//       marginLeft: '-15%',
-//     },
-
-//     '@media (max-width: 360px)': {
-//       maxWidth: '300px',
-//       marginLeft: '-20%',
-//     }
-//   }}
-// >
-//   <Grid container spacing={1}>
-//     <Grid item xs={12} sm={12}>
-//       <Header />
-//     </Grid>
-//     <Grid item xs={12} sm={2.5}>
-//       <Patientdetails />
-//     </Grid>
-//     <Grid item xs={12} sm={7}>
-//       <Maintable />
-//     </Grid>
-//     <Grid item xs={12} sm={2.5}>
-//       <ImageCard />
-//     </Grid>
-
-    
-//   </Grid>
-// </Box>
-
-
-//         </>
-//     )
-// }
-
-// export default PatientMain
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, Box, Avatar, Link,Grid,TextField ,Radio,FormControl, FormControlLabel, RadioGroup, Button,} from "@mui/material";
@@ -87,13 +12,8 @@ import Patientdetails from "../PatientDetails/Patientdetails";
 import useModal from "../../../../components/UseModal";
 import Patient from "../../patient/Patient";
 import { CModal, CModalBody, CModalHeader, CModalTitle } from "@coreui/react";
+import config from "../../../../Config";
 
-// import Header from "../Heading/head";
-// import Patientdetails from "../PatientDetails/Patientdetails";
-// import Maintable from "../Table/Table";
-// import ImageCard from "../Card";
-// import { useState } from "react";
-// import { usePatient } from "../../patient/PatientContext";
 
 function AddPrescription() {
   const { modal, modalContent, modalTitle, modalSize, toggleModal, closeModal } = useModal();
@@ -110,32 +30,16 @@ function AddPrescription() {
   purchase: null,
   pharmacy: null,
 }); 
-const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
-const branchId = sessionStorage.getItem('selectedBranchKey');
 
  // Handle radio button change
  const handleRadioChange = (event) => {
    const selectedValue = event.target.value;
    setSelectedDocument(selectedValue);
    document.getElementById(`${selectedValue}Input`).click();
-  //  // Trigger file upload based on selected document
-  //  if (selectedValue === 'lab' || selectedValue === 'purchase' || selectedValue === 'pharmacy') {
-  //    document.getElementById('fileInput').click();  // Trigger file input click
-  //  }
+  
  };
 
- // Handle file input change (file selected by user)
-//  const handleFileChange = (event) => {
-//    const file = event.target.files[0];
-//    if (file) {
-//      // Read the file and convert it to a URL to display the image
-//      const reader = new FileReader();
-//      reader.onloadend = () => {
-//        setPreviewImage(reader.result); // Set the image URL to state
-//      };
-//      reader.readAsDataURL(file); // Read the file as a data URL
-//    }
-//  };
+
 
  // Handle file input change (file selected by user)
  const handleFileChange = (event, documentType) => {
@@ -167,11 +71,7 @@ const handleRemoveImage = () => {
   setPreviewImage(null); // Clear the image preview
   document.getElementById('fileInput').value = ''; // Reset file input
 };
-//  // Handle removing the uploaded image by clicking on the image
-//  const handleImageClick = () => {
-//   setPreviewImage(null); // Clear the image preview
-//   document.getElementById('fileInput').value = ''; // Reset file input
-// };
+
 
 
  useEffect(() => {
@@ -185,9 +85,9 @@ const handleRemoveImage = () => {
      }
 
      try {
-       const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', {
-         YearId: YearId,
-         BranchId: branchId,
+       const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
+         YearId: config.public_yearId,
+         BranchId: config.public_branchId,
          PatCode: opdno,
          editFlag: true
        });
@@ -294,13 +194,7 @@ return (
 
 
 
-  {/* Modal implementation */}
-  {/* <CModal visible={modal} onClose={closeModal} size={modalSize} centered backdrop="static">
-    <CModalHeader>
-      <CModalTitle>{modalTitle}</CModalTitle> 
-    </CModalHeader>
-    <CModalBody>{modalContent}</CModalBody>
-  </CModal> */}
+
 </Box>
 
 
@@ -495,248 +389,7 @@ return (
           </Box>
         </CardContent>
       </Card>
-  //       <Card
-  //       sx={{
-  //         width: "75%",
-  //         maxWidth: "auto",
-  //         maxHeight: 700,
-  //         height: 520,
-  //         p: 2,
-  //         overflowY: "auto",
-  //         marginLeft: -1,
-  //         marginTop:-1
-          
-  //       }}
-  //       className="firstcard"
-  //     >
-  //       <CardContent
-  //         sx={{
-  //           height: "100%",
-  //           overflowY: "hidden",
-  //         }}
-  //       >
-  
-  
-  // <Typography
-  //           sx={{
-  //             fontSize: { xs: 16, sm: 16, md: 16 },
-  //             marginTop:-2,
-  
-  //             textAlign: "start",
-  //             fontWeight: "Bold",
-  //           }}
-  //           color="#bd2937"
-  //           variant="h6"
-  //         >
-  //           Patient Details
-  //         </Typography>
-       
-  //         <Box sx={{ mb: 2
-  // , textAlign: "right" }}>
-  //           <Link
-  //             href="#"
-  //             sx={{
-  //               fontSize: { xs: 14, sm: 16, md: 16 },
-  //               color: "#bd2937",
-               
-  //               textDecoration: "none",
-  //               '&:hover': {
-  //                 textDecoration: "underline",
-  //               },
-  //             }}
-  //           >
-  //             Edit
-  //           </Link>
-  //         </Box>
-  
-      
-  
-  //         <Box
-  //           sx={{
-  //             display: "flex",
-  //             flexDirection: "column",
-  //             alignItems: "center",
-  //             mb: 2,
-  //           }}
-  //         >
-  //           <Avatar
-  //             sx={{
-  //               width: { xs: 60, sm: 70, md: 80 },
-  //               height: { xs: 60, sm: 70, md: 80 },
-  //               mb: 2,
-  //             }}
-  //             alt="Patient Avatar"
-  //             src={
-  //               patientData.Patient_Ismale === "Male"
-  //                 ? male
-  //                 : patientData.Patient_Ismale === "Female"
-  //                 ? female
-  //                 : commonDefault
-  //             }
-  //           />
-  
-         
-  //         </Box>
-  
-  //         <Box
-  //           sx={{
-  //             display: "flex",
-  //             flexDirection: "column",
-  //             alignItems: "flex-start",
-  //             marginTop:-2,
-  //             marginLeft:-1
-  //           }}
-  //         >
-  //            <Typography
-  //               variant="h6"
-  //               component="div"
-  //               sx={{
-  //                 fontWeight: "bold",
-  //                 fontSize: { xs: 16, sm: 14, md: 14 },
-                  
-  //               }}
-  //             >
-  //               {patientData.Patient_Name || "Patient Name"}
-  //             </Typography>
-  //             <Box
-  //               sx={{
-  //                 display: "flex",
-  //                 flexDirection: "row",
-  //                 justifyContent: "flex-start",
-  //                 gap: 1,
-                  
-                 
-  //               }}
-  //             >
-  //               <Typography
-  //                 sx={{
-  //                   fontWeight: "bold",
-  //                   fontSize: { xs: 16, sm: 16, md: 16 },
-  //                 }}
-  //                 color="black"
-  //               >
-  //                 {patientData.Patient_Ageyy || "Age"}
-  //               </Typography>
-  //               <Typography
-  //                 sx={{
-  //                   fontWeight: "bold",
-  //                   fontSize: { xs: 14, sm: 16, md: 16 },
-  //                 }}
-  //                 color="black"
-  //               >
-  //                 {patientData.Patient_Ismale || "Gender"}
-  //               </Typography>
-  //             </Box>
-  //           <Typography
-  //             sx={{
-  //               mb: 1.5,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#b0b0b0"
-  //           >
-  //             Contact No
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               mt: -2,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#000"
-  //           >
-  //              {patientData.Patient_mobile || patientData.Patient_Phno || "N/A"}
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               mt: 1,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#b0b0b0"
-  //           >
-  //             Email
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               mt: 0,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#000"
-  //           >
-  //             {patientData.Patient_Email || "N/A"}
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               mt: 1,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#b0b0b0"
-  //           >
-  //             PatientID
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#000"
-  //           >
-  //             {patientData.Patient_Code || "N/A"}
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               mt: 1,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#b0b0b0"
-  //           >
-  //             Address
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#000"
-  //           >
-  //             {patientData.Patient_Address || "N/A"}
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               mt: 1,
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#b0b0b0"
-  //           >
-  //             Branch
-  //           </Typography>
-  //           <Typography
-  //             sx={{
-  //               fontSize: { xs: 14, sm: 12, md: 12 },
-  //               wordBreak: "break-word",
-  //               overflowWrap: "break-word",
-  //             }}
-  //             color="#000"
-  //           >
-  //             {patientData.branchName || "N/A"}
-  //           </Typography>
-  //         </Box>
-  //       </CardContent>
-  //     </Card>
+
       ) : (
         <p>No patient data available.</p>
       )}
@@ -892,72 +545,7 @@ return (
   </Card>
 </Grid>
 
-        {/* <Grid item xs={12} sm={8}>
-      <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-        <FormControl component="fieldset">
-          <RadioGroup row>
-            <FormControlLabel
-              value="lab"
-              control={<Radio size="small" />}
-              label={<Typography variant="body2">Document 1</Typography>}
-              sx={{ '& .MuiSvgIcon-root': { fontSize: 12 } }}
-            />
-            <FormControlLabel
-              value="purchase"
-              control={<Radio size="small" />}
-              label={<Typography variant="body2">Document 3</Typography>}
-              sx={{ '& .MuiSvgIcon-root': { fontSize: 12 } }}
-            />
-            <FormControlLabel
-              value="pharmacy"
-              control={<Radio size="small" />}
-              label={<Typography variant="body2">Document 3</Typography>}
-              sx={{ '& .MuiSvgIcon-root': { fontSize: 12 } }}
-            />
-          </RadioGroup>
-        </FormControl>
-
-        <Box display="flex">
-  <Button
-    sx={{
-      textTransform: 'none',
-      marginRight: 1,
-      backgroundColor: '#bb4d58', // Default background color
-      padding: '4px 8px', // Smaller padding for a more compact size
-      fontSize: '0.75rem', // Reduce font size
-      '&:hover': {
-        backgroundColor: '#bd2937', // Background color on hover
-        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
-      },
-    }}
-    variant="contained"
-    color="success"
-    size="small" // Use small size
-  >
-    Scan
-  </Button>
-  <Button
-    sx={{
-      textTransform: 'none',
-      marginRight: 1,
-      backgroundColor: '#bb4d58', // Default background color
-      padding: '4px 8px', // Smaller padding for a more compact size
-      fontSize: '0.75rem', // Reduce font size
-      '&:hover': {
-        backgroundColor: '#bd2937', // Background color on hover
-        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Optional: Add shadow effect on hover
-      },
-    }}
-    variant="contained"
-    color="success"
-    size="small" // Use small size
-  >
-    Camera
-  </Button>
-</Box>
-
-      </Box>
-    </Grid> */}
+       
         </Grid>
        
    </div>

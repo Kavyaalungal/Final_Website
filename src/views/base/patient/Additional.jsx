@@ -31,9 +31,9 @@ function Additional({patientDetails,setPatientDetails,handleGenderChange, closeM
    <Grid item xs={12}>
   <Card
     sx={{
-      marginLeft: { xs: -2, sm: -3.5 }, // Adjusting margin for smaller screens
-      width: { xs: 370, sm: 830 ,md:720},  // Full width on small screens, fixed width on larger screens
-      height: { xs: 'auto', sm: 435 }, // Adjust height for smaller screens
+      marginLeft: { xs: -2, sm: -3.5 }, 
+      width: { xs: 370, sm: 830 ,md:720},  
+      height: { xs: 'auto', sm: 435 }, 
       marginTop: { xs: 0, sm: -1 },
     }}
     className='customwidth customheight'
@@ -197,21 +197,7 @@ function Additional({patientDetails,setPatientDetails,handleGenderChange, closeM
           />
         </Grid>
 
-        {/* <Grid item xs={12}>
-          <TextareaAutosize
-            minRows={6}
-            maxRows={8}
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              borderColor: '#eaeaea',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-            }}
-            placeholder="Note"
-          />
-        </Grid> */}
+       
       </Grid>
 
       <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
@@ -231,42 +217,7 @@ function Additional({patientDetails,setPatientDetails,handleGenderChange, closeM
           flag={flag}/>
      
     </Grid>
-    {/* <Grid item xs={12}>
-    <Card sx={{height:75,marginLeft:-3.5,width:830}} className='patient height1'>
-    <CardContent>
-    <Grid container spacing={2} justifyContent="flex-end">
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      className="button"
-                      // onClick={handleSaveOrUpdate}
-                      sx={{  marginRight: 1, }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="contained"
-                      // onClick={resetForm}
-                      className="button"
-                      sx={{ marginRight: 1,}}
-                    >
-                      New
-                    </Button>
-                    <Button
-                      variant="contained"
-                      // onClick={resetForm}
-                      className="button"
-                      sx={{  marginRight: 1,}}
-                    >
-                      Proceed To Bill
-                    </Button>
-                  </Grid>
-                </Grid>
 
-              
-    </CardContent>
-   </Card>
-    </Grid> */}
     </Grid>
    </>
   )

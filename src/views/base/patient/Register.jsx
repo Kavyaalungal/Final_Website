@@ -127,22 +127,7 @@ useEffect(() => {
   >
     <CardContent>
       <Grid container spacing={2}>
-      {/* <TextField
-  id="patientid"
-  label="Patient ID"
-  variant="outlined"
-  value={
-    !patientDetails ? '' // New Entry: field is empty
-    : patientDetails.Patient_Code && patientData ? patientDetails.Patient_Code // Editing: use existing patient data
-    : patientDetails.Patient_Code // Default: for already existing data
-  }
-  onChange={handlePatientIdChange}
-  size="small"
-  fullWidth
-  InputLabelProps={{ style: { fontSize: '1rem' } }}
-  InputProps={{ readOnly: !patientData }} // Make the field read-only if viewing existing data, editable when editing
-/> */}
-
+     
       <Grid item xs={12} sm={4} md={4}>
   <TextField
     id="patientid"

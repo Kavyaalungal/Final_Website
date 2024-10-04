@@ -12,13 +12,10 @@ import { CAccordion, CAccordionBody, CAccordionHeader, CAccordionItem } from '@c
 import Register from './Register';
 import { usePatient } from './PatientContext';
 import axios from 'axios';
-
+import config from '../../../Config';
 
 function Patient({closeModal ,
-  // resetForm,
-  // fetchNewPatientId,
-  // isEditMode,
-  // handleNewPatient,
+
 
 
   patientData,
@@ -55,31 +52,14 @@ useEffect(()=>{
 },[patientData, invoiceViewData])
 
      
-  
-      const YearId = sessionStorage.getItem('latestYearId'||'selectedYrID')
-       const branchId = sessionStorage.getItem('selectedBranchKey');
-     
-      //  // Ensure the values exist in sessionStorage
-      //  if (!yearId || !branchId) {
-      //    throw new Error('YearId or BranchId not found in sessionStorage');
-      //  }
-  
-//
-//  useEffect(() => {
-//     const storedUsername = sessionStorage.getItem('username');
-//     if (storedUsername) {
-//       setUsername(storedUsername);
-//     }
-//   }, []);
 
-
-
-  // function for entering the searchcriteria 
+ // function for entering the searchcriteria 
   const handleSearchCriteriaChange = (event) => {   
     setSearchCriteria(event.target.value); // it sets the value selected according tho the user selection
    setSearchValue('');  // according to the search criteria it  resets the searchvalue and suggestions 
     setSuggestions([]);
   };
+
 
   // function to enter the value according to searchcriteria
   const handleSearchValueChange = (event, value) => {
@@ -88,14 +68,15 @@ useEffect(()=>{
       fetchSuggestions(value); // suggestions according to the value
      };
 
+
    // function for fetching the suggetions according to the search criteria
   const fetchSuggestions = async (value) => { // search value is passed as parameter 
     console.log('Fetching suggestions with value:', value);
 
     try {
-      const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientSearchMaster', { // request is send to backend 
-        YearId: YearId,   // with parameters yearid, branchid, searchitem, and the value
-        BranchId: branchId,
+      const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientSearchMaster`, { // request is send to backend 
+        YearId: config.public_yearId,   // with parameters yearid, branchid, searchitem, and the value
+        BranchId: config.public_branchId,
         SrchItem: searchCriteria,
         srchVal:value
         // SrchVal: value.toLowerCase(),
@@ -118,6 +99,7 @@ useEffect(()=>{
     }
   };
 
+
     // function for normailizing the title ie, to convert title to standard form
   const normalizeTitle = (title) => {
     switch (title) {   // differnt cases for that if the title is MR it is set to Mr form like that rest of the following
@@ -134,15 +116,16 @@ useEffect(()=>{
    }
  };
  
+
   // for selecting the patient object from the list and populating it to the form
  const handleSelectPatient = async (event, newValue) => { // two parameters the value and event is passed
   if (!newValue) return; // if no value it exits here and stop the function
 
   try {
     console.log('Selected Patient:', newValue); // Log selected patient for debugging
-    const response = await axios.post('http://172.16.16.157:8083/api/PatientMstr/PatientDetailsMaster', { //request sends to backend for taking the patient details
-      YearId: YearId,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
-      BranchId: branchId,
+    const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, { //request sends to backend for taking the patient details
+      YearId: config.public_yearId,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
+      BranchId: config.public_branchId,
       PatCode: newValue.Patient_Code,
       editFlag:true
     });
@@ -203,6 +186,7 @@ useEffect(()=>{
   }
 };
 
+
     // function for clearing the form fields
    const resetForm = () => {  
      console.log('Resetting form.');
@@ -217,13 +201,14 @@ useEffect(()=>{
      setFlag('Save')// Ensure button text is reset // Reset new patient flag if used
   };
 
+
   // Fetch a new patient ID
   const fetchNewPatientId = async () => {
     try {
-      const response = await axios.get('http://172.16.16.157:8083/api/MaxOpdNoPatReg', {
+      const response = await axios.get(`${config.public_apiUrl}/MaxOpdNoPatReg`, {
         params: {
-          yrId: YearId,
-          CmId: branchId
+          yrId: config.public_yearId,
+          CmId: config.public_branchId
         }
       });
       if (response.data.success) {
@@ -268,13 +253,13 @@ const handleSaveOrUpdate = async () => {
   const payload = {
     ...patientDetails,
     EditFlag: editFlag,
-    Patient_YrId: YearId,
-    Patient_CpyId: branchId,
+    Patient_YrId: config.public_yearId,
+    Patient_CpyId: config.public_branchId,
     Patient_Code: flag === '' ? patientDetails.Patient_Code : newPatientId,
   };
 
   try {
-    const response = await axios.post('http://172.16.16.157:8083/api/PatientSaveUpdate', payload);
+    const response = await axios.post(`${config.public_apiUrl}/PatientSaveUpdate`, payload);
     
     // Log the full response from the backend for debugging
     console.log("Response from backend:", response);
@@ -315,6 +300,7 @@ const handleSaveOrUpdate = async () => {
     });
   };
 
+
 //function for changing the title according to the gender
    const handleTitleChange = (event) => {
     const newTitle = event.target.value;
@@ -329,6 +315,7 @@ const handleSaveOrUpdate = async () => {
     }));
   };
 
+
   //function for changing the title according to the gender change
   const handleGenderChange = (event) => {
     const newGender = event.target.value;
@@ -342,6 +329,7 @@ const handleSaveOrUpdate = async () => {
         '', // Default value when no gender is selected
     }));
   };
+
 
 //function for  calculating the age according to the dob
   const calculateAge = (dob) => {
@@ -452,21 +440,6 @@ const handleAgeChange = (field, value) => {
 
 
 
-  // const handleAgeChange = (field, value) => {
-  //   const ageYY = parseInt(patientDetails.Patient_Ageyy, 10) || 0;
-  //   const ageMM = parseInt(patientDetails.Patient_Agemm, 10) || 0;
-  //   const ageDD = parseInt(patientDetails.Patient_Agedd, 10) || 0;
-  //   const today = new Date();
-    
-  //   // Calculate the Date of Birth based on the age fields
-  //   const dob = new Date(today.getFullYear() - ageYY, today.getMonth() - ageMM, today.getDate() - ageDD).toISOString().split('T')[0];
-    
-  //   setPatientDetails(prevDetails => ({
-  //     ...prevDetails,
-  //     [`Patient_Age${field}`]: value,
-  //     Patient_Dob: dob
-  //   }));
-  // };
 // function for validation
  const validate = () => {
     const newErrors = {}; // Object for storing errors
@@ -617,33 +590,7 @@ const handleAgeChange = (field, value) => {
              setPatientData={setPatientData}
              invoiceViewData={invoiceViewData} />
     </Grid>
-   {/* <Grid item xs={12} sm={6} md={9}>
-   <CAccordion activeItemKey={2}>
-  <CAccordionItem itemKey={1}>
-    <CAccordionHeader>Accordion Item #1</CAccordionHeader>
-    <CAccordionBody>
-     
-    </CAccordionBody>
-  </CAccordionItem>
-  <CAccordionItem itemKey={2}>
-    <CAccordionHeader>Accordion Item #2</CAccordionHeader>
-    <CAccordionBody>
-     <Register/>
-    </CAccordionBody>
-  </CAccordionItem>
-  <CAccordionItem itemKey={3}>
-    <CAccordionHeader>Accordion Item #3</CAccordionHeader>
-    <CAccordionBody>
-      <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
-      collapse plugin adds the appropriate classes that we use to style each element. These classes
-      control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-      modify any of this with custom CSS or overriding our default variables. It's also worth noting
-      that just about any HTML can go within the <code>.accordion-body</code>, though the transition
-      does limit overflow.
-    </CAccordionBody>
-  </CAccordionItem>
-</CAccordion>
-</Grid>  */}
+
    
     <Grid item xs={12} sm={6} md={9}>
       <BasicTabs
