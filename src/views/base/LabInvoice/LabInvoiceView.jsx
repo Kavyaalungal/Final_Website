@@ -262,7 +262,7 @@ const InvoiceView = () => {
   <TextField
       select
       label="Branch"
-      value={selectedBranch || public_branchName} 
+      value={selectedBranch || config.public_branchName} 
       onChange={handleBranchChange}
       fullWidth
       size="small"
