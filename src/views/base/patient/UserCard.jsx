@@ -39,8 +39,6 @@ function UserCard({ patientCode,patientDetails}) {
     const fetchPatientData = async () => {
       try {
         const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
-          YearId:config.public_yearId,
-          BranchId: config.public_branchId,
           PatCode: patientCode,
           editFlag: true
         });
@@ -78,12 +76,12 @@ function UserCard({ patientCode,patientDetails}) {
             className="firstcard"
           >
             <CardContent sx={{ height: "100%", overflowY: "hidden" }}>
-              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 2 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", }}>
                 <Avatar
                   sx={{
                     width: { xs: 60, sm: 70, md: 80 },
                     height: { xs: 60, sm: 70, md: 80 },
-                    mb: 2,
+                    mt: -2,
                   }}
                   alt="Patient Avatar"
                   src={avatarSrc}
@@ -99,7 +97,7 @@ function UserCard({ patientCode,patientDetails}) {
 
               {/* Only show other details after userData is fetched and form is submitted */}
               {!loading && Object.keys(userData).length > 0 ? (
-                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: -2, marginLeft: -1 }}>
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginTop: 1, marginLeft: -1 }}>
                   <Typography
                     variant="h6"
                     component="div"
@@ -122,35 +120,35 @@ function UserCard({ patientCode,patientDetails}) {
                     </Typography>
                   </Box>
 
-                  <Typography sx={{ mb: 1.5, fontSize: { xs: 15, sm: 15, md: 15 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
+                  <Typography sx={{ mb: 1.5, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
                     Contact No
                   </Typography>
                   <Typography sx={{ mt: -2, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#000">
                     {userData.Patient_mobile || userData.Patient_Phno || "N/A"}
                   </Typography>
 
-                  <Typography sx={{ mt: 1, fontSize: { xs: 15, sm: 15, md: 15 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
+                  <Typography sx={{ mt: 1, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
                     Email
                   </Typography>
                   <Typography sx={{ mt: 0, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#000">
                     {userData.Patient_Email || "N/A"}
                   </Typography>
 
-                  <Typography sx={{ mt: 1, fontSize: { xs: 15, sm: 15, md: 15 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
+                  <Typography sx={{ mt: 1, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
                     PatientID
                   </Typography>
                   <Typography sx={{ fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#000">
                     {userData.Patient_Code || "N/A"}
                   </Typography>
 
-                  <Typography sx={{ mt: 1, fontSize: { xs: 15, sm: 15, md: 15 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
+                  <Typography sx={{ mt: 1, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
                     Address
                   </Typography>
                   <Typography sx={{ fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#000">
                     {userData.Patient_Address || "N/A"}
                   </Typography>
 
-                  <Typography sx={{ mt: 1, fontSize: { xs: 15, sm: 15, md: 15 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
+                  <Typography sx={{ mt: 1, fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#b0b0b0">
                     Branch
                   </Typography>
                   <Typography sx={{ fontSize: { xs: 14, sm: 14, md: 14 }, wordBreak: "break-word", overflowWrap: "break-word" }} color="#000">

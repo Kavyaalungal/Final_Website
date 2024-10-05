@@ -18,32 +18,11 @@ import config from '../../../../Config';
 
 // Function to get formatted current date and time
 const getCurrentDateTime = () => {
-  
-  const current = new Date();
-  const year = current.getFullYear();
-  const month = String(current.getMonth() + 1).padStart(2, '0');
-  const day = String(current.getDate()).padStart(2, '0');
-  let hours = current.getHours();
-  const minutes = String(current.getMinutes()).padStart(2, '0');
-  const amPm = hours >= 12 ? 'PM' : 'AM';
-
-  // Convert 24-hour time to 12-hour time
-  hours = hours % 12 || 12; // Convert 0 hours to 12 for 12 AM
-  const hoursFormatted = String(hours).padStart(2, '0');
-
-  return `${month}/${day}/${year} ${hoursFormatted}:${minutes}${amPm}`;
+  return dayjs().format('DD-MMM-YYYY hh:mm A');
 };
 
-
 const getCurrentDateTimeForInput = () => {
-  const current = new Date();
-  const year = current.getFullYear();
-  const month = String(current.getMonth() + 1).padStart(2, '0');
-  const day = String(current.getDate()).padStart(2, '0');
-  const hours = String(current.getHours()).padStart(2, '0');
-  const minutes = String(current.getMinutes()).padStart(2, '0');
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+  return dayjs().format('DD-MMM-YYYY hh:mm A');
 };
 
 
@@ -80,6 +59,7 @@ function Maintable() {
   const [urgentvalue,setUrgentValue] = useState('0');
   const [status,setStatus]  = useState(0);
   const [completionDate, setCompletionDate] = useState('');
+  const [note,setNotes] = useState('')
   //for id
   const [referredByIdd, setReferredById] = useState('');
   const [corporateId, setCorporateId] = useState('')
@@ -89,12 +69,15 @@ function Maintable() {
 
 
   const location = useLocation();
-  const labData = location.state?.labData;  
+  const initialLabData = location.state?.labData || {};  
+  
+  const [labData, setLabData] = useState(initialLabData);
+  // const labData = location.state?.labData;  
   const { LabNo } = labData || {};
-  // Check if labData is present
-  // if (!labData) {
-  //   return <p>No lab data available.</p>;
-  // }
+  const [isExistingRow, setIsExistingRow] = useState(false);
+  const {ReportTime} = labData
+  //report time convert
+  const ExistReporttime = dayjs(ReportTime).format('DD-MMM-YYYY hh:mm A')
 
   useEffect(() => {
     // Set up an interval to update the date and time every minute
@@ -105,8 +88,7 @@ function Maintable() {
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
-  // const BranchId = sessionStorage.getItem('selectedBranchKey')
-  // const YearId = sessionStorage.getItem('latestYearId' || 'selectedYrID')
+
 
   // Fetch current Lab No when the component mounts
   useEffect(() => {
@@ -126,9 +108,13 @@ function Maintable() {
         console.error('Error fetching Lab No:', error);
       }
     };
-
-    fetchLabNo();
-  }, []);
+    if(!LabNo){
+      fetchLabNo()
+    }else{
+      setLabNo(LabNo)
+    }
+   
+  }, [LabNo]);
 
 
 
@@ -150,15 +136,37 @@ function Maintable() {
   //   alert('Are you sure you want to remove?')
   // };
 
-  const handleRemoveRow = (id) => {
+  const handleRemoveRow = (id, isExisting) => {
     setSelectedRowId(id);  // Set the ID of the row to be deleted
-    setOpenPopup(true);
+    setIsExistingRow(isExisting);  // Track if it's an existing or new row
+    setOpenPopup(true);  // Open confirmation popup
+    console.log('selected row', id, isExisting);
+};
 
+const handleAccept = () => {
+  if (isExistingRow) {
+      // Update labData by filtering out only the selected row
+      setLabData(prevLabData => {
+          const updatedInvTestDlts = prevLabData?.InvTestDlts?.filter(item => item.id !== selectedRowId);
+          
+          // Debugging: Check what is being removed
+          console.log('Selected Row ID:', selectedRowId);
+          console.log('Previous InvTestDlts:', prevLabData?.InvTestDlts);
+          console.log('Updated InvTestDlts:', updatedInvTestDlts);
+          
+          return {
+              ...prevLabData,
+              InvTestDlts: updatedInvTestDlts
+          };
+      });
+  } else {
+      // For new rows
+      setRows(prevRows => prevRows.filter(row => row.id !== selectedRowId));
   }
-  const handleAccept = () => {
-    setRows(rows.filter(row => row.id !== selectedRowId));  // Remove the row
-    setOpenPopup(false);  // Close the popup
-  };
+  setOpenPopup(false);  // Close the popup
+};
+
+
 
   const handleReject = () => {
     setOpenPopup(false);  // Close the popup without deleting
@@ -207,42 +215,44 @@ function Maintable() {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault();
-      if (currentRow.testCode || currentRow.testName) {
-        const matchedTest = testdata.find(test =>
-          (currentRow.testCode && test.Shortname === currentRow.testCode) ||
-          (currentRow.testName && test.tstname === currentRow.testName)
-        );
-        if (matchedTest) {
-          const reportTimeInHours = convertToHours(matchedTest.RptD, matchedTest.RptTD);
-  
-          setRows([
-            ...rows,
-            {
-              id: Date.now(),
-              testCode: matchedTest.Shortname,
-              testName: matchedTest.tstname,
-              price: matchedTest.Rate,
-              discount: matchedTest.Discper,
-              tstkey: matchedTest.tstkey,
-              RptD: matchedTest.RptD,
-              RptTD: matchedTest.RptTD,
-              reportTimeInHours, // Store the report time in hours
-              total: (matchedTest.Rate - (matchedTest.Rate * (matchedTest.Discper || 0) / 100)).toFixed(2)
+        e.preventDefault();
+        if (currentRow.testCode || currentRow.testName) {
+            const matchedTest = testdata.find(test =>
+                (currentRow.testCode && test.Shortname === currentRow.testCode) ||
+                (currentRow.testName && test.tstname === currentRow.testName)
+            );
+            if (matchedTest) {
+                const reportTimeInHours = convertToHours(matchedTest.RptD, matchedTest.RptTD);
+
+                // Create new entry
+                const newRow = {
+                    id: Date.now(), // Ensure this is unique
+                    testCode: matchedTest.Shortname,
+                    testName: matchedTest.tstname,
+                    price: matchedTest.Rate,
+                    discount: matchedTest.Discper,
+                    tstkey: matchedTest.tstkey,
+                    RptD: matchedTest.RptD,
+                    RptTD: matchedTest.RptTD,
+                    reportTimeInHours, // Store the report time in hours
+                    total: (matchedTest.Rate - (matchedTest.Rate * (matchedTest.Discper || 0) / 100)).toFixed(2)
+                };
+
+                // Update rows state with new entry added
+                setRows(prevRows => [...prevRows, newRow]);
+
+                // Update shortNameList with hyphen
+                setShortNameList(prev => {
+                    return prev ? `${prev} - ${matchedTest.Shortname}` : matchedTest.Shortname;
+                });
+
+                setCurrentRow({ id: Date.now(), testCode: '', testName: '', price: '', discount: '', tstkey: '' });
+                testCodeRef.current.focus(); // Move focus to test code input for new row
             }
-          ]);
-  
-          // Update shortNameList with hyphen
-          setShortNameList(prev => {
-            return prev ? `${prev} - ${matchedTest.Shortname}` : matchedTest.Shortname;
-          });
-  
-          setCurrentRow({ id: Date.now(), testCode: '', testName: '', price: '', discount: '', tstkey: '' });
-          testCodeRef.current.focus(); // Move focus to test code input for new row
         }
-      }
     }
-  };
+};
+
 // Function to find the test with the longest report time
 const getLongestReportTime = (rows) => {
   if (rows.length === 0) return null;
@@ -273,9 +283,17 @@ useEffect(() => {
   const longestTest = getLongestReportTime(rows);
   if (longestTest) {
     const completionDate = calculateCompletionDate(longestTest);
-    setCompletionDate(dayjs(completionDate).format('YYYY-MM-DD HH:mm'));
+
+    // Log completion date before and after formatting
+    console.log('Raw completion date:', completionDate);
+
+    const formattedDate = dayjs(completionDate).format('DD-MMM-YYYY hh:mm A');
+    console.log('Formatted completion date:', formattedDate);
+
+    setCompletionDate(formattedDate);
   }
 }, [rows]);
+
   // Filter test data based on user input
   const filterTestData = (inputValue) => {
     return testdata.filter(test =>
@@ -283,6 +301,11 @@ useEffect(() => {
       test.tstname.toLowerCase().includes(inputValue.toLowerCase())
     );
   };
+   //storing notes
+   const handlenotechange = (event) =>{
+    setNotes(event.target.value)
+  }
+
 
   const invdlts = rows.map(row => ({
     cmpyId: config.public_branchId,
@@ -483,7 +506,27 @@ useEffect(() => {
   };
 
 
+//combinedrow seting
 
+
+const combinedData = [
+  ...(Array.isArray(labData?.InvTestDlts) ? labData.InvTestDlts.map(item => ({
+      testCode: item.Testshtname,
+      testName: item.Testname,
+      price: item.TestRate,
+      discount: item.Discamt,
+      total: item.Orgrate,
+      id: item.id , // Ensure unique id
+      isExisting: true // Mark this as existing data
+  })) : []),
+     ...rows.map(row => ({
+      ...row,
+      isExisting: false // Mark this as new data
+  }))
+];
+
+// Now render the table with `combinedData` sorted by whether it's existing or new:
+combinedData.sort((a, b) => (a.isExisting === b.isExisting) ? 0 : a.isExisting ? -1 : 1)
 
 
 
@@ -672,12 +715,12 @@ useEffect(() => {
 
 
         <Grid container spacing={2} sx={{ mb: 2 }}>
-            <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
                 options={filteredDoctors.map((doctor) => doctor.Pname)}
                 onInputChange={handleInputChange}
-                value={referredByInput}
+                value={referredByInput || labData?.ReferredBy || ''}
                 onChange={handleReferredByChange}
                 // disableClearable
                 componentsProps={{
@@ -703,13 +746,12 @@ useEffect(() => {
                 )}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 freeSolo
                 options={filteroutdr.map((doctor) => doctor.Pname)}
                 onInputChange={handleInputChange}
-                value={refoutdr}
+                value={refoutdr||labData?.OutDr||''}
                 onChange={handleoutdrchange}
                 // disableClearable
                 componentsProps={{
@@ -747,7 +789,7 @@ useEffect(() => {
                 freeSolo
                 options={filterCollmode.map((mode) => mode.Desc)}
                 onInputChange={handleInputChange}
-                value={defaultColl||referredCollectionmode}
+                value={referredCollectionmode || defaultColl||labData?.CollectionMode}
                 onChange={handlecollbychange}
                 // disableClearable
                 componentsProps={{
@@ -787,7 +829,7 @@ useEffect(() => {
               <TextField
                 label="IP/OP"
                 variant="outlined"
-                value={ipOpValue}
+                value={ipOpValue || labData?.IP_OP||''}
                 onChange={handleIpOpChange}
                 size="small"
                 fullWidth
@@ -795,7 +837,7 @@ useEffect(() => {
                   fontSize: '1rem',
                   height: 40,
                   '& input': {
-                    padding: '8px', fontSize: '0.95rem',
+                    padding: '8px', fontSize: '0.95remrem',
                     '&:focus': {
                       backgroundColor: '#adff2f'
                     }
@@ -808,7 +850,7 @@ useEffect(() => {
                 freeSolo
                 options={filteredCorporate.map((acc) => acc.Pname)}
                 onInputChange={handleInputChange}
-                value={referredByCorporate}
+                value={referredByCorporate||labData?.Corporatename}
                 onChange={handleCorporateByChange}
                 // disableClearable
                 componentsProps={{
@@ -839,7 +881,7 @@ useEffect(() => {
                 freeSolo
                 options={filteredStaff.map((acc) => acc.Pname)}
                 onInputChange={handleInputChange}
-                value={referredByStaff}
+                value={referredByStaff||labData?.CollectedBy}
                 onChange={handleStaffByChange}
                 // disableClearable
                 componentsProps={{
@@ -871,6 +913,7 @@ useEffect(() => {
 
 
 
+
           <TableContainer
             component={Paper}
             ref={tableContainerRef}
@@ -899,23 +942,24 @@ useEffect(() => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
+                {combinedData.map((row, index) => (
+                  
                   <TableRow key={row.id} sx={{ height: '32px' }}>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '7%', padding: '4px 8px' }}>{index + 1}</TableCell>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.testCode}</TableCell>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '35%', padding: '4px 8px' }}>{row.testName}</TableCell>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '7%', padding: '4px 8px' }}>{row.price || ''}</TableCell>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.discount}</TableCell>
-                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.total}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '7%', padding: '4px 8px' }}>{index+1}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.testCode || row.Testshtname}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '35%', padding: '4px 8px' }}>{row.testName||row.Testname}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '7%', padding: '4px 8px' }}>{row.price ||row.Orgrate}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.discount||row.Discamt}</TableCell>
+                    <TableCell sx={{ fontSize: '0.95rem', width: '12%', padding: '4px 8px' }}>{row.total||row.TestRate}</TableCell>
                     <TableCell sx={{ fontSize: '0.95rem', width: '5%', padding: '4px 8px' }}>
-                      <IconButton onClick={() => handleRemoveRow(row.id)}>
+                      <IconButton onClick={() => handleRemoveRow(row.id,row.isExisting)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
                 <TableRow sx={{ height: '32px' }}>
-                  <TableCell sx={{ fontSize: '0.95rem', width: '6%', padding: '4px 8px' }}>{rows.length + 1}</TableCell>
+                  <TableCell sx={{ fontSize: '0.95rem', width: '6%', padding: '4px 8px' }}>{combinedData.length + 1}</TableCell>
                   <TableCell sx={{ width: '10%', padding: '4px 8px' }}>
                     <Autocomplete
                       freeSolo
@@ -1028,13 +1072,14 @@ useEffect(() => {
             </Table>
           </TableContainer>
 
+
+
           <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
 
-            <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3}>
               <TextField
                 id="sampleOn"
                 label="Sample On"
-                type="datetime-local"
                 variant="outlined"
                 value={currentDateTimeForInput}
                 size="small"
@@ -1058,8 +1103,7 @@ useEffect(() => {
               <TextField
                 id="reportTime"
                 label="Report Time"
-                type="datetime-local"
-                value={completionDate}
+                value={completionDate ||ExistReporttime}
                 variant="outlined"
                 sx={{width:'105%'}}
                 size="small"
@@ -1078,6 +1122,8 @@ useEffect(() => {
                 }}
               />
             </Grid>
+
+
 
 
             <Grid item xs={12} sm={1.5}>
@@ -1234,18 +1280,18 @@ useEffect(() => {
               <Grid container spacing={2}>
                
 
-
               <Grid item xs={12}>
                   <TextField
                     id="notes"
                     label="Notes"
                     variant="outlined"
                     multiline
+                    value={note}
+                    onChange={handlenotechange}
                     rows={3}
                     size="small"
                     fullWidth
                     sx={{
-                      mt:1,
                       '@media (max-width: 320px)': {
                         width: '100%', // Ensure full width on small screens
                       },
@@ -1431,6 +1477,7 @@ useEffect(() => {
                       urgentvalue={urgentvalue}
                       status={status}
                       completionDate={completionDate}
+                      note={note}
 
 
 

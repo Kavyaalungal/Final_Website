@@ -75,8 +75,6 @@ useEffect(()=>{
 
     try {
       const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientSearchMaster`, { // request is send to backend 
-        YearId: config.public_yearId,   // with parameters yearid, branchid, searchitem, and the value
-        BranchId: config.public_branchId,
         SrchItem: searchCriteria,
         srchVal:value
         // SrchVal: value.toLowerCase(),
@@ -123,9 +121,7 @@ useEffect(()=>{
 
   try {
     console.log('Selected Patient:', newValue); // Log selected patient for debugging
-    const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, { //request sends to backend for taking the patient details
-      YearId: config.public_yearId,// parameters are sent along with the request that is yearid,branchid and patientcode of the enetrerd patient 
-      BranchId: config.public_branchId,
+    const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, { //request sends to backend for taking the patient details 
       PatCode: newValue.Patient_Code,
       editFlag:true
     });

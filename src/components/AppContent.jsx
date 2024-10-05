@@ -63,7 +63,7 @@ const AppContent = () => {
           })}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
           <Route path="/proceedtobill" element={<PatientMain />} />
-          {/* <Route path="/proceedtobill/:labno" element={<ProceedToBill />} /> */}
+          <Route path="/proceedtobill/:labno" element={<PatientMain />} />
           <Route path="/invoice" element={<InvoiceView />} />
         </Routes>
       </Suspense>

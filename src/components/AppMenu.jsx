@@ -133,7 +133,7 @@ const handleClickHelp = (event) => {
       <Button
         color="inherit"
         onClick={handleClickFrontOffice}
-        onMouseEnter={(e) => handleClickFrontOffice(e)} 
+        // onMouseEnter={(e) => handleClickFrontOffice(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
        Front Office
@@ -142,7 +142,7 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickSampleFlow}
-        onMouseEnter={(e) => handleClickSampleFlow(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickSampleFlow(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
        Sample Flow
@@ -151,7 +151,7 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickTechnical}
-        onMouseEnter={(e) => handleClickTechnical(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickTechnical(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
         Technical
@@ -160,7 +160,7 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickAccounts}
-        onMouseEnter={(e) => handleClickAccounts(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickAccounts(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
         Accounts
@@ -169,7 +169,7 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickMasterSettings}
-        onMouseEnter={(e) => handleClickMasterSettings(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickMasterSettings(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
          Mastersettings
@@ -178,7 +178,7 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickReports}
-        onMouseEnter={(e) => handleClickReports(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickReports(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
         Reports
@@ -187,7 +187,7 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickMarketing}
-        onMouseEnter={(e) => handleClickMarketing(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickMarketing(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
         Marketing
@@ -196,16 +196,32 @@ const handleClickHelp = (event) => {
     <Button
         color="inherit"
         onClick={handleClickAdministrator}
-        onMouseEnter={(e) => handleClickAdministrator(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickAdministrator(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
         Administrator
         <ExpandMore sx={{ width: '20px' }} />
     </Button>
+    {/* <Button
+    color="inherit"
+    onClick={handleClickHelp}
+    onMouseEnter={(e) => handleClickHelp(e)} 
+    sx={{
+        textTransform: 'none',
+        fontSize: '1rem',
+        '&:hover': {
+            backgroundColor: 'blue', 
+        },
+    }}
+>
+    Help
+    <ExpandMore sx={{ width: '20px' }} />
+</Button> */}
+
     <Button
         color="inherit"
         onClick={handleClickHelp}
-        onMouseEnter={(e) => handleClickHelp(e)} // Show on hover
+        // onMouseEnter={(e) => handleClickHelp(e)} 
         sx={{ textTransform: 'none', fontSize: '1rem' }}
     >
         Help

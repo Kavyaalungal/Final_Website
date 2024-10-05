@@ -40,7 +40,8 @@ const CashPayment = ({ visible,
     defaultColl,
     urgentvalue ,
     status,
-    completionDate}) => {
+    completionDate, note
+}) => {
     const [openPopup, setOpenPopup] = useState(false);
     const [invno, setInvno] = useState(null);
     const [netAmount, setNetAmount] = useState(totalAmount);
@@ -204,8 +205,6 @@ const CashPayment = ({ visible,
 
             try {
                 const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
-                    YearId: config.public_yearId,
-                    BranchId: config.public_branchId,
                     PatCode: opdno,
                     editFlag: true
                 });
@@ -278,7 +277,7 @@ const CashPayment = ({ visible,
             "RepThrTelephn": false,
             "RepThrSms": true,
             "OtherRepReq": "none",
-            "Note": "Urgent report required",
+            Note:  note,
             Status : status,
             IsUrgent : urgentvalue,
             email: patientData.Patient_Email,
@@ -318,20 +317,48 @@ const CashPayment = ({ visible,
             toast.success('Saved Succesfully')
             // const invno = response.data.invno
 
-            const invno = response.data.invno;
-            setInvno(invno); // Store the invoice number after save
+            // const invno = response.data.invno;
+            // setInvno(invno); // Store
 
 
       resetform()
       console.log('invno',invno)
  
-      setOpenPopup(true);    
+    //   setOpenPopup(true);    
         } catch (error) {
             console.error('Failed to save data', error);
             toast.error('Failed to save data! Please try again.')
         }
     };
 
+
+    // const handlePrint = async () => {
+    //     try {
+    //         // Define the API URL
+    //         const apiUrl = `${config.public_apiUrl}/InvoicePrintPDF?yrid=${config.public_yearId}&cmpyid=${config.public_branchId}&labno=${labno}`;
+    
+    //         // Make the request to fetch the PDF
+    //         const response = await axios.get(apiUrl, { responseType: 'blob' });
+    // console.log('printing response',response)
+    //         // Create a blob from the response data
+    //         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+    
+    //         // Create a URL for the blob and open it in a new tab
+    //         const pdfUrl = window.URL.createObjectURL(pdfBlob);
+    //         window.open(pdfUrl);
+    
+    //         // Optionally, trigger file download
+    //         // const link = document.createElement('a');
+    //         // link.href = pdfUrl;
+    //         // link.setAttribute('download', 'invoice.pdf'); // Customize the filename
+    //         // document.body.appendChild(link);
+    //         // link.click();
+    //         // link.remove();
+    
+    //     } catch (error) {
+    //         console.error('Error during printing:', error);
+    //     }
+    // };
 
     //  // Print API call
     //  const handlePrint = async () => {
@@ -362,23 +389,65 @@ const CashPayment = ({ visible,
 
   
  // Print API call
- const handlePrint = async () => {
+//  const handlePrint = async () => {
+//     try {
+//         if (!invno) {
+//             console.error("No invoice number available for printing.");
+//             return;
+//         }
+
+//         const apiUrl = `${config.public_apiUrl}/InvoicePrintPDF?yrid=${config.public_yearId}&cmpyid=${config.public_branchId}&labno=${invno}`;
+
+//         const response = await axios.get(apiUrl, { responseType: 'blob' });
+//         console.log('Print API Response:', response.data);
+
+//         // Create a blob URL for the PDF and open it
+//         const blob = new Blob([response.data], { type: 'application/pdf' });
+//         const url = window.URL.createObjectURL(blob);
+//         window.open(url);
+//     } catch (error) {
+//         console.error('Error during printing:', error);
+//     } finally {
+//         setOpenPopup(false); // Close the dialog after printing or error
+//     }
+// };
+
+const handlePrint = async () => {
     try {
-        if (!invno) {
-            console.error("No invoice number available for printing.");
-            return;
+       
+        const apiUrl = `${config.public_apiUrl}/InvoicePrintPDF?yrid=${config.public_yearId}&cmpyid=${config.public_branchId}&labno=${labno}`;
+
+        // Make the request to fetch the Base64 encoded PDF string
+        const response = await axios.get(apiUrl);
+
+        // The response contains a Base64 string, so extract it
+        const base64String = response.data; // Assuming the API response is the Base64 string itself
+
+        // Convert Base64 string to binary data
+        const binaryString = window.atob(base64String);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
         }
 
-        const apiUrl = `${config.public_apiUrl}/InvoicePrintPDF?yrid=${config.public_yearId}&cmpyid=${config.public_branchId}&labno=${invno}`;
+        // Create a Blob from the binary data
+        const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
 
-        const response = await axios.get(apiUrl);
-        console.log('Print API Response:', response.data);
+        // Create a URL for the Blob and open it in a new tab
+        const pdfUrl = window.URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl);
 
-        // Optionally handle the response (like opening a PDF)
+        // Optionally, trigger file download
+        // const link = document.createElement('a');
+        // link.href = pdfUrl;
+        // link.setAttribute('download', 'invoice.pdf'); // Customize the filename
+        // document.body.appendChild(link);
+        // link.click();
+        // link.remove();
+
     } catch (error) {
         console.error('Error during printing:', error);
-    } finally {
-        setOpenPopup(false); // Close the dialog after printing or error
     }
 };
 
@@ -389,12 +458,12 @@ const handleSave = () => {
 
 // Function to accept and trigger print
 const handleAccept = () => {
-    handlePrint();  // Trigger the print function when user clicks "Yes" in popup
+    handlePrint();  
 };
 
 // Function to reject print
 const handleReject = () => {
-    setOpenPopup(false);  // Close the popup without printing
+    setOpenPopup(false);  
 };
 
     console.log('service', serviceCharge)

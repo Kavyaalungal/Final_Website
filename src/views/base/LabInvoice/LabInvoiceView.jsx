@@ -529,8 +529,7 @@ const InvoiceView = () => {
       // Fetch patient details using the API
       try {
         const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
-          YearId: config.public_yearId,
-          BranchId: config.public_branchId,
+       
           PatCode: invoice.PatientID,  // Pass the PatientID from the invoice
           editFlag: true
         });

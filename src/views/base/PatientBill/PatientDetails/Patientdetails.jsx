@@ -41,8 +41,6 @@ function Patientdetails() {
  
      try {
        const response = await axios.post(`${config.public_apiUrl}/PatientMstr/PatientDetailsMaster`, {
-         YearId: config.public_yearId,
-         BranchId: config.public_branchId,
          PatCode: patientCode, 
          editFlag: true
        });
